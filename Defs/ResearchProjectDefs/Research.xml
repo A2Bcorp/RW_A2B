@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResearchProjectDefs>
+	<ResearchProjectDef>
+		<defName>A2B</defName>
+		<label>A2B Conveyor Belts</label>
+		<description>Allows the construction of A2B conveyor belts.</description>
+		<totalCost>3000</totalCost>
+		<prerequisites></prerequisites>
+	</ResearchProjectDef>
+</ResearchProjectDefs>

@@ -1,0 +1,19 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="BeltBuildingExtensions.cs">
+    <Files>
+      <File FileName="Building_Belt.cs" Line="16" Column="5" />
+      <File FileName="Building_Unloader.cs" Line="12" Column="5" />
+      <File FileName="Building_Loader.cs" Line="13" Column="7" />
+      <File FileName="Building_Curve.cs" Line="94" Column="33" />
+      <File FileName="Constants.cs" Line="3" Column="5" />
+      <File FileName="IBeltBuilding.cs" Line="10" Column="5" />
+      <File FileName="BeltBuildingExtensions.cs" Line="162" Column="26" />
+      <File FileName="Phase.cs" Line="3" Column="5" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
