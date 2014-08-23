@@ -106,14 +106,18 @@ namespace A2B
                     }
 
                     var beltBuildingInstance = buildDest as IBeltBuilding;
-                    if (beltBuildingInstance == null)
-                    {
-                        continue;
-                    }
 
                     // Does the target position contain something ? no -> move the stuff there ...
                     if (Find.Map.thingGrid.CellContains(beltDest, EntityCategory.Item))
                     {
+                        foreach (var thing in Find.Map.thingGrid.ThingsAt(beltDest))
+                        {
+                            if (thing.TryAbsorbStack(target))
+                            {
+                                belt.Counter = 0;
+                            }
+                        }
+
                         continue;
                     }
 
@@ -121,7 +125,10 @@ namespace A2B
                     target.Position = beltDest;
                     belt.Counter = 0; // reset counter to 0
 
-                    beltBuildingInstance.ThingOrigin = beltBuilding.Position;
+                    if (beltBuildingInstance != null)
+                    {
+                        beltBuildingInstance.ThingOrigin = beltBuilding.Position;
+                    }
                 }
             }
             else
