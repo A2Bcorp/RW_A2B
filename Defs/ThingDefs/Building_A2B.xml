@@ -16,7 +16,7 @@
 		<description>The basic unit of a conveyor belt.</description>
 		<eType>BuildingComplex</eType>
 		<category>Building</category>
-		<thingClass>A2B.Building_Belt</thingClass>
+		<thingClass>Building</thingClass>
 		<texturePath>Things/Building/Belt</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
@@ -57,6 +57,9 @@
 				<glowRadius>1</glowRadius>
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
+			<li>
+				<compClass>A2B.BeltComponent</compClass>
+			</li>
 		</comps>
         <tickerType>Normal</tickerType>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -68,7 +71,7 @@
 		<description>The basic unit of a conveyor belt, only curved.</description>
 		<eType>BuildingComplex</eType>
 		<category>Building</category>
-		<thingClass>A2B.Building_Curve</thingClass>
+		<thingClass>Building</thingClass>
 		<texturePath>Things/Building/Curve</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
@@ -109,6 +112,9 @@
 				<glowRadius>1</glowRadius>
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
+			<li>
+				<compClass>A2B.BeltComponent</compClass>
+			</li>
 		</comps>
         <tickerType>Normal</tickerType>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -120,7 +126,7 @@
 		<description>Unload the content of a conveyor belt into a pile.</description>
 		<eType>BuildingComplex</eType>
 		<category>Building</category>
-        <thingClass>A2B.Building_Unloader</thingClass>
+        <thingClass>Building</thingClass>
         <texturePath>Things/Building/Unloader</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
@@ -160,6 +166,9 @@
 				<glowRadius>1</glowRadius>
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
+			<li>
+				<compClass>A2B.BeltComponent</compClass>
+			</li>
 		</comps>
         <tickerType>Normal</tickerType>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -171,7 +180,7 @@
 		<description>Sort and redirect items.</description>
 		<eType>BuildingComplex</eType>
 		<category>Building</category>
-        <thingClass>A2B.Building_Selector</thingClass>
+        <thingClass>Building_Storage</thingClass>
         <texturePath>Things/Building/Selector</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
@@ -214,6 +223,9 @@
 				<glowRadius>1</glowRadius>
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
+			<li>
+				<compClass>A2B.BeltComponent</compClass>
+			</li>
 		</comps>
         <tickerType>Normal</tickerType>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -223,7 +235,7 @@
 		<defName>A2BLoader</defName>
 		<eType>BuildingComplex</eType>
 		<label>Conveyor Loader</label>
-		<thingClass>A2B.Building_Loader</thingClass>
+		<thingClass>A2B.BeltLoader</thingClass>
         <description>Loads any item you want onto a belt.</description>
 		<texturePath>Things/Building/Loader</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
@@ -261,6 +273,9 @@
 				<compClass>CompGlower</compClass>
 				<glowRadius>1</glowRadius>
 				<glowColor>(255,200,0,0)</glowColor>
+			</li>
+			<li>
+				<compClass>A2B.BeltComponent</compClass>
 			</li>
 		</comps>
 		<castEdgeShadows>true</castEdgeShadows>
