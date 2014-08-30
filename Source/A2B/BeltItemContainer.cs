@@ -1,10 +1,11 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using A2B.Annotations;
 using RimWorld;
 using Verse;
+using Verse.Sound;
 
 #endregion
 
@@ -12,12 +13,13 @@ namespace A2B
 {
     public class ThingStatus
     {
-        public ThingStatus(Thing thing, int counter)
+        public ThingStatus([NotNull] Thing thing, int counter)
         {
             Thing = thing;
             Counter = counter;
         }
 
+        [NotNull]
         public Thing Thing { get; private set; }
 
         public int Counter { get; private set; }
@@ -31,7 +33,7 @@ namespace A2B
 
         private ThingContainer _container;
 
-        public BeltItemContainer(BeltComponent component)
+        public BeltItemContainer([NotNull] BeltComponent component)
         {
             _parentComponent = component;
 
@@ -39,11 +41,13 @@ namespace A2B
             _thingCounter = new Dictionary<Thing, int>();
         }
 
+        [NotNull]
         public IEnumerable<Thing> Contents
         {
             get { return _container.Contents; }
         }
 
+        [NotNull]
         public IEnumerable<Thing> ThingsToMove
         {
             get { return _thingCounter.Where(pair => pair.Value >= _parentComponent.BeltSpeed).Select(pair => pair.Key).ToList(); }
@@ -59,6 +63,7 @@ namespace A2B
             get { return _container.Empty; }
         }
 
+        [NotNull]
         public IEnumerable<ThingStatus> ThingStatus
         {
             get { return _container.Contents.Select(thing => new ThingStatus(thing, _thingCounter[thing])); }
@@ -101,6 +106,7 @@ namespace A2B
 
         #region ThingContainerGiver Members
 
+        [NotNull]
         ThingContainer ThingContainerGiver.GetContainer()
         {
             return _container;
@@ -118,46 +124,45 @@ namespace A2B
             }
         }
 
-        private bool ShouldIncreaseCounter (Thing thing)
-		{
-			var currentCounter = _thingCounter [thing];
-			if (currentCounter < _parentComponent.BeltSpeed / 2) {
-				// Always increase the counter until half the belt speed is reached
-				return true;
-			}
+        private bool ShouldIncreaseCounter(Thing thing)
+        {
+            var currentCounter = _thingCounter[thing];
+            if (currentCounter < _parentComponent.BeltSpeed / 2)
+            {
+                // Always increase the counter until half the belt speed is reached
+                return true;
+            }
 
-			if (currentCounter >= _parentComponent.BeltSpeed) {
-				return false;
-			}
+            if (currentCounter >= _parentComponent.BeltSpeed)
+            {
+                return false;
+            }
 
-			var destination = _parentComponent.GetDestinationForThing (thing);
+            var destination = _parentComponent.GetDestinationForThing(thing);
 
-			var belt = destination.GetBeltComponent ();
+            var belt = destination.GetBeltComponent();
 
-			if (belt == null) {
-				// Check if this is an unloader, and if yes, whether the exit spot is free or not.
-				if (_parentComponent.IsUnloader)
-				{
-					if (Find.ThingGrid.CellContains(destination, EntityCategory.Building) || Find.ThingGrid.CellContains(destination, EntityCategory.Item) )
-					{
-						return false;
-					}
+            if (belt == null)
+            {
+                if (_parentComponent.IsUnloader)
+                {
+                    // If this is an unloader always increment the counter
+                    return true;
+                }
 
-					return true;
-				}
+                return false;
+            }
 
-				return false;
-			}
+            // Move beyond 50% only if next component is on ! 
+            if (belt.BeltPhase == Phase.Offline)
+            {
+                return false;
+            }
 
-			// Move beyond 50% only if next component is on ! 
-			if (belt._beltPhase == Phase.Offline) 
-			{
-				return false;
-			}
             return belt.Empty;
         }
 
-        public bool AddItem(Thing t, int initialCounter = 0)
+        public bool AddItem([NotNull] Thing t, int initialCounter = 0)
         {
             if (!_container.TryAdd(t))
             {
@@ -168,7 +173,7 @@ namespace A2B
             return true;
         }
 
-        public void TransferItem(Thing item, BeltItemContainer other)
+        public void TransferItem([NotNull] Thing item, [NotNull] BeltItemContainer other)
         {
             _container.Remove(item);
             _thingCounter.Remove(item);
@@ -176,19 +181,36 @@ namespace A2B
             other.AddItem(item);
         }
 
-        public void DropItem(Thing item, IntVec3 position)
+        public void DropItem([NotNull] Thing item, IntVec3 position)
         {
-            Thing droppedItem;
-            if (!_container.TryDrop(item, position, ThingPlaceMode.Direct, out droppedItem))
+            var backupSound = item.def.soundDrop;
+            item.def.soundDrop = null;
+
+            try
             {
-                return;
+                Thing droppedItem;
+                if (!_container.TryDrop(item, position, ThingPlaceMode.Direct, out droppedItem))
+                {
+                    return;
+                }
+
+                // Play the sound as that isn't handled by the ThingContainer anymore...
+                if (backupSound != null)
+                {
+                    SoundStarter.PlayOneShot(backupSound, position);
+                }
+
+                _thingCounter.Remove(item);
+
+                if (droppedItem is ThingWithComponents)
+                {
+                    droppedItem.SetForbidden(false);
+                }
             }
-
-            _thingCounter.Remove(item);
-
-            if (droppedItem is ThingWithComponents)
+            finally
             {
-                droppedItem.SetForbidden(false);
+                // Stupid hack to make sure the drop sound is not played all the time
+                item.def.soundDrop = backupSound;
             }
         }
 
