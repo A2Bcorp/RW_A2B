@@ -136,7 +136,7 @@
 		<rotatable>true</rotatable>
 		<size>(1,1)</size>
 		<beauty>Neutral</beauty>
-		<workToBuild>500</workToBuild>
+		<workToBuild>100</workToBuild>
 		<designationCategory>Misc</designationCategory>
 		<costList>
 			<li>
@@ -195,7 +195,7 @@
 		<costList>
 			<li>
 				<thingDef>Metal</thingDef>
-				<count>10</count>
+				<count>30</count>
 			</li>
 		</costList>
         <inspectorTabs>
@@ -214,6 +214,60 @@
 			<li>
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>50</basePowerConsumption>
+                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+                <transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompGlower</compClass>
+				<glowRadius>1</glowRadius>
+				<glowColor>(255,200,0,0)</glowColor>
+			</li>
+			<li>
+				<compClass>A2B.BeltComponent</compClass>
+			</li>
+		</comps>
+        <tickerType>Normal</tickerType>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
+	</ThingDef>
+    
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BSplitter</defName>
+		<label>Conveyor Splitter</label>
+		<description>Sends items left and right in alternance.</description>
+		<eType>BuildingComplex</eType>
+		<category>Building</category>
+        <thingClass>Building</thingClass>
+        <texturePath>Things/Building/Splitter</texturePath>
+		<altitudeLayer>Waist</altitudeLayer>
+		<passability>Impassable</passability>
+		<maxHealth>100</maxHealth>
+		<flammability>0.0</flammability>
+		<selectable>true</selectable>
+		<rotatable>true</rotatable>
+		<size>(1,1)</size>
+		<beauty>Neutral</beauty>
+		<workToBuild>200</workToBuild>
+		<designationCategory>Misc</designationCategory>
+		<costList>
+			<li>
+				<thingDef>Metal</thingDef>
+				<count>20</count>
+			</li>
+		</costList>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <killedLeavings>
+			<li>
+				<thingDef>ChunkSlag</thingDef>
+				<count>1</count>
+			</li>
+		</killedLeavings>
+        <StaticSunShadowHeight>0.34</StaticSunShadowHeight>
+		<CastEdgeShadows>True</CastEdgeShadows>
+		<comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>20</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>

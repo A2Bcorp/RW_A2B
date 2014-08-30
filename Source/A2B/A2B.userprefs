@@ -1,16 +1,26 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="BeltBuildingExtensions.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="BeltComponent.cs">
     <Files>
-      <File FileName="Building_Belt.cs" Line="16" Column="5" />
-      <File FileName="Building_Unloader.cs" Line="12" Column="5" />
-      <File FileName="Building_Loader.cs" Line="13" Column="7" />
-      <File FileName="Building_Curve.cs" Line="94" Column="33" />
       <File FileName="Constants.cs" Line="3" Column="5" />
-      <File FileName="IBeltBuilding.cs" Line="10" Column="5" />
       <File FileName="BeltBuildingExtensions.cs" Line="162" Column="26" />
       <File FileName="Phase.cs" Line="3" Column="5" />
+      <File FileName="BeltComponent.cs" Line="6" Column="7" />
+      <File FileName="BeltItemContainer.cs" Line="1" Column="1" />
+      <File FileName="BeltLoader.cs" Line="1" Column="1" />
+      <File FileName="BeltUtilities.cs" Line="1" Column="1" />
+      <File FileName="MovementType.cs" Line="1" Column="1" />
+      <File FileName="Scribe_Fixed.cs" Line="1" Column="1" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="A2B" expanded="True">
+            <Node name="BeltComponent.cs" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

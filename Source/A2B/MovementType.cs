@@ -4,6 +4,7 @@
     {
         Straight,
         Curve,
-        Selector
+        Selector,
+		Splitter
     }
 }

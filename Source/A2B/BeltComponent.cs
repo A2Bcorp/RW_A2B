@@ -36,6 +36,10 @@ namespace A2B
 
         private IntVec3? ThingOrigin { set; get; }
 
+		// Used for the splitter only for now ...
+		private string mythingID;
+		private IntVec3 splitterDest;
+
         public bool IsUnloader { get; private set; }
 
         public bool Empty
@@ -63,6 +67,9 @@ namespace A2B
                 case "A2BSelector":
                     MovementType = MovementType.Selector;
                     break;
+				case "A2BSplitter":
+					MovementType = MovementType.Splitter;
+					break;
                 default:
                     MovementType = MovementType.Straight;
                     break;
@@ -79,6 +86,9 @@ namespace A2B
                 case MovementType.Selector:
                     BeltSpeed = Constants.DefaultBeltSpeed;
                     break;
+				case MovementType.Splitter:	
+					BeltSpeed = Constants.DefaultBeltSpeed;
+				break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -185,12 +195,14 @@ namespace A2B
             {
                 case MovementType.Straight:
                     return parent.Position + parent.rotation.FacingSquare;
+
                 case MovementType.Curve:
                     var beltDestA = parent.Position - parent.rotation.FacingSquare;
                     var beltDestB = parent.Position +
                                     new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
 
                     return ThingOrigin == beltDestA ? beltDestB : beltDestA;
+
                 case MovementType.Selector:
                     // Test the 'selection' idea ...
                     var slotParent = parent as SlotGroupParent;
@@ -207,6 +219,31 @@ namespace A2B
 
                     return parent.Position +
                            new IntVec3(parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
+
+				case A2B.MovementType.Splitter:
+					var beltDestL = parent.Position +
+									new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
+					var beltDestR = parent.Position +
+									new IntVec3(+parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
+	
+					// Do we have a new item ?
+					if (mythingID == thing.ThingID)
+					{
+						return splitterDest;
+					}
+					else	
+					{	
+						mythingID = thing.ThingID;
+						if (splitterDest == beltDestL) 
+						{
+							
+							splitterDest = beltDestR;
+							return beltDestR;
+						}
+					
+						splitterDest = beltDestL;
+						return beltDestL;
+					}
                 default:
                     throw new ArgumentOutOfRangeException();
             }
