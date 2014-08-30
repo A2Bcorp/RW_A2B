@@ -118,29 +118,42 @@ namespace A2B
             }
         }
 
-        private bool ShouldIncreaseCounter(Thing thing)
-        {
-            var currentCounter = _thingCounter[thing];
-            if (currentCounter < _parentComponent.BeltSpeed / 2)
-            {
-                // Always increase the counter until half the belt speed is reached
-                return true;
-            }
+        private bool ShouldIncreaseCounter (Thing thing)
+		{
+			var currentCounter = _thingCounter [thing];
+			if (currentCounter < _parentComponent.BeltSpeed / 2) {
+				// Always increase the counter until half the belt speed is reached
+				return true;
+			}
 
-            if (currentCounter >= _parentComponent.BeltSpeed)
-            {
-                return false;
-            }
+			if (currentCounter >= _parentComponent.BeltSpeed) {
+				return false;
+			}
 
-            var destination = _parentComponent.GetDestinationForThing(thing);
+			var destination = _parentComponent.GetDestinationForThing (thing);
 
-            var belt = destination.GetBeltComponent();
+			var belt = destination.GetBeltComponent ();
 
-            if (belt == null)
-            {
-                return _parentComponent.IsUnloader;
-            }
+			if (belt == null) {
+				// Check if this is an unloader, and if yes, whether the exit spot is free or not.
+				if (_parentComponent.IsUnloader)
+				{
+					if (Find.ThingGrid.CellContains(destination, EntityCategory.Building) || Find.ThingGrid.CellContains(destination, EntityCategory.Item) )
+					{
+						return false;
+					}
 
+					return true;
+				}
+
+				return false;
+			}
+
+			// Move beyond 50% only if next component is on ! 
+			if (belt._beltPhase == Phase.Offline) 
+			{
+				return false;
+			}
             return belt.Empty;
         }
 

@@ -13,7 +13,8 @@ namespace A2B
     [UsedImplicitly]
     public class BeltComponent : ThingComp
     {
-        private Phase _beltPhase;
+		//Noone's update: changed from private to public for access from BeltItemContainer
+        public Phase _beltPhase;
 
         private BeltItemContainer _itemContainer;
 
@@ -226,7 +227,8 @@ namespace A2B
                     GlowerComponent.Lit = true;
 
                     // Check if there is anything on the belt: yes? -> add it to our container
-                    foreach (var target in Find.Map.thingGrid.ThingsListAt(parent.Position))
+                    //foreach (var target in Find.Map.thingGrid.ThingsListAt(parent.Position))
+					foreach (var target in Find.Map.thingGrid.ThingsAt(parent.Position))
                     {
                         // Check and make sure this is not a Pawn, and not the belt itself !
                         if ((target.def.category == EntityCategory.Item) && (target != parent))
@@ -285,7 +287,8 @@ namespace A2B
 
                         var beltComponent = beltDest.GetBeltComponent();
 
-                        if (beltComponent == null || !beltComponent._itemContainer.Empty)
+						//  Check if there is a belt, if it is empty, and also check if it is active !
+                        if (beltComponent == null || !beltComponent._itemContainer.Empty || beltComponent._beltPhase == Phase.Offline)
                         {
                             continue;
                         }
@@ -307,7 +310,6 @@ namespace A2B
 
                 GlowerComponent.Lit = false;
                 _beltPhase = Phase.Offline;
-
                 _itemContainer.DropAll(parent.Position);
             }
         }
