@@ -13,7 +13,7 @@ namespace A2B
     [UsedImplicitly]
     public class BeltComponent : ThingComp
     {
-		//Noone's update: changed from private to public for access from BeltItemContainer
+		//Changed from private to public for access from BeltItemContainer
         public Phase _beltPhase;
 
         private BeltItemContainer _itemContainer;
