@@ -13,10 +13,14 @@ namespace A2B
     [UsedImplicitly]
     public class BeltComponent : ThingComp
     {
-		//Changed from private to public for access from BeltItemContainer
-        public Phase _beltPhase;
+        //Changed from private to public for access from BeltItemContainer
+        private Phase _beltPhase;
 
         private BeltItemContainer _itemContainer;
+
+        private string _mythingID;
+
+        private IntVec3 _splitterDest;
 
         public BeltComponent()
         {
@@ -24,6 +28,11 @@ namespace A2B
 
             _itemContainer = new BeltItemContainer(this);
             ThingOrigin = null;
+        }
+
+        public Phase BeltPhase
+        {
+            get { return _beltPhase; }
         }
 
         private CompGlower GlowerComponent { get; set; }
@@ -36,9 +45,7 @@ namespace A2B
 
         private IntVec3? ThingOrigin { set; get; }
 
-		// Used for the splitter only for now ...
-		private string mythingID;
-		private IntVec3 splitterDest;
+        // Used for the splitter only for now ...
 
         public bool IsUnloader { get; private set; }
 
@@ -67,9 +74,9 @@ namespace A2B
                 case "A2BSelector":
                     MovementType = MovementType.Selector;
                     break;
-				case "A2BSplitter":
-					MovementType = MovementType.Splitter;
-					break;
+                case "A2BSplitter":
+                    MovementType = MovementType.Splitter;
+                    break;
                 default:
                     MovementType = MovementType.Straight;
                     break;
@@ -86,9 +93,9 @@ namespace A2B
                 case MovementType.Selector:
                     BeltSpeed = Constants.DefaultBeltSpeed;
                     break;
-				case MovementType.Splitter:	
-					BeltSpeed = Constants.DefaultBeltSpeed;
-				break;
+                case MovementType.Splitter:
+                    BeltSpeed = Constants.DefaultBeltSpeed;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -220,30 +227,29 @@ namespace A2B
                     return parent.Position +
                            new IntVec3(parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
 
-				case A2B.MovementType.Splitter:
-					var beltDestL = parent.Position +
-									new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
-					var beltDestR = parent.Position +
-									new IntVec3(+parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
-	
-					// Do we have a new item ?
-					if (mythingID == thing.ThingID)
-					{
-						return splitterDest;
-					}
-					else	
-					{	
-						mythingID = thing.ThingID;
-						if (splitterDest == beltDestL) 
-						{
-							
-							splitterDest = beltDestR;
-							return beltDestR;
-						}
-					
-						splitterDest = beltDestL;
-						return beltDestL;
-					}
+                case MovementType.Splitter:
+                    var beltDestL = parent.Position +
+                                    new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
+                    var beltDestR = parent.Position +
+                                    new IntVec3(+parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
+
+                    // Do we have a new item ?
+                    if (_mythingID == thing.ThingID)
+                    {
+                        return _splitterDest;
+                    }
+                    else
+                    {
+                        _mythingID = thing.ThingID;
+                        if (_splitterDest == beltDestL)
+                        {
+                            _splitterDest = beltDestR;
+                            return beltDestR;
+                        }
+
+                        _splitterDest = beltDestL;
+                        return beltDestL;
+                    }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -265,7 +271,7 @@ namespace A2B
 
                     // Check if there is anything on the belt: yes? -> add it to our container
                     //foreach (var target in Find.Map.thingGrid.ThingsListAt(parent.Position))
-					foreach (var target in Find.Map.thingGrid.ThingsAt(parent.Position))
+                    foreach (var target in Find.Map.thingGrid.ThingsAt(parent.Position))
                     {
                         // Check and make sure this is not a Pawn, and not the belt itself !
                         if ((target.def.category == EntityCategory.Item) && (target != parent))
@@ -296,35 +302,18 @@ namespace A2B
 
                 foreach (var thing in _itemContainer.ThingsToMove)
                 {
+                    // Alright, I have something to move. Where to ?
+                    var beltDest = GetDestinationForThing(thing);
+
                     if (IsUnloader)
                     {
-                        var beltDest = GetDestinationForThing(thing);
-
-                        if (Find.ThingGrid.CellContains(beltDest, EntityCategory.Building))
-                        {
-                            continue;
-                        }
-
-                        if (Find.ThingGrid.CellContains(beltDest, EntityCategory.Item))
-                        {
-                            continue;
-                        }
-
-                        if (Find.ThingGrid.CellContains(beltDest, EntityCategory.Terrain))
-                        {
-                            continue;
-                        }
-
                         _itemContainer.DropItem(thing, beltDest);
                     }
                     else
                     {
-                        // Alright, I have something to move. Where to ?
-                        var beltDest = GetDestinationForThing(thing);
-
                         var beltComponent = beltDest.GetBeltComponent();
 
-						//  Check if there is a belt, if it is empty, and also check if it is active !
+                        //  Check if there is a belt, if it is empty, and also check if it is active !
                         if (beltComponent == null || !beltComponent._itemContainer.Empty || beltComponent._beltPhase == Phase.Offline)
                         {
                             continue;
