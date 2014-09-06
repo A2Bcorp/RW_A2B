@@ -5,6 +5,7 @@ using A2B.Annotations;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Random = UnityEngine.Random;
 
 #endregion
 
@@ -49,9 +50,9 @@ namespace A2B
 
         public bool IsUnloader { get; private set; }
 
-		public bool IsTeleporter { get; private set; }
+        public bool IsTeleporter { get; private set; }
 
-		public bool IsReceiver { get; private set; }
+        public bool IsReceiver { get; private set; }
 
 
         public bool Empty
@@ -82,13 +83,12 @@ namespace A2B
                 case "A2BSplitter":
                     MovementType = MovementType.Splitter;
                     break;
-			    case "A2BTeleporter":
-				    MovementType = MovementType.Teleporter;
-				    break;
-			    default:
+                case "A2BTeleporter":
+                    MovementType = MovementType.Teleporter;
+                    break;
+                default:
                     MovementType = MovementType.Straight;
                     break;
-
             }
 
             switch (MovementType)
@@ -105,18 +105,17 @@ namespace A2B
                 case MovementType.Splitter:
                     BeltSpeed = Constants.DefaultBeltSpeed;
                     break;
-			    case A2B.MovementType.Teleporter:
-				    BeltSpeed = 3*Constants.DefaultBeltSpeed;
-				    break;
+                case MovementType.Teleporter:
+                    BeltSpeed = 3 * Constants.DefaultBeltSpeed;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
             // Speed things up a little and only do this once
             IsUnloader = parent.def.defName == "A2BUnloader";
-			IsTeleporter = parent.def.defName == "A2BTeleporter";
-			IsReceiver = parent.def.defName == "A2BReceiver";
-
+            IsTeleporter = parent.def.defName == "A2BTeleporter";
+            IsReceiver = parent.def.defName == "A2BReceiver";
         }
 
         public override void CompExposeData()
@@ -130,39 +129,53 @@ namespace A2B
         {
             foreach (var status in _itemContainer.ThingStatus)
             {
-				Vector3 posOffset;
-				Vector3 mySize = parent.RotatedSize.ToVector3();
+                var posOffset = Vector3.zero;
+                var mySize = parent.RotatedSize.ToVector3();
 
-				if (parent.def.defName=="A2BTeleporter" || parent.def.defName == "A2BReceiver")
-				{
-	   			    switch (parent.rotation.AsInt)
-					{
-				        case 0:
-				            posOffset = new Vector3 ((parent.DrawPos.x-0.5f*(mySize.x-1.0f)), parent.DrawPos.y, (parent.DrawPos.z-0.5f*(mySize.z-1.0f)));
-					        break;
-				        case 1:
-					        posOffset = new Vector3 ((parent.DrawPos.x-0.5f*(mySize.x-1.0f)), parent.DrawPos.y, 1.0f+(parent.DrawPos.z-0.5f*(mySize.z-1.0f)));
-				 	        break;
-				        case 2:
-						    if (parent.def.defName == "A2BTeleporter")
-   					            posOffset = new Vector3 ((parent.DrawPos.x-0.5f*(mySize.x-1.0f))+1.0f, parent.DrawPos.y,1.0f+(parent.DrawPos.z-0.5f*(mySize.z-1.0f)));
-					        if (parent.def.defName =="A2BReceiver")
-							    posOffset = new Vector3 ((parent.DrawPos.x-0.5f*(mySize.x-1.0f))+1.0f, parent.DrawPos.y,(parent.DrawPos.z-0.5f*(mySize.z-1.0f)));
-						    break;
-				        case 3:
-						    if (parent.def.defName == "A2BTeleporter")
-					            posOffset = new Vector3 ((parent.DrawPos.x-0.5f*(mySize.x-1.0f))+1.0f, parent.DrawPos.y, (parent.DrawPos.z-0.5f*(mySize.z-1.0f)));
-					        if (parent.def.defName == "A2BReceiver")
-							    posOffset = new Vector3 ((parent.DrawPos.x-0.5f*(mySize.x-1.0f)), parent.DrawPos.y, (parent.DrawPos.z-0.5f*(mySize.z-1.0f)));
-						    break;
-				    }
-				}
-				else
-				{
-					posOffset = parent.DrawPos;
-				}
+                if (parent.def.defName == "A2BTeleporter" || parent.def.defName == "A2BReceiver")
+                {
+                    switch (parent.rotation.AsInt)
+                    {
+                        case 0:
+                            posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)), parent.DrawPos.y,
+                                (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
+                            break;
+                        case 1:
+                            posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)), parent.DrawPos.y,
+                                1.0f + (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
+                            break;
+                        case 2:
+                            if (parent.def.defName == "A2BTeleporter")
+                            {
+                                posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)) + 1.0f, parent.DrawPos.y,
+                                    1.0f + (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
+                            }
+                            if (parent.def.defName == "A2BReceiver")
+                            {
+                                posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)) + 1.0f, parent.DrawPos.y,
+                                    (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
+                            }
+                            break;
+                        case 3:
+                            if (parent.def.defName == "A2BTeleporter")
+                            {
+                                posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)) + 1.0f, parent.DrawPos.y,
+                                    (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
+                            }
+                            if (parent.def.defName == "A2BReceiver")
+                            {
+                                posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)), parent.DrawPos.y,
+                                    (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    posOffset = parent.DrawPos;
+                }
 
-				var drawPos = posOffset + GetOffset(status) + Altitudes.AltIncVect * Altitudes.AltitudeFor(AltitudeLayer.Item);
+                var drawPos = posOffset + GetOffset(status) + Altitudes.AltIncVect * Altitudes.AltitudeFor(AltitudeLayer.Item);
 
                 status.Thing.DrawAt(drawPos);
 
@@ -186,91 +199,101 @@ namespace A2B
                 new Color(1f, 1f, 1f, 0.75f));
         }
 
-        private Vector3 GetOffset (ThingStatus status)
-		{
-			var destination = GetDestinationForThing (status.Thing);
-			IntVec3 direction;
-			IntVec3 mid_direction;
-			if (ThingOrigin.HasValue && !(parent.def.defName == "A2BReceiver")) {
-				direction = destination - ThingOrigin.Value;
-				mid_direction = parent.Position + parent.rotation.FacingSquare - ThingOrigin.Value;
-			} else {
-				if (parent.def.defName == "A2BTeleporter") {
-					direction = new IntVec3 (3 * parent.rotation.FacingSquare.x, parent.rotation.FacingSquare.y, 3 * parent.rotation.FacingSquare.z);
-					mid_direction = parent.rotation.FacingSquare;
-				} else {
-					direction = parent.rotation.FacingSquare;
-					mid_direction = parent.rotation.FacingSquare; // Should never be used in principle ...
-				}
-			}
+        private Vector3 GetOffset(ThingStatus status)
+        {
+            var destination = GetDestinationForThing(status.Thing);
+            IntVec3 direction;
+            IntVec3 mid_direction;
+            if (ThingOrigin.HasValue && parent.def.defName != "A2BReceiver")
+            {
+                direction = destination - ThingOrigin.Value;
+                mid_direction = parent.Position + parent.rotation.FacingSquare - ThingOrigin.Value;
+            }
+            else
+            {
+                if (parent.def.defName == "A2BTeleporter")
+                {
+                    direction = new IntVec3(3 * parent.rotation.FacingSquare.x, parent.rotation.FacingSquare.y, 3 * parent.rotation.FacingSquare.z);
+                    mid_direction = parent.rotation.FacingSquare;
+                }
+                else
+                {
+                    direction = parent.rotation.FacingSquare;
+                    mid_direction = parent.rotation.FacingSquare; // Should never be used in principle ...
+                }
+            }
 
-			var progress = (float)status.Counter / BeltSpeed;
+            var progress = (float) status.Counter / BeltSpeed;
 
-			// In case we use the teleporter
-			if (parent.def.defName == "A2BTeleporter") {
-				if (progress < 0.5) { // Slew item to teleportation pad
+            // In case we use the teleporter
+            if (parent.def.defName == "A2BTeleporter")
+            {
+                if (progress < 0.5)
+                {
+                    // Slew item to teleportation pad
 
-					Vector3 mid_dir = mid_direction.ToVector3 ();
-					Vector3 mid_dir_off = new Vector3 (0.5f * mid_dir.normalized.x, 0.0f, 0.5f * mid_dir.normalized.z);
-					Vector3 mid_dir_corr = mid_dir.normalized + mid_dir_off;
-					
-					var mid_scaleFactor = progress / 0.5f;
-					
-					return (mid_dir_corr * mid_scaleFactor) - mid_dir_off;
+                    var mid_dir = mid_direction.ToVector3();
+                    var mid_dir_off = new Vector3(0.5f * mid_dir.normalized.x, 0.0f, 0.5f * mid_dir.normalized.z);
+                    var mid_dir_corr = mid_dir.normalized + mid_dir_off;
 
-				} else { // Start the teleportation
-					double randomNumber;
-					System.Random RNG = new System.Random ();
-					randomNumber = RNG.NextDouble ();
+                    var mid_scaleFactor = progress / 0.5f;
 
-					if (randomNumber > 2 * (progress - 0.5f)) {
-						var fin_dira = mid_direction.ToVector3 ();
-						fin_dira.Normalize ();
-						return fin_dira;
-					} else {
-						var fin_dir = direction.ToVector3 ();
-						var fin_dir_norm = direction.ToVector3 ();
-						fin_dir_norm.Normalize (); // Can't normalize, or it doesn't go anywhere ... !
+                    return (mid_dir_corr * mid_scaleFactor) - mid_dir_off;
+                }
+                else
+                {
+                    // Start the teleportation
+                    var randomNumber = Random.Range(0.0f, 1.0f);
 
-						return  (fin_dir - fin_dir_norm); 
-					}
+                    if (randomNumber > 2 * (progress - 0.5f))
+                    {
+                        var fin_dira = mid_direction.ToVector3();
+                        fin_dira.Normalize();
+                        return fin_dira;
+                    }
+                    else
+                    {
+                        var fin_dir = direction.ToVector3();
+                        var fin_dir_norm = direction.ToVector3();
+                        fin_dir_norm.Normalize(); // Can't normalize, or it doesn't go anywhere ... !
 
-				}
+                        return (fin_dir - fin_dir_norm);
+                    }
+                }
+            }
 
+            if (Math.Abs(direction.x) == 1 && Math.Abs(direction.z) == 1 && ThingOrigin.HasValue)
+            {
+                // Diagonal movement
+                var origin = ThingOrigin.Value;
 
-			}
+                var incoming = (parent.Position - origin).ToVector3();
+                var outgoing = (destination - parent.Position).ToVector3();
 
-			if (Math.Abs (direction.x) == 1 && Math.Abs (direction.z) == 1 && ThingOrigin.HasValue) {
-				// Diagonal movement
-				var origin = ThingOrigin.Value;
+                // Now adjust the vectors.
+                // Both need to be half the length so they only reach the edge of out square
 
-				var incoming = (parent.Position - origin).ToVector3 ();
-				var outgoing = (destination - parent.Position).ToVector3 ();
+                // The incoming vector also needs to be negated as it points in the wrong direction
 
-				// Now adjust the vectors.
-				// Both need to be half the length so they only reach the edge of out square
+                incoming = (-incoming) / 2;
+                outgoing = outgoing / 2;
 
-				// The incoming vector also needs to be negated as it points in the wrong direction
+                // This is a funny function that should give me a quarter circle:
+                // -sqrt(1 - (x - 1)^2) + 1
+                var f = (progress - 1);
+                var incomingVal = -Mathf.Sqrt(1 - f * f) + 1;
 
-				incoming = (-incoming) / 2;
-				outgoing = outgoing / 2;
+                var outgoingVal = -Mathf.Sqrt(1 - progress * progress) + 1;
 
-				// This is a funny function that should give me a quarter circle:
-				// -sqrt(1 - (x - 1)^2) + 1
-				var f = (progress - 1);
-				var incomingVal = -Mathf.Sqrt (1 - f * f) + 1;
+                return incoming * incomingVal + outgoing * outgoingVal;
+            }
 
-				var outgoingVal = -Mathf.Sqrt (1 - progress * progress) + 1;
-
-				return incoming * incomingVal + outgoing * outgoingVal;
-			}
-
-			if (parent.def.defName == "A2BReceiver") 
-			{
-				var my_dir = direction.ToVector3();
-				var my_scaleFactor = progress;
-				return my_dir * my_scaleFactor * 0.5f;
-			}
+            if (parent.def.defName == "A2BReceiver")
+            {
+                var my_dir = direction.ToVector3();
+                var my_scaleFactor = progress;
+                return my_dir * my_scaleFactor * 0.5f;
+            }
 
             var dir = direction.ToVector3();
             dir.Normalize();
@@ -334,33 +357,37 @@ namespace A2B
                         _mythingID = thing.ThingID;
                         if (_splitterDest == beltDestL)
                         {
-							// Is the other direction free ? Then switch. Else, don't switch !
-						    var dest_belt = beltDestR.GetBeltComponent();
-						    if (dest_belt.Empty){
+                            // Is the other direction free ? Then switch. Else, don't switch !
+                            var dest_belt = beltDestR.GetBeltComponent();
+                            if (dest_belt.Empty)
+                            {
                                 _splitterDest = beltDestR;
                                 return beltDestR;
-						    }
-						    else
-						    {
-							    return beltDestL;
-						    }
-                        }
-					    else
-					    {
-						    var dest_belt = beltDestL.GetBeltComponent(); 
-						    if (dest_belt.Empty){
-						        _splitterDest = beltDestL;
+                            }
+                            else
+                            {
                                 return beltDestL;
-						    }
-						    else
-						    {
-							    return beltDestR;
-						    }
-					    }
+                            }
+                        }
+                        else
+                        {
+                            var dest_belt = beltDestL.GetBeltComponent();
+                            if (dest_belt.Empty)
+                            {
+                                _splitterDest = beltDestL;
+                                return beltDestL;
+                            }
+                            else
+                            {
+                                return beltDestR;
+                            }
+                        }
                     }
 
-				case MovementType.Teleporter:
-				    return parent.Position + new IntVec3 (3*parent.rotation.FacingSquare.x,parent.rotation.FacingSquare.y,3*parent.rotation.FacingSquare.z); // Fixed position for now ...
+                case MovementType.Teleporter:
+                    return parent.Position +
+                           new IntVec3(3 * parent.rotation.FacingSquare.x, parent.rotation.FacingSquare.y, 3 * parent.rotation.FacingSquare.z);
+                        // Fixed position for now ...
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -433,15 +460,8 @@ namespace A2B
 
                         _itemContainer.TransferItem(thing, beltComponent._itemContainer);
 
-						// Need to check if it is a receiver or not ...
-						if (beltComponent.IsUnloader)
-						{
-							beltComponent.ThingOrigin = beltDest;
-						}
-						else
-						{
-                            beltComponent.ThingOrigin = parent.Position;
-						}
+                        // Need to check if it is a receiver or not ...
+                        beltComponent.ThingOrigin = beltComponent.IsUnloader ? beltDest : parent.Position;
                     }
                 }
             }
