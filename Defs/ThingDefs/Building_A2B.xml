@@ -365,5 +365,113 @@
 		<researchPrerequisite>A2B</researchPrerequisite>
 	</ThingDef>
 
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BTeleporter</defName>
+		<label>Teleporter</label>
+		<description>Teleports item 1 click further. Requires [!] a receiver to function !</description>
+		<eType>BuildingComplex</eType>
+		<category>Building</category>
+        <thingClass>Building</thingClass>
+        <texturePath>Things/Building/Teleporter_alpha</texturePath>
+		<altitudeLayer>Waist</altitudeLayer>
+		<passability>Impassable</passability>
+		<maxHealth>100</maxHealth>
+		<flammability>0.0</flammability>
+		<selectable>true</selectable>
+		<rotatable>true</rotatable>
+		<size>(2,2)</size>
+		<beauty>Neutral</beauty>
+		<workToBuild>200</workToBuild>
+		<designationCategory>Misc</designationCategory>
+		<costList>
+			<li>
+				<thingDef>Metal</thingDef>
+				<count>20</count>
+			</li>
+		</costList>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <killedLeavings>
+			<li>
+				<thingDef>ChunkSlag</thingDef>
+				<count>1</count>
+			</li>
+		</killedLeavings>
+        <StaticSunShadowHeight>0.34</StaticSunShadowHeight>
+		<CastEdgeShadows>True</CastEdgeShadows>
+		<comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>20</basePowerConsumption>
+                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+                <transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompGlower</compClass>
+				<glowRadius>1</glowRadius>
+				<glowColor>(255,200,0,0)</glowColor>
+			</li>
+			<li>
+				<compClass>A2B.BeltComponent</compClass>
+			</li>
+		</comps>
+        <tickerType>Normal</tickerType>
+        <researchPrerequisite><li>A2B</li></researchPrerequisite>
+	</ThingDef>
+    
+        <ThingDef ParentName="BuildingBase">
+		<defName>A2BReceiver</defName>
+		<label>Receiver</label>
+		<description>Receives items from the teleporter.</description>
+		<eType>BuildingComplex</eType>
+		<category>Building</category>
+        <thingClass>Building</thingClass>
+        <texturePath>Things/Building/Receiver_alpha</texturePath>
+		<altitudeLayer>Waist</altitudeLayer>
+		<passability>Impassable</passability>
+		<maxHealth>100</maxHealth>
+		<flammability>0.0</flammability>
+		<selectable>true</selectable>
+		<rotatable>true</rotatable>
+		<size>(2,1)</size>
+		<beauty>Neutral</beauty>
+		<workToBuild>200</workToBuild>
+		<designationCategory>Misc</designationCategory>
+		<costList>
+			<li>
+				<thingDef>Metal</thingDef>
+				<count>20</count>
+			</li>
+		</costList>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <killedLeavings>
+			<li>
+				<thingDef>ChunkSlag</thingDef>
+				<count>1</count>
+			</li>
+		</killedLeavings>
+        <StaticSunShadowHeight>0.34</StaticSunShadowHeight>
+		<CastEdgeShadows>True</CastEdgeShadows>
+		<comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>20</basePowerConsumption>
+                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+                <transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompGlower</compClass>
+				<glowRadius>1</glowRadius>
+				<glowColor>(255,200,0,0)</glowColor>
+			</li>
+			<li>
+				<compClass>A2B.BeltComponent</compClass>
+			</li>
+		</comps>
+        <tickerType>Normal</tickerType>
+        <researchPrerequisite><li>A2B</li></researchPrerequisite>
+	</ThingDef>
+
     
 </Buildings>
