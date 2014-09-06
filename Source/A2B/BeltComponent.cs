@@ -60,6 +60,8 @@ namespace A2B
             get { return _itemContainer.Empty; }
         }
 
+        public bool IsLoader { get; private set; }
+
         public override void CompDestroy(DestroyMode mode = DestroyMode.Vanish)
         {
             _itemContainer.Destroy();
@@ -116,6 +118,7 @@ namespace A2B
             IsUnloader = parent.def.defName == "A2BUnloader";
             IsTeleporter = parent.def.defName == "A2BTeleporter";
             IsReceiver = parent.def.defName == "A2BReceiver";
+            IsLoader = parent.def.defName == "A2BLoader";
         }
 
         public override void CompExposeData()
@@ -387,7 +390,7 @@ namespace A2B
                 case MovementType.Teleporter:
                     return parent.Position +
                            new IntVec3(3 * parent.rotation.FacingSquare.x, parent.rotation.FacingSquare.y, 3 * parent.rotation.FacingSquare.z);
-                        // Fixed position for now ...
+                    // Fixed position for now ...
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -433,6 +436,33 @@ namespace A2B
                 GlowerComponent.Lit = true; // in principle not required (should be already ON ...)
 
                 _itemContainer.Tick();
+
+                if (IsLoader)
+                {
+                    // If this is a loader check the things that are on the ground at our position
+                    // If the thing can be moved and the destination is empty it can be added to our container
+                    // This should fix the "pawn carry items to the loader all the time"-bug
+                    foreach (var thing in Find.ThingGrid.ThingsAt(parent.Position))
+                    {
+                        if ((thing.def.category == EntityCategory.Item) && (thing != parent))
+                        {
+                            var destination = GetDestinationForThing(thing);
+                            var destBelt = destination.GetBeltComponent();
+
+                            if (destBelt == null)
+                            {
+                                continue;
+                            }
+
+                            if (!destBelt.Empty)
+                            {
+                                continue;
+                            }
+
+                            _itemContainer.AddItem(thing, BeltSpeed / 2);
+                        }
+                    }
+                }
 
                 if (!_itemContainer.WorkToDo)
                 {
@@ -506,7 +536,6 @@ namespace A2B
 
         public void Notify_ReceivedThing(Thing newItem)
         {
-            _itemContainer.AddItem(newItem, BeltSpeed / 2);
         }
     }
 }
