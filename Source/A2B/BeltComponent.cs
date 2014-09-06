@@ -53,6 +53,8 @@ namespace A2B
             get { return ItemContainer.Empty; }
         }
 
+        public bool IsLoader { get; private set; }
+
         public override void CompDestroy(DestroyMode mode = DestroyMode.Vanish)
         {
             ItemContainer.Destroy();
@@ -98,6 +100,7 @@ namespace A2B
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            IsLoader = parent.def.defName == "A2BLoader";
         }
 
         public override void CompExposeData()
@@ -307,7 +310,34 @@ namespace A2B
 
                 ItemContainer.Tick();
 
-                if (!ItemContainer.WorkToDo)
+                if (IsLoader)
+                {
+                    // If this is a loader check the things that are on the ground at our position
+                    // If the thing can be moved and the destination is empty it can be added to our container
+                    // This should fix the "pawn carry items to the loader all the time"-bug
+                    foreach (var thing in Find.ThingGrid.ThingsAt(parent.Position))
+                    {
+                        if ((thing.def.category == EntityCategory.Item) && (thing != parent))
+                        {
+                            var destination = GetDestinationForThing(thing);
+                            var destBelt = destination.GetBeltComponent();
+
+                            if (destBelt == null)
+                            {
+                                continue;
+                            }
+
+                            if (!destBelt.Empty)
+                            {
+                                continue;
+                            }
+
+                            _itemContainer.AddItem(thing, BeltSpeed / 2);
+                        }
+                    }
+                }
+
+                if (!_itemContainer.WorkToDo)
                 {
                     return;
                 }
@@ -385,7 +415,6 @@ namespace A2B
 
         public void Notify_ReceivedThing([NotNull] Thing newItem)
         {
-            ItemContainer.AddItem(newItem, BeltSpeed / 2);
         }
     }
 }

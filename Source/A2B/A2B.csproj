@@ -46,7 +46,6 @@
     <Compile Include="BeltComponent.cs" />
     <Compile Include="BeltComponentExtensions.cs" />
     <Compile Include="BeltItemContainer.cs" />
-    <Compile Include="BeltLoader.cs" />
     <Compile Include="BeltUtilities.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="MovementType.cs" />

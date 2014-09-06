@@ -289,7 +289,7 @@
 		<defName>A2BLoader</defName>
 		<eType>BuildingComplex</eType>
 		<label>Conveyor Loader</label>
-		<thingClass>A2B.BeltLoader</thingClass>
+		<thingClass>Building_Storage</thingClass>
         <description>Loads any item you want onto a belt.</description>
 		<texturePath>Things/Building/Loader</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
