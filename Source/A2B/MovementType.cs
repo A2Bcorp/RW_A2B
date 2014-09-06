@@ -5,7 +5,6 @@
         Straight,
         Curve,
         Selector,
-		Splitter,
-		Teleporter
+		Splitter
     }
 }
