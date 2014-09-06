@@ -5,7 +5,6 @@ using A2B.Annotations;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using Random = UnityEngine.Random;
 
 #endregion
 
@@ -15,20 +14,21 @@ namespace A2B
     public class BeltComponent : ThingComp
     {
         //Changed from private to public for access from BeltItemContainer
+
+        protected BeltItemContainer ItemContainer;
+
         private Phase _beltPhase;
 
-        private BeltItemContainer _itemContainer;
-
-        private string _mythingID;
-
-        private IntVec3 _splitterDest;
+        private IntVec3 _thingOrigin;
 
         public BeltComponent()
         {
             _beltPhase = Phase.Offline;
 
-            _itemContainer = new BeltItemContainer(this);
-            ThingOrigin = null;
+            ItemContainer = new BeltItemContainer(this);
+            ThingOrigin = IntVec3.Invalid;
+
+            BeltSpeed = Constants.DefaultBeltSpeed;
         }
 
         public Phase BeltPhase
@@ -36,35 +36,28 @@ namespace A2B
             get { return _beltPhase; }
         }
 
-        private CompGlower GlowerComponent { get; set; }
+        [NotNull]
+        protected CompGlower GlowerComponent { get; set; }
 
-        private CompPowerTrader PowerComponent { get; set; }
+        [NotNull]
+        protected CompPowerTrader PowerComponent { get; set; }
 
-        private MovementType MovementType { get; set; }
+        public int BeltSpeed { get; protected set; }
 
-        public int BeltSpeed { get; private set; }
-
-        private IntVec3? ThingOrigin { set; get; }
-
-        // Used for the splitter only for now ...
-
-        public bool IsUnloader { get; private set; }
-
-        public bool IsTeleporter { get; private set; }
-
-        public bool IsReceiver { get; private set; }
-
+        protected IntVec3 ThingOrigin
+        {
+            set { _thingOrigin = value; }
+            get { return _thingOrigin; }
+        }
 
         public bool Empty
         {
-            get { return _itemContainer.Empty; }
+            get { return ItemContainer.Empty; }
         }
-
-        public bool IsLoader { get; private set; }
 
         public override void CompDestroy(DestroyMode mode = DestroyMode.Vanish)
         {
-            _itemContainer.Destroy();
+            ItemContainer.Destroy();
 
             base.CompDestroy(mode);
         }
@@ -73,112 +66,22 @@ namespace A2B
         {
             GlowerComponent = parent.GetComp<CompGlower>();
             PowerComponent = parent.GetComp<CompPowerTrader>();
-
-            switch (parent.def.defName)
-            {
-                case "A2BCurve":
-                    MovementType = MovementType.Curve;
-                    break;
-                case "A2BSelector":
-                    MovementType = MovementType.Selector;
-                    break;
-                case "A2BSplitter":
-                    MovementType = MovementType.Splitter;
-                    break;
-                case "A2BTeleporter":
-                    MovementType = MovementType.Teleporter;
-                    break;
-                default:
-                    MovementType = MovementType.Straight;
-                    break;
-            }
-
-            switch (MovementType)
-            {
-                case MovementType.Straight:
-                    BeltSpeed = Constants.DefaultBeltSpeed;
-                    break;
-                case MovementType.Curve:
-                    BeltSpeed = Constants.DefaultBeltSpeed;
-                    break;
-                case MovementType.Selector:
-                    BeltSpeed = Constants.DefaultBeltSpeed;
-                    break;
-                case MovementType.Splitter:
-                    BeltSpeed = Constants.DefaultBeltSpeed;
-                    break;
-                case MovementType.Teleporter:
-                    BeltSpeed = 3 * Constants.DefaultBeltSpeed;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            // Speed things up a little and only do this once
-            IsUnloader = parent.def.defName == "A2BUnloader";
-            IsTeleporter = parent.def.defName == "A2BTeleporter";
-            IsReceiver = parent.def.defName == "A2BReceiver";
-            IsLoader = parent.def.defName == "A2BLoader";
         }
 
         public override void CompExposeData()
         {
             Scribe_Values.LookValue(ref _beltPhase, "phase");
 
-            Scribe_Deep.LookDeep(ref _itemContainer, "container", this);
+            Scribe_Deep.LookDeep(ref ItemContainer, "container", this);
+
+            Scribe_Values.LookValue(ref _thingOrigin, "thingOrigin", IntVec3.Invalid);
         }
 
         public override void CompDraw()
         {
-            foreach (var status in _itemContainer.ThingStatus)
+            foreach (var status in ItemContainer.ThingStatus)
             {
-                var posOffset = Vector3.zero;
-                var mySize = parent.RotatedSize.ToVector3();
-
-                if (parent.def.defName == "A2BTeleporter" || parent.def.defName == "A2BReceiver")
-                {
-                    switch (parent.rotation.AsInt)
-                    {
-                        case 0:
-                            posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)), parent.DrawPos.y,
-                                (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
-                            break;
-                        case 1:
-                            posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)), parent.DrawPos.y,
-                                1.0f + (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
-                            break;
-                        case 2:
-                            if (parent.def.defName == "A2BTeleporter")
-                            {
-                                posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)) + 1.0f, parent.DrawPos.y,
-                                    1.0f + (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
-                            }
-                            if (parent.def.defName == "A2BReceiver")
-                            {
-                                posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)) + 1.0f, parent.DrawPos.y,
-                                    (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
-                            }
-                            break;
-                        case 3:
-                            if (parent.def.defName == "A2BTeleporter")
-                            {
-                                posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)) + 1.0f, parent.DrawPos.y,
-                                    (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
-                            }
-                            if (parent.def.defName == "A2BReceiver")
-                            {
-                                posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)), parent.DrawPos.y,
-                                    (parent.DrawPos.z - 0.5f * (mySize.z - 1.0f)));
-                            }
-                            break;
-                    }
-                }
-                else
-                {
-                    posOffset = parent.DrawPos;
-                }
-
-                var drawPos = posOffset + GetOffset(status) + Altitudes.AltIncVect * Altitudes.AltitudeFor(AltitudeLayer.Item);
+                var drawPos = parent.DrawPos + GetOffset(status) + Altitudes.AltIncVect * Altitudes.AltitudeFor(AltitudeLayer.Item);
 
                 status.Thing.DrawAt(drawPos);
 
@@ -186,7 +89,7 @@ namespace A2B
             }
         }
 
-        private static void DrawGUIOverlay(ThingStatus status, Vector3 drawPos)
+        protected static void DrawGUIOverlay([NotNull] ThingStatus status, Vector3 drawPos)
         {
             if (Find.CameraMap.CurrentZoom != CameraZoomRange.Closest)
             {
@@ -202,75 +105,26 @@ namespace A2B
                 new Color(1f, 1f, 1f, 0.75f));
         }
 
-        private Vector3 GetOffset(ThingStatus status)
+        protected virtual Vector3 GetOffset([NotNull] ThingStatus status)
         {
             var destination = GetDestinationForThing(status.Thing);
+
             IntVec3 direction;
-            IntVec3 mid_direction;
-            if (ThingOrigin.HasValue && parent.def.defName != "A2BReceiver")
+            if (ThingOrigin != IntVec3.Invalid)
             {
-                direction = destination - ThingOrigin.Value;
-                mid_direction = parent.Position + parent.rotation.FacingSquare - ThingOrigin.Value;
+                direction = destination - ThingOrigin;
             }
             else
             {
-                if (parent.def.defName == "A2BTeleporter")
-                {
-                    direction = new IntVec3(3 * parent.rotation.FacingSquare.x, parent.rotation.FacingSquare.y, 3 * parent.rotation.FacingSquare.z);
-                    mid_direction = parent.rotation.FacingSquare;
-                }
-                else
-                {
-                    direction = parent.rotation.FacingSquare;
-                    mid_direction = parent.rotation.FacingSquare; // Should never be used in principle ...
-                }
+                direction = parent.rotation.FacingSquare;
             }
 
             var progress = (float) status.Counter / BeltSpeed;
 
-            // In case we use the teleporter
-            if (parent.def.defName == "A2BTeleporter")
-            {
-                if (progress < 0.5)
-                {
-                    // Slew item to teleportation pad
-
-                    var mid_dir = mid_direction.ToVector3();
-                    var mid_dir_off = new Vector3(0.5f * mid_dir.normalized.x, 0.0f, 0.5f * mid_dir.normalized.z);
-                    var mid_dir_corr = mid_dir.normalized + mid_dir_off;
-
-                    var mid_scaleFactor = progress / 0.5f;
-
-                    return (mid_dir_corr * mid_scaleFactor) - mid_dir_off;
-                }
-                else
-                {
-                    // Start the teleportation
-                    var randomNumber = Random.Range(0.0f, 1.0f);
-
-                    if (randomNumber > 2 * (progress - 0.5f))
-                    {
-                        var fin_dira = mid_direction.ToVector3();
-                        fin_dira.Normalize();
-                        return fin_dira;
-                    }
-                    else
-                    {
-                        var fin_dir = direction.ToVector3();
-                        var fin_dir_norm = direction.ToVector3();
-                        fin_dir_norm.Normalize(); // Can't normalize, or it doesn't go anywhere ... !
-
-                        return (fin_dir - fin_dir_norm);
-                    }
-                }
-            }
-
-            if (Math.Abs(direction.x) == 1 && Math.Abs(direction.z) == 1 && ThingOrigin.HasValue)
+            if (Math.Abs(direction.x) == 1 && Math.Abs(direction.z) == 1 && ThingOrigin != IntVec3.Invalid)
             {
                 // Diagonal movement
-                var origin = ThingOrigin.Value;
-
-                var incoming = (parent.Position - origin).ToVector3();
+                var incoming = (parent.Position - ThingOrigin).ToVector3();
                 var outgoing = (destination - parent.Position).ToVector3();
 
                 // Now adjust the vectors.
@@ -281,21 +135,12 @@ namespace A2B
                 incoming = (-incoming) / 2;
                 outgoing = outgoing / 2;
 
-                // This is a funny function that should give me a quarter circle:
-                // -sqrt(1 - (x - 1)^2) + 1
-                var f = (progress - 1);
-                var incomingVal = -Mathf.Sqrt(1 - f * f) + 1;
+                var angle = progress * Mathf.PI / 2;
 
-                var outgoingVal = -Mathf.Sqrt(1 - progress * progress) + 1;
+                var cos = Mathf.Cos(angle);
+                var sin = Mathf.Sin(angle);
 
-                return incoming * incomingVal + outgoing * outgoingVal;
-            }
-
-            if (parent.def.defName == "A2BReceiver")
-            {
-                var my_dir = direction.ToVector3();
-                var my_scaleFactor = progress;
-                return my_dir * my_scaleFactor * 0.5f;
+                return incoming * (1 - sin) + outgoing * (1 - cos);
             }
 
             var dir = direction.ToVector3();
@@ -310,91 +155,12 @@ namespace A2B
         {
             DoBeltTick();
 
-            _itemContainer.Tick();
+            ItemContainer.Tick();
         }
 
-        public IntVec3 GetDestinationForThing(Thing thing)
+        public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
         {
-            switch (MovementType)
-            {
-                case MovementType.Straight:
-                    return parent.Position + parent.rotation.FacingSquare;
-
-                case MovementType.Curve:
-                    var beltDestA = parent.Position - parent.rotation.FacingSquare;
-                    var beltDestB = parent.Position +
-                                    new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
-
-                    return ThingOrigin == beltDestA ? beltDestB : beltDestA;
-
-                case MovementType.Selector:
-                    // Test the 'selection' idea ...
-                    var slotParent = parent as SlotGroupParent;
-                    if (slotParent == null)
-                    {
-                        throw new InvalidOperationException("parent is not a SlotGroupParent!");
-                    }
-
-                    var selectionSettings = slotParent.GetStoreSettings();
-                    if (selectionSettings.AllowedToAccept(thing))
-                    {
-                        return parent.Position + parent.rotation.FacingSquare;
-                    }
-
-                    return parent.Position +
-                           new IntVec3(parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
-
-                case MovementType.Splitter:
-                    var beltDestL = parent.Position +
-                                    new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
-                    var beltDestR = parent.Position +
-                                    new IntVec3(+parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
-
-                    // Do we have a new item ?
-                    if (_mythingID == thing.ThingID)
-                    {
-                        return _splitterDest;
-                    }
-                    else
-                    {
-                        _mythingID = thing.ThingID;
-                        if (_splitterDest == beltDestL)
-                        {
-                            // Is the other direction free ? Then switch. Else, don't switch !
-                            var dest_belt = beltDestR.GetBeltComponent();
-                            if (dest_belt.Empty)
-                            {
-                                _splitterDest = beltDestR;
-                                return beltDestR;
-                            }
-                            else
-                            {
-                                return beltDestL;
-                            }
-                        }
-                        else
-                        {
-                            var dest_belt = beltDestL.GetBeltComponent();
-                            if (dest_belt.Empty)
-                            {
-                                _splitterDest = beltDestL;
-                                return beltDestL;
-                            }
-                            else
-                            {
-                                return beltDestR;
-                            }
-                        }
-                    }
-
-                case MovementType.Teleporter:
-                    return parent.Position +
-                           new IntVec3(3 * parent.rotation.FacingSquare.x, parent.rotation.FacingSquare.y, 3 * parent.rotation.FacingSquare.z);
-                    // Fixed position for now ...
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return parent.Position + parent.rotation.FacingSquare;
         }
 
         private void DoBeltTick()
@@ -418,7 +184,7 @@ namespace A2B
                         // Check and make sure this is not a Pawn, and not the belt itself !
                         if ((target.def.category == EntityCategory.Item) && (target != parent))
                         {
-                            _itemContainer.AddItem(target, BeltSpeed / 2);
+                            ItemContainer.AddItem(target, BeltSpeed / 2);
                         }
                     }
 
@@ -435,9 +201,9 @@ namespace A2B
                 // Active 'yellow' color
                 GlowerComponent.Lit = true; // in principle not required (should be already ON ...)
 
-                _itemContainer.Tick();
+                ItemContainer.Tick();
 
-                if (IsLoader)
+                if (this.IsLoader())
                 {
                     // If this is a loader check the things that are on the ground at our position
                     // If the thing can be moved and the destination is empty it can be added to our container
@@ -459,40 +225,22 @@ namespace A2B
                                 continue;
                             }
 
-                            _itemContainer.AddItem(thing, BeltSpeed / 2);
+                            ItemContainer.AddItem(thing, BeltSpeed / 2);
                         }
                     }
                 }
 
-                if (!_itemContainer.WorkToDo)
+                if (!ItemContainer.WorkToDo)
                 {
                     return;
                 }
 
-                foreach (var thing in _itemContainer.ThingsToMove)
+                foreach (var thing in ItemContainer.ThingsToMove)
                 {
                     // Alright, I have something to move. Where to ?
                     var beltDest = GetDestinationForThing(thing);
 
-                    if (IsUnloader)
-                    {
-                        _itemContainer.DropItem(thing, beltDest);
-                    }
-                    else
-                    {
-                        var beltComponent = beltDest.GetBeltComponent();
-
-                        //  Check if there is a belt, if it is empty, and also check if it is active !
-                        if (beltComponent == null || !beltComponent._itemContainer.Empty || beltComponent._beltPhase == Phase.Offline)
-                        {
-                            continue;
-                        }
-
-                        _itemContainer.TransferItem(thing, beltComponent._itemContainer);
-
-                        // Need to check if it is a receiver or not ...
-                        beltComponent.ThingOrigin = beltComponent.IsUnloader ? beltDest : parent.Position;
-                    }
+                    MoveThingTo(thing, beltDest);
                 }
             }
             else
@@ -507,10 +255,34 @@ namespace A2B
 
                 GlowerComponent.Lit = false;
                 _beltPhase = Phase.Offline;
-                _itemContainer.DropAll(parent.Position);
+                ItemContainer.DropAll(parent.Position);
             }
         }
 
+        protected virtual void MoveThingTo([NotNull] Thing thing, IntVec3 beltDest)
+        {
+            if (this.IsUnloader())
+            {
+                ItemContainer.DropItem(thing, beltDest);
+            }
+            else
+            {
+                var beltComponent = beltDest.GetBeltComponent();
+
+                //  Check if there is a belt, if it is empty, and also check if it is active !
+                if (beltComponent == null || !beltComponent.ItemContainer.Empty || beltComponent._beltPhase == Phase.Offline)
+                {
+                    return;
+                }
+
+                ItemContainer.TransferItem(thing, beltComponent.ItemContainer);
+
+                // Need to check if it is a receiver or not ...
+                beltComponent.ThingOrigin = parent.Position;
+            }
+        }
+
+        [NotNull]
         public override string CompInspectString()
         {
             string statusText;
@@ -526,16 +298,12 @@ namespace A2B
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (_itemContainer.Empty)
+            if (ItemContainer.Empty)
             {
                 return statusText;
             }
 
-            return statusText + "\nContents: " + ((ThingContainerGiver) _itemContainer).GetContainer().ContentsString;
-        }
-
-        public void Notify_ReceivedThing(Thing newItem)
-        {
+            return statusText + "\nContents: " + ((ThingContainerGiver) ItemContainer).GetContainer().ContentsString;
         }
     }
 }

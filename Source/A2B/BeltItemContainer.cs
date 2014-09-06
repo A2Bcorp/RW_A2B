@@ -127,11 +127,12 @@ namespace A2B
         private bool ShouldIncreaseCounter([NotNull] Thing thing)
         {
             var currentCounter = _thingCounter[thing];
-            if (currentCounter < _parentComponent.BeltSpeed / 2 && !(_parentComponent.IsReceiver))
+            if (currentCounter < _parentComponent.BeltSpeed / 2 && !_parentComponent.IsReceiver())
             {
                 // Always increase the counter until half the belt speed is reached
                 return true;
             }
+
             // Never go above 100%
             if (currentCounter >= _parentComponent.BeltSpeed)
             {
@@ -145,7 +146,7 @@ namespace A2B
             // If no belt items, then move things only if this is an unloader
             if (belt == null)
             {
-                if (_parentComponent.IsUnloader)
+                if (_parentComponent.IsUnloader())
                 {
                     // If this is an unloader always increment the counter
                     // BUG: need to check that space is free
@@ -154,29 +155,34 @@ namespace A2B
 
                 return false;
             }
+
             // Teleporter only sends items to receivers with the good orientation (avoid visual problems)
-            if ((_parentComponent.IsTeleporter) && (!(belt.IsReceiver) || _parentComponent.parent.rotation.AsInt != belt.parent.rotation.AsInt))
+            if (_parentComponent.IsTeleporter() && (!belt.IsReceiver() || _parentComponent.parent.rotation.AsInt != belt.parent.rotation.AsInt))
             {
                 return false;
             }
+
             // Only a teleporter can send items to a receiver ...
-            if (!(_parentComponent.IsTeleporter) && belt.IsReceiver)
+            if (!_parentComponent.IsTeleporter() && belt.IsReceiver())
             {
                 return false;
             }
+
             // Check that the next belt component has the good orientation: for belt, splitter and unloaders
             if ((belt.parent.def.defName == "A2BBelt" || belt.parent.def.defName == "A2BSplitter" || belt.parent.def.defName == "A2BUnloader") &&
                 !(_parentComponent.parent.Position == belt.parent.Position - belt.parent.rotation.FacingSquare))
             {
                 return false;
             }
+
             // Check that the Teleporter has a good orientation with respect to the current element and is shifted properly
             // (BUG: no check done for splitters, selectors or curves !)
-            if (belt.IsTeleporter && (_parentComponent.parent.def.defName == "A2BBelt" || _parentComponent.parent.def.defName == "A2BLoader") &&
+            if (belt.IsTeleporter() && (_parentComponent.parent.def.defName == "A2BBelt" || _parentComponent.parent.def.defName == "A2BLoader") &&
                 (belt.parent.rotation.AsInt != _parentComponent.parent.rotation.AsInt))
             {
                 return false;
             }
+
             // BUG: need to check that Teleporter is 'in-line' with belt element, and not shifted sideways.
             // BUG: need to check correct orientation for curves & selectors
 
