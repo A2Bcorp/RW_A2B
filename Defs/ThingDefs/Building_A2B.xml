@@ -113,7 +113,7 @@
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
 			<li>
-				<compClass>A2B.BeltComponent</compClass>
+				<compClass>A2B.BeltCurveComponent</compClass>
 			</li>
 		</comps>
         <tickerType>Normal</tickerType>
@@ -224,7 +224,7 @@
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
 			<li>
-				<compClass>A2B.BeltComponent</compClass>
+				<compClass>A2B.BeltSelectorComponent</compClass>
 			</li>
 		</comps>
         <tickerType>Normal</tickerType>
@@ -278,7 +278,7 @@
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
 			<li>
-				<compClass>A2B.BeltComponent</compClass>
+				<compClass>A2B.BeltSplitterComponent</compClass>
 			</li>
 		</comps>
         <tickerType>Normal</tickerType>
@@ -412,7 +412,7 @@
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
 			<li>
-				<compClass>A2B.TeleporterComponent</compClass>
+				<compClass>A2B.BeltTeleporterComponent</compClass>
 			</li>
 		</comps>
         <tickerType>Normal</tickerType>
@@ -466,7 +466,7 @@
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
 			<li>
-				<compClass>A2B.TeleporterComponent</compClass>
+				<compClass>A2B.BeltTeleporterComponent</compClass>
 			</li>
 		</comps>
         <tickerType>Normal</tickerType>

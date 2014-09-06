@@ -8,7 +8,7 @@ using Verse;
 
 namespace A2B
 {
-    public class TeleporterComponent : BeltComponent
+    public class BeltTeleporterComponent : BeltComponent
     {
         public override void CompSpawnSetup()
         {

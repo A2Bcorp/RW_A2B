@@ -155,6 +155,7 @@ namespace A2B
 
                 return false;
             }
+
             // Teleporter only sends items to receivers with the good orientation (avoid visual problems)
             if (_parentComponent.IsTeleporter() && (!belt.IsReceiver() || _parentComponent.parent.rotation.AsInt != belt.parent.rotation.AsInt))
             {

@@ -45,15 +45,17 @@
   <ItemGroup>
     <Compile Include="BeltComponent.cs" />
     <Compile Include="BeltComponentExtensions.cs" />
+    <Compile Include="BeltCurveComponent.cs" />
     <Compile Include="BeltItemContainer.cs" />
+    <Compile Include="BeltSelectorComponent.cs" />
+    <Compile Include="BeltSplitterComponent.cs" />
     <Compile Include="BeltUtilities.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="MovementType.cs" />
     <Compile Include="Phase.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scribe_Fixed.cs" />
-    <Compile Include="TeleporterComponent.cs" />
+    <Compile Include="BeltTeleporterComponent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -19,16 +19,14 @@ namespace A2B
 
         private Phase _beltPhase;
 
-        private string _mythingID;
-
-        private IntVec3 _splitterDest;
-
         public BeltComponent()
         {
             _beltPhase = Phase.Offline;
 
             ItemContainer = new BeltItemContainer(this);
             ThingOrigin = null;
+
+            BeltSpeed = Constants.DefaultBeltSpeed;
         }
 
         public Phase BeltPhase
@@ -42,8 +40,6 @@ namespace A2B
         [NotNull]
         protected CompPowerTrader PowerComponent { get; set; }
 
-        protected MovementType MovementType { get; set; }
-
         public int BeltSpeed { get; protected set; }
 
         protected IntVec3? ThingOrigin { set; get; }
@@ -52,8 +48,6 @@ namespace A2B
         {
             get { return ItemContainer.Empty; }
         }
-
-        public bool IsLoader { get; private set; }
 
         public override void CompDestroy(DestroyMode mode = DestroyMode.Vanish)
         {
@@ -66,41 +60,6 @@ namespace A2B
         {
             GlowerComponent = parent.GetComp<CompGlower>();
             PowerComponent = parent.GetComp<CompPowerTrader>();
-
-            switch (parent.def.defName)
-            {
-                case "A2BCurve":
-                    MovementType = MovementType.Curve;
-                    break;
-                case "A2BSelector":
-                    MovementType = MovementType.Selector;
-                    break;
-                case "A2BSplitter":
-                    MovementType = MovementType.Splitter;
-                    break;
-                default:
-                    MovementType = MovementType.Straight;
-                    break;
-            }
-
-            switch (MovementType)
-            {
-                case MovementType.Straight:
-                    BeltSpeed = Constants.DefaultBeltSpeed;
-                    break;
-                case MovementType.Curve:
-                    BeltSpeed = Constants.DefaultBeltSpeed;
-                    break;
-                case MovementType.Selector:
-                    BeltSpeed = Constants.DefaultBeltSpeed;
-                    break;
-                case MovementType.Splitter:
-                    BeltSpeed = Constants.DefaultBeltSpeed;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            IsLoader = parent.def.defName == "A2BLoader";
         }
 
         public override void CompExposeData()
@@ -197,77 +156,7 @@ namespace A2B
 
         public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
         {
-            switch (MovementType)
-            {
-                case MovementType.Straight:
-                    return parent.Position + parent.rotation.FacingSquare;
-
-                case MovementType.Curve:
-                    var beltDestA = parent.Position - parent.rotation.FacingSquare;
-                    var beltDestB = parent.Position +
-                                    new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
-
-                    return ThingOrigin == beltDestA ? beltDestB : beltDestA;
-
-                case MovementType.Selector:
-                    // Test the 'selection' idea ...
-                    var slotParent = parent as SlotGroupParent;
-                    if (slotParent == null)
-                    {
-                        throw new InvalidOperationException("parent is not a SlotGroupParent!");
-                    }
-
-                    var selectionSettings = slotParent.GetStoreSettings();
-                    if (selectionSettings.AllowedToAccept(thing))
-                    {
-                        return parent.Position + parent.rotation.FacingSquare;
-                    }
-
-                    return parent.Position +
-                           new IntVec3(parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
-
-                case MovementType.Splitter:
-                    var beltDestL = parent.Position +
-                                    new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
-                    var beltDestR = parent.Position +
-                                    new IntVec3(+parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
-
-                    // Do we have a new item ?
-                    if (_mythingID == thing.ThingID)
-                    {
-                        return _splitterDest;
-                    }
-                    else
-                    {
-                        _mythingID = thing.ThingID;
-                        if (_splitterDest == beltDestL)
-                        {
-                            // Is the other direction free ? Then switch. Else, don't switch !
-                            var dest_belt = beltDestR.GetBeltComponent();
-                            if (dest_belt.Empty)
-                            {
-                                _splitterDest = beltDestR;
-                                return beltDestR;
-                            }
-
-                            return beltDestL;
-                        }
-                        else
-                        {
-                            var dest_belt = beltDestL.GetBeltComponent();
-                            if (dest_belt.Empty)
-                            {
-                                _splitterDest = beltDestL;
-                                return beltDestL;
-                            }
-
-                            return beltDestR;
-                        }
-                    }
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return parent.Position + parent.rotation.FacingSquare;
         }
 
         private void DoBeltTick()
@@ -310,7 +199,7 @@ namespace A2B
 
                 ItemContainer.Tick();
 
-                if (IsLoader)
+                if (this.IsLoader())
                 {
                     // If this is a loader check the things that are on the ground at our position
                     // If the thing can be moved and the destination is empty it can be added to our container
@@ -332,12 +221,12 @@ namespace A2B
                                 continue;
                             }
 
-                            _itemContainer.AddItem(thing, BeltSpeed / 2);
+                            ItemContainer.AddItem(thing, BeltSpeed / 2);
                         }
                     }
                 }
 
-                if (!_itemContainer.WorkToDo)
+                if (!ItemContainer.WorkToDo)
                 {
                     return;
                 }
@@ -411,10 +300,6 @@ namespace A2B
             }
 
             return statusText + "\nContents: " + ((ThingContainerGiver) ItemContainer).GetContainer().ContentsString;
-        }
-
-        public void Notify_ReceivedThing([NotNull] Thing newItem)
-        {
         }
     }
 }
