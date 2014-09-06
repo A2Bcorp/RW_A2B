@@ -19,12 +19,14 @@ namespace A2B
 
         private Phase _beltPhase;
 
+        private IntVec3 _thingOrigin;
+
         public BeltComponent()
         {
             _beltPhase = Phase.Offline;
 
             ItemContainer = new BeltItemContainer(this);
-            ThingOrigin = null;
+            ThingOrigin = IntVec3.Invalid;
 
             BeltSpeed = Constants.DefaultBeltSpeed;
         }
@@ -42,7 +44,11 @@ namespace A2B
 
         public int BeltSpeed { get; protected set; }
 
-        protected IntVec3? ThingOrigin { set; get; }
+        protected IntVec3 ThingOrigin
+        {
+            set { _thingOrigin = value; }
+            get { return _thingOrigin; }
+        }
 
         public bool Empty
         {
@@ -67,6 +73,8 @@ namespace A2B
             Scribe_Values.LookValue(ref _beltPhase, "phase");
 
             Scribe_Deep.LookDeep(ref ItemContainer, "container", this);
+
+            Scribe_Values.LookValue(ref _thingOrigin, "thingOrigin", IntVec3.Invalid);
         }
 
         public override void CompDraw()
@@ -102,9 +110,9 @@ namespace A2B
             var destination = GetDestinationForThing(status.Thing);
 
             IntVec3 direction;
-            if (ThingOrigin.HasValue)
+            if (ThingOrigin != IntVec3.Invalid)
             {
-                direction = destination - ThingOrigin.Value;
+                direction = destination - ThingOrigin;
             }
             else
             {
@@ -113,12 +121,10 @@ namespace A2B
 
             var progress = (float) status.Counter / BeltSpeed;
 
-            if (Math.Abs(direction.x) == 1 && Math.Abs(direction.z) == 1 && ThingOrigin.HasValue)
+            if (Math.Abs(direction.x) == 1 && Math.Abs(direction.z) == 1 && ThingOrigin != IntVec3.Invalid)
             {
                 // Diagonal movement
-                var origin = ThingOrigin.Value;
-
-                var incoming = (parent.Position - origin).ToVector3();
+                var incoming = (parent.Position - ThingOrigin).ToVector3();
                 var outgoing = (destination - parent.Position).ToVector3();
 
                 // Now adjust the vectors.
@@ -129,14 +135,12 @@ namespace A2B
                 incoming = (-incoming) / 2;
                 outgoing = outgoing / 2;
 
-                // This is a funny function that should give me a quarter circle:
-                // -sqrt(1 - (x - 1)^2) + 1
-                var f = (progress - 1);
-                var incomingVal = -Mathf.Sqrt(1 - f * f) + 1;
+                var angle = progress * Mathf.PI / 2;
 
-                var outgoingVal = -Mathf.Sqrt(1 - progress * progress) + 1;
+                var cos = Mathf.Cos(angle);
+                var sin = Mathf.Sin(angle);
 
-                return incoming * incomingVal + outgoing * outgoingVal;
+                return incoming * (1 - sin) + outgoing * (1 - cos);
             }
 
             var dir = direction.ToVector3();

@@ -1,6 +1,5 @@
 ﻿#region Usings
 
-using A2B.Annotations;
 using UnityEngine;
 using Verse;
 
@@ -88,10 +87,10 @@ namespace A2B
 
             IntVec3 direction;
             IntVec3 midDirection;
-            if (ThingOrigin.HasValue && !this.IsReceiver())
+            if (ThingOrigin != IntVec3.Invalid && !this.IsReceiver())
             {
-                direction = destination - ThingOrigin.Value;
-                midDirection = parent.Position + parent.rotation.FacingSquare - ThingOrigin.Value;
+                direction = destination - ThingOrigin;
+                midDirection = parent.Position + parent.rotation.FacingSquare - ThingOrigin;
             }
             else
             {
