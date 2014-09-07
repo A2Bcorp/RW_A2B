@@ -372,7 +372,7 @@
 		<eType>BuildingComplex</eType>
 		<category>Building</category>
         <thingClass>Building</thingClass>
-        <texturePath>Things/Building/Teleporter_alpha</texturePath>
+        <texturePath>Things/Building/Teleporter</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
 		<maxHealth>100</maxHealth>
@@ -408,8 +408,8 @@
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
-				<glowRadius>1</glowRadius>
-				<glowColor>(255,200,0,0)</glowColor>
+				<glowRadius>3</glowRadius>
+				<glowColor>(255,58,0,0)</glowColor>
 			</li>
 			<li>
 				<compClass>A2B.BeltTeleporterComponent</compClass>
@@ -426,7 +426,7 @@
 		<eType>BuildingComplex</eType>
 		<category>Building</category>
         <thingClass>Building</thingClass>
-        <texturePath>Things/Building/Receiver_alpha</texturePath>
+        <texturePath>Things/Building/Receiver</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
 		<maxHealth>100</maxHealth>
@@ -462,8 +462,8 @@
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
-				<glowRadius>1</glowRadius>
-				<glowColor>(255,200,0,0)</glowColor>
+				<glowRadius>2</glowRadius>
+				<glowColor>(0,230,0,0)</glowColor>
 			</li>
 			<li>
 				<compClass>A2B.BeltTeleporterComponent</compClass>
