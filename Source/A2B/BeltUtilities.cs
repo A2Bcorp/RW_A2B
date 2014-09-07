@@ -2,6 +2,7 @@
 
 using System.Linq;
 using A2B.Annotations;
+using RimWorld;
 using Verse;
 
 #endregion
@@ -16,6 +17,13 @@ namespace A2B
             var building = Find.BuildingGrid.BuildingAt(position);
 
             return building == null ? null : building.GetComp<BeltComponent>();
+        }
+
+        public static bool CanPlaceThing(this IntVec3 position, [NotNull] Thing thing)
+        {
+            var quality = GenPlace.PlaceSpotQualityAt(position, thing, position);
+
+            return quality > PlaceSpotQuality.Okay;
         }
     }
 }

@@ -149,8 +149,7 @@ namespace A2B
                 if (_parentComponent.IsUnloader())
                 {
                     // If this is an unloader always increment the counter
-                    // BUG: need to check that space is free
-                    return true;
+                    return destination.CanPlaceThing(thing);
                 }
 
                 return false;
@@ -223,10 +222,11 @@ namespace A2B
         public void DropItem([NotNull] Thing item, IntVec3 position)
         {
             var backupSound = item.def.soundDrop;
-            item.def.soundDrop = null;
 
             try
             {
+                item.def.soundDrop = null;
+
                 Thing droppedItem;
                 if (!_container.TryDrop(item, position, ThingPlaceMode.Direct, out droppedItem))
                 {
