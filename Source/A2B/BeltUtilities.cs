@@ -1,6 +1,5 @@
 ﻿#region Usings
 
-using System.Linq;
 using A2B.Annotations;
 using RimWorld;
 using Verse;
@@ -23,7 +22,18 @@ namespace A2B
         {
             var quality = GenPlace.PlaceSpotQualityAt(position, thing, position);
 
-            return quality > PlaceSpotQuality.Okay;
+            if (quality >= PlaceSpotQuality.Okay)
+            {
+                return true;
+            }
+
+            var slotGroup = Find.ThingGrid.ThingAt(position, EntityCategory.Building) as SlotGroupParent;
+            if (slotGroup != null)
+            {
+                return slotGroup.GetStoreSettings().AllowedToAccept(thing);
+            }
+
+            return false;
         }
     }
 }
