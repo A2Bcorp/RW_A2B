@@ -381,12 +381,12 @@
 		<rotatable>true</rotatable>
 		<size>(2,2)</size>
 		<beauty>Neutral</beauty>
-		<workToBuild>200</workToBuild>
+		<workToBuild>700</workToBuild>
 		<designationCategory>Misc</designationCategory>
 		<costList>
 			<li>
 				<thingDef>Metal</thingDef>
-				<count>20</count>
+				<count>50</count>
 			</li>
 		</costList>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
@@ -416,7 +416,7 @@
 			</li>
 		</comps>
         <tickerType>Normal</tickerType>
-        <researchPrerequisite><li>A2B</li></researchPrerequisite>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
 	</ThingDef>
     
         <ThingDef ParentName="BuildingBase">
@@ -435,12 +435,12 @@
 		<rotatable>true</rotatable>
 		<size>(2,1)</size>
 		<beauty>Neutral</beauty>
-		<workToBuild>200</workToBuild>
+		<workToBuild>600</workToBuild>
 		<designationCategory>Misc</designationCategory>
 		<costList>
 			<li>
 				<thingDef>Metal</thingDef>
-				<count>20</count>
+				<count>40</count>
 			</li>
 		</costList>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
@@ -470,7 +470,7 @@
 			</li>
 		</comps>
         <tickerType>Normal</tickerType>
-        <researchPrerequisite><li>A2B</li></researchPrerequisite>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
 	</ThingDef>
 
     
