@@ -11,8 +11,8 @@
     <ResearchProjectDef>
 		<defName>A2B2</defName>
 		<label>A2B Conveyor Belts [+]</label>
-		<description>Unlocks the 'Selector' to automatically sort and redirect materials.</description>
-		<totalCost>10000</totalCost>
+		<description>Unlocks the 'Selector' and the 'Teleporter'+'Receiver' pair.</description>
+		<totalCost>30000</totalCost>
 		<prerequisites><li>A2B</li></prerequisites>
 	</ResearchProjectDef>
     
