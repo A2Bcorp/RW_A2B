@@ -245,6 +245,12 @@ namespace A2B
                 {
                     droppedItem.SetForbidden(false);
                 }
+
+                if (droppedItem.def.eType == EntityType.Chunk)
+                {
+                    // If this is a chunk make it haulable
+                    Find.DesignationManager.AddDesignation(new Designation(droppedItem, DesignationDefOf.Haul));
+                }
             }
             finally
             {
