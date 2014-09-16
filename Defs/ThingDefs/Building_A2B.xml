@@ -20,19 +20,19 @@
 		<texturePath>Things/Building/Belt</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
-		<maxHealth>80</maxHealth>
+		<maxHealth>150</maxHealth>
         <placingDraggableDimensions>1</placingDraggableDimensions>
 		<flammability>1.0</flammability>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<size>(1,1)</size>
 		<beauty>Neutral</beauty>
-		<workToBuild>100</workToBuild>
+		<workToBuild>400</workToBuild>
 		<designationCategory>Misc</designationCategory>
 		<costList>
 			<li>
 				<thingDef>Metal</thingDef>
-				<count>10</count>
+				<count>15</count>
 			</li>
 		</costList>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
@@ -67,7 +67,7 @@
     
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BCurve</defName>
-		<label>Conveyor Curve</label>
+		<label>Belt Curve</label>
 		<description>The basic unit of a conveyor belt, only curved.</description>
 		<eType>BuildingComplex</eType>
 		<category>Building</category>
@@ -75,19 +75,19 @@
 		<texturePath>Things/Building/Curve</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
-		<maxHealth>80</maxHealth>
+		<maxHealth>150</maxHealth>
         <placingDraggableDimensions>1</placingDraggableDimensions>
 		<flammability>1.0</flammability>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<size>(1,1)</size>
 		<beauty>Neutral</beauty>
-		<workToBuild>100</workToBuild>
+		<workToBuild>400</workToBuild>
 		<designationCategory>Misc</designationCategory>
 		<costList>
 			<li>
 				<thingDef>Metal</thingDef>
-				<count>10</count>
+				<count>15</count>
 			</li>
 		</costList>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
@@ -121,174 +121,9 @@
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
-		<defName>A2BUnloader</defName>
-		<label>Conveyor Unloader</label>
-		<description>Unload the content of a conveyor belt into a pile.</description>
-		<eType>BuildingComplex</eType>
-		<category>Building</category>
-        <thingClass>Building</thingClass>
-        <texturePath>Things/Building/Unloader</texturePath>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
-		<maxHealth>80</maxHealth>
-		<flammability>0.0</flammability>
-		<selectable>true</selectable>
-		<rotatable>true</rotatable>
-		<size>(1,1)</size>
-		<beauty>Neutral</beauty>
-		<workToBuild>100</workToBuild>
-		<designationCategory>Misc</designationCategory>
-		<costList>
-			<li>
-				<thingDef>Metal</thingDef>
-				<count>10</count>
-			</li>
-		</costList>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-        <killedLeavings>
-			<li>
-				<thingDef>ChunkSlag</thingDef>
-				<count>1</count>
-			</li>
-		</killedLeavings>
-        <StaticSunShadowHeight>0.34</StaticSunShadowHeight>
-		<CastEdgeShadows>True</CastEdgeShadows>
-		<comps>
-			<li>
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>10</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
-			</li>
-			<li>
-				<compClass>CompGlower</compClass>
-				<glowRadius>1</glowRadius>
-				<glowColor>(255,200,0,0)</glowColor>
-			</li>
-			<li>
-				<compClass>A2B.BeltComponent</compClass>
-			</li>
-		</comps>
-        <tickerType>Normal</tickerType>
-        <researchPrerequisite><li>A2B</li></researchPrerequisite>
-	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
-		<defName>A2BSelector</defName>
-		<label>Conveyor Selector</label>
-		<description>Sort and redirect items.</description>
-		<eType>BuildingComplex</eType>
-		<category>Building</category>
-        <thingClass>Building_Storage</thingClass>
-        <texturePath>Things/Building/Selector</texturePath>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
-		<maxHealth>350</maxHealth>
-		<flammability>0.0</flammability>
-		<selectable>true</selectable>
-		<rotatable>true</rotatable>
-		<size>(1,1)</size>
-		<beauty>Neutral</beauty>
-		<workToBuild>500</workToBuild>
-		<designationCategory>Misc</designationCategory>
-		<costList>
-			<li>
-				<thingDef>Metal</thingDef>
-				<count>30</count>
-			</li>
-		</costList>
-        <inspectorTabs>
-			<li>ITab_Storage</li>
-		</inspectorTabs>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-        <killedLeavings>
-			<li>
-				<thingDef>ChunkSlag</thingDef>
-				<count>1</count>
-			</li>
-		</killedLeavings>
-        <StaticSunShadowHeight>0.34</StaticSunShadowHeight>
-		<CastEdgeShadows>True</CastEdgeShadows>
-		<comps>
-			<li>
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>50</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
-			</li>
-			<li>
-				<compClass>CompGlower</compClass>
-				<glowRadius>1</glowRadius>
-				<glowColor>(255,200,0,0)</glowColor>
-			</li>
-			<li>
-				<compClass>A2B.BeltSelectorComponent</compClass>
-			</li>
-		</comps>
-        <tickerType>Normal</tickerType>
-        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
-	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
-		<defName>A2BSplitter</defName>
-		<label>Conveyor Splitter</label>
-		<description>Sends items left and right in alternance.</description>
-		<eType>BuildingComplex</eType>
-		<category>Building</category>
-        <thingClass>Building</thingClass>
-        <texturePath>Things/Building/Splitter</texturePath>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
-		<maxHealth>100</maxHealth>
-		<flammability>0.0</flammability>
-		<selectable>true</selectable>
-		<rotatable>true</rotatable>
-		<size>(1,1)</size>
-		<beauty>Neutral</beauty>
-		<workToBuild>200</workToBuild>
-		<designationCategory>Misc</designationCategory>
-		<costList>
-			<li>
-				<thingDef>Metal</thingDef>
-				<count>20</count>
-			</li>
-		</costList>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-        <killedLeavings>
-			<li>
-				<thingDef>ChunkSlag</thingDef>
-				<count>1</count>
-			</li>
-		</killedLeavings>
-        <StaticSunShadowHeight>0.34</StaticSunShadowHeight>
-		<CastEdgeShadows>True</CastEdgeShadows>
-		<comps>
-			<li>
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>20</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
-			</li>
-			<li>
-				<compClass>CompGlower</compClass>
-				<glowRadius>1</glowRadius>
-				<glowColor>(255,200,0,0)</glowColor>
-			</li>
-			<li>
-				<compClass>A2B.BeltSplitterComponent</compClass>
-			</li>
-		</comps>
-        <tickerType>Normal</tickerType>
-        <researchPrerequisite><li>A2B</li></researchPrerequisite>
-	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
 		<defName>A2BLoader</defName>
 		<eType>BuildingComplex</eType>
-		<label>Conveyor Loader</label>
+		<label>Belt Loader</label>
 		<thingClass>Building_Storage</thingClass>
         <description>Loads any item you want onto a belt.</description>
 		<texturePath>Things/Building/Loader</texturePath>
@@ -334,9 +169,9 @@
 		</comps>
 		<castEdgeShadows>true</castEdgeShadows>
 		<fillPercent>0.2</fillPercent>
-		<maxHealth>100</maxHealth>
+		<maxHealth>150</maxHealth>
 		<flammability>1.0</flammability>
-		<workToBuild>100</workToBuild>
+		<workToBuild>400</workToBuild>
 		<costList>
 			<li>
 				<thingDef>Metal</thingDef>
@@ -364,24 +199,189 @@
 		<designationCategory>Misc</designationCategory>
 		<researchPrerequisite>A2B</researchPrerequisite>
 	</ThingDef>
+    
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BUnloader</defName>
+		<label>Belt Unloader</label>
+		<description>Unload the content of a conveyor belt into a pile or onto a hopper.</description>
+		<eType>BuildingComplex</eType>
+		<category>Building</category>
+        <thingClass>Building</thingClass>
+        <texturePath>Things/Building/Unloader</texturePath>
+		<altitudeLayer>Waist</altitudeLayer>
+		<passability>Impassable</passability>
+		<maxHealth>150</maxHealth>
+		<flammability>1.0</flammability>
+		<selectable>true</selectable>
+		<rotatable>true</rotatable>
+		<size>(1,1)</size>
+		<beauty>Neutral</beauty>
+		<workToBuild>400</workToBuild>
+		<designationCategory>Misc</designationCategory>
+		<costList>
+			<li>
+				<thingDef>Metal</thingDef>
+				<count>15</count>
+			</li>
+		</costList>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <killedLeavings>
+			<li>
+				<thingDef>ChunkSlag</thingDef>
+				<count>1</count>
+			</li>
+		</killedLeavings>
+        <StaticSunShadowHeight>0.34</StaticSunShadowHeight>
+		<CastEdgeShadows>True</CastEdgeShadows>
+		<comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>10</basePowerConsumption>
+                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+                <transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompGlower</compClass>
+				<glowRadius>1</glowRadius>
+				<glowColor>(255,200,0,0)</glowColor>
+			</li>
+			<li>
+				<compClass>A2B.BeltComponent</compClass>
+			</li>
+		</comps>
+        <tickerType>Normal</tickerType>
+        <researchPrerequisite><li>A2B</li></researchPrerequisite>
+	</ThingDef>
+        
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BSplitter</defName>
+		<label>Belt Splitter</label>
+		<description>Sends items left and right in alternance.</description>
+		<eType>BuildingComplex</eType>
+		<category>Building</category>
+        <thingClass>Building</thingClass>
+        <texturePath>Things/Building/Splitter</texturePath>
+		<altitudeLayer>Waist</altitudeLayer>
+		<passability>Impassable</passability>
+		<maxHealth>150</maxHealth>
+		<flammability>1.0</flammability>
+		<selectable>true</selectable>
+		<rotatable>true</rotatable>
+		<size>(1,1)</size>
+		<beauty>Neutral</beauty>
+		<workToBuild>400</workToBuild>
+		<designationCategory>Misc</designationCategory>
+		<costList>
+			<li>
+				<thingDef>Metal</thingDef>
+				<count>20</count>
+			</li>
+		</costList>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <killedLeavings>
+			<li>
+				<thingDef>ChunkSlag</thingDef>
+				<count>1</count>
+			</li>
+		</killedLeavings>
+        <StaticSunShadowHeight>0.34</StaticSunShadowHeight>
+		<CastEdgeShadows>True</CastEdgeShadows>
+		<comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>20</basePowerConsumption>
+                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+                <transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompGlower</compClass>
+				<glowRadius>1</glowRadius>
+				<glowColor>(255,200,0,0)</glowColor>
+			</li>
+			<li>
+				<compClass>A2B.BeltSplitterComponent</compClass>
+			</li>
+		</comps>
+        <tickerType>Normal</tickerType>
+        <researchPrerequisite><li>A2B</li></researchPrerequisite>
+	</ThingDef>
+    
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BSelector</defName>
+		<label>Belt Selector</label>
+		<description>Sort and redirect items.</description>
+		<eType>BuildingComplex</eType>
+		<category>Building</category>
+        <thingClass>Building_Storage</thingClass>
+        <texturePath>Things/Building/Selector</texturePath>
+		<altitudeLayer>Waist</altitudeLayer>
+		<passability>Impassable</passability>
+		<maxHealth>200</maxHealth>
+		<flammability>1.0</flammability>
+		<selectable>true</selectable>
+		<rotatable>true</rotatable>
+		<size>(1,1)</size>
+		<beauty>Neutral</beauty>
+		<workToBuild>550</workToBuild>
+		<designationCategory>Misc</designationCategory>
+		<costList>
+			<li>
+				<thingDef>Metal</thingDef>
+				<count>30</count>
+			</li>
+		</costList>
+        <inspectorTabs>
+			<li>ITab_Storage</li>
+		</inspectorTabs>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <killedLeavings>
+			<li>
+				<thingDef>ChunkSlag</thingDef>
+				<count>1</count>
+			</li>
+		</killedLeavings>
+        <StaticSunShadowHeight>0.34</StaticSunShadowHeight>
+		<CastEdgeShadows>True</CastEdgeShadows>
+		<comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>50</basePowerConsumption>
+                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+                <transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompGlower</compClass>
+				<glowRadius>1</glowRadius>
+				<glowColor>(255,200,0,0)</glowColor>
+			</li>
+			<li>
+				<compClass>A2B.BeltSelectorComponent</compClass>
+			</li>
+		</comps>
+        <tickerType>Normal</tickerType>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
+	</ThingDef>
 
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BTeleporter</defName>
 		<label>Teleporter</label>
-		<description>Teleports item 1 click further. Requires [!] a receiver to function !</description>
+		<description>Teleports item 1 click further. Requires [!] a Receiver to function !</description>
 		<eType>BuildingComplex</eType>
 		<category>Building</category>
         <thingClass>Building</thingClass>
         <texturePath>Things/Building/Teleporter</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
-		<maxHealth>100</maxHealth>
-		<flammability>0.0</flammability>
+		<maxHealth>300</maxHealth>
+		<flammability>1.0</flammability>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<size>(2,2)</size>
 		<beauty>Neutral</beauty>
-		<workToBuild>700</workToBuild>
+		<workToBuild>1000</workToBuild>
 		<designationCategory>Misc</designationCategory>
 		<costList>
 			<li>
@@ -405,6 +405,7 @@
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>
+                <startElectricalFires>true</startElectricalFires> 
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
@@ -419,23 +420,23 @@
         <researchPrerequisite><li>A2B2</li></researchPrerequisite>
 	</ThingDef>
     
-        <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="BuildingBase">
 		<defName>A2BReceiver</defName>
 		<label>Receiver</label>
-		<description>Receives items from the teleporter.</description>
+		<description>Receives items from the teleporter. Needs to be build with identical orientation !</description>
 		<eType>BuildingComplex</eType>
 		<category>Building</category>
         <thingClass>Building</thingClass>
         <texturePath>Things/Building/Receiver</texturePath>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
-		<maxHealth>100</maxHealth>
-		<flammability>0.0</flammability>
+		<maxHealth>300</maxHealth>
+		<flammability>1.0</flammability>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<size>(2,1)</size>
 		<beauty>Neutral</beauty>
-		<workToBuild>600</workToBuild>
+		<workToBuild>800</workToBuild>
 		<designationCategory>Misc</designationCategory>
 		<costList>
 			<li>
@@ -459,6 +460,7 @@
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>
+                <startElectricalFires>true</startElectricalFires>
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
