@@ -4,7 +4,7 @@
 		<defName>A2B</defName>
 		<label>A2B Conveyor Belts</label>
 		<description>Allows the construction of the basic elements of the A2B conveyor belts.</description>
-		<totalCost>30000</totalCost>
+		<totalCost>300</totalCost>
 		<prerequisites></prerequisites>
 	</ResearchProjectDef>
     
@@ -12,7 +12,7 @@
 		<defName>A2B2</defName>
 		<label>A2B Conveyor Belts [+]</label>
 		<description>Unlocks the 'Selector' and the 'Teleporter'+'Receiver' pair.</description>
-		<totalCost>30000</totalCost>
+		<totalCost>300</totalCost>
 		<prerequisites><li>A2B</li></prerequisites>
 	</ResearchProjectDef>
     

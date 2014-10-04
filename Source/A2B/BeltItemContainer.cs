@@ -156,7 +156,7 @@ namespace A2B
             }
 
             // Teleporter only sends items to receivers with the good orientation (avoid visual problems)
-            if (_parentComponent.IsTeleporter() && (!belt.IsReceiver() || _parentComponent.parent.rotation.AsInt != belt.parent.rotation.AsInt))
+            if (_parentComponent.IsTeleporter() && (!belt.IsReceiver() || _parentComponent.parent.Rotation.AsInt != belt.parent.Rotation.AsInt))
             {
                 return false;
             }
@@ -169,7 +169,7 @@ namespace A2B
 
             // Check that the next belt component has the good orientation: for belt, splitter and unloaders
             if ((belt.parent.def.defName == "A2BBelt" || belt.parent.def.defName == "A2BSplitter" || belt.parent.def.defName == "A2BUnloader") &&
-                !(_parentComponent.parent.Position == belt.parent.Position - belt.parent.rotation.FacingSquare))
+                !(_parentComponent.parent.Position == belt.parent.Position - belt.parent.Rotation.FacingSquare))
             {
                 return false;
             }
@@ -177,7 +177,7 @@ namespace A2B
             // Check that the Teleporter has a good orientation with respect to the current element and is shifted properly
             // (BUG: no check done for splitters, selectors or curves !)
             if (belt.IsTeleporter() && (_parentComponent.parent.def.defName == "A2BBelt" || _parentComponent.parent.def.defName == "A2BLoader") &&
-                (belt.parent.rotation.AsInt != _parentComponent.parent.rotation.AsInt))
+                (belt.parent.Rotation.AsInt != _parentComponent.parent.Rotation.AsInt))
             {
                 return false;
             }

@@ -6,9 +6,9 @@ namespace A2B
     {
         public override IntVec3 GetDestinationForThing(Thing thing)
         {
-            var beltDestA = parent.Position - parent.rotation.FacingSquare;
+            var beltDestA = parent.Position - parent.Rotation.FacingSquare;
             var beltDestB = parent.Position +
-                            new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
+                            new IntVec3(-parent.Rotation.FacingSquare.z, parent.Rotation.FacingSquare.y, parent.Rotation.FacingSquare.x);
 
             return ThingOrigin == beltDestA ? beltDestB : beltDestA;
         }

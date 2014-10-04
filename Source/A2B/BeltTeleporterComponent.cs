@@ -9,9 +9,9 @@ namespace A2B
 {
     public class BeltTeleporterComponent : BeltComponent
     {
-        public override void CompSpawnSetup()
+        public override void PostSpawnSetup()
         {
-            base.CompSpawnSetup();
+            base.PostSpawnSetup();
 
             if (!this.IsReceiver())
             {
@@ -27,17 +27,17 @@ namespace A2B
             }
 
             return parent.Position +
-                   new IntVec3(3 * parent.rotation.FacingSquare.x, parent.rotation.FacingSquare.y, 3 * parent.rotation.FacingSquare.z);
+                   new IntVec3(3 * parent.Rotation.FacingSquare.x, parent.Rotation.FacingSquare.y, 3 * parent.Rotation.FacingSquare.z);
         }
 
-        public override void CompDraw()
+        public override void PostDraw()
         {
             foreach (var status in ItemContainer.ThingStatus)
             {
                 var posOffset = parent.DrawPos;
                 var mySize = parent.RotatedSize.ToVector3();
 
-                switch (parent.rotation.AsInt)
+                switch (parent.Rotation.AsInt)
                 {
                     case 0:
                         posOffset = new Vector3((parent.DrawPos.x - 0.5f * (mySize.x - 1.0f)), parent.DrawPos.y,
@@ -90,19 +90,19 @@ namespace A2B
             if (ThingOrigin != IntVec3.Invalid && !this.IsReceiver())
             {
                 direction = destination - ThingOrigin;
-                midDirection = parent.Position + parent.rotation.FacingSquare - ThingOrigin;
+                midDirection = parent.Position + parent.Rotation.FacingSquare - ThingOrigin;
             }
             else
             {
                 if (!this.IsReceiver())
                 {
-                    direction = new IntVec3(3 * parent.rotation.FacingSquare.x, parent.rotation.FacingSquare.y, 3 * parent.rotation.FacingSquare.z);
-                    midDirection = parent.rotation.FacingSquare;
+                    direction = new IntVec3(3 * parent.Rotation.FacingSquare.x, parent.Rotation.FacingSquare.y, 3 * parent.Rotation.FacingSquare.z);
+                    midDirection = parent.Rotation.FacingSquare;
                 }
                 else
                 {
-                    direction = parent.rotation.FacingSquare;
-                    midDirection = parent.rotation.FacingSquare; // Should never be used in principle ...
+                    direction = parent.Rotation.FacingSquare;
+                    midDirection = parent.Rotation.FacingSquare; // Should never be used in principle ...
                 }
             }
 

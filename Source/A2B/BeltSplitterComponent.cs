@@ -8,16 +8,16 @@ namespace A2B
 {
     public class BeltSplitterComponent : BeltComponent
     {
-        private string _mythingID;
+		private string _mythingID;
 
         private IntVec3 _splitterDest;
 
         public override IntVec3 GetDestinationForThing(Thing thing)
         {
             var beltDestL = parent.Position +
-                            new IntVec3(-parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, parent.rotation.FacingSquare.x);
+                            new IntVec3(-parent.Rotation.FacingSquare.z, parent.Rotation.FacingSquare.y, parent.Rotation.FacingSquare.x);
             var beltDestR = parent.Position +
-                            new IntVec3(+parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
+                            new IntVec3(+parent.Rotation.FacingSquare.z, parent.Rotation.FacingSquare.y, -parent.Rotation.FacingSquare.x);
 
             // Do we have a new item ?
             if (_mythingID == thing.ThingID)

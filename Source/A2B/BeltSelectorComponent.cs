@@ -18,11 +18,11 @@ namespace A2B
             var selectionSettings = slotParent.GetStoreSettings();
             if (selectionSettings.AllowedToAccept(thing))
             {
-                return parent.Position + parent.rotation.FacingSquare;
+                return parent.Position + parent.Rotation.FacingSquare;
             }
 
             return parent.Position +
-                   new IntVec3(parent.rotation.FacingSquare.z, parent.rotation.FacingSquare.y, -parent.rotation.FacingSquare.x);
+                   new IntVec3(parent.Rotation.FacingSquare.z, parent.Rotation.FacingSquare.y, -parent.Rotation.FacingSquare.x);
         }
     }
 }

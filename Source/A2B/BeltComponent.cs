@@ -55,20 +55,20 @@ namespace A2B
             get { return ItemContainer.Empty; }
         }
 
-        public override void CompDestroy(DestroyMode mode = DestroyMode.Vanish)
+        public override void PostDestroy(DestroyMode mode = DestroyMode.Vanish)
         {
             ItemContainer.Destroy();
 
-            base.CompDestroy(mode);
+            base.PostDestroy(mode);
         }
 
-        public override void CompSpawnSetup()
+        public override void PostSpawnSetup()
         {
             GlowerComponent = parent.GetComp<CompGlower>();
             PowerComponent = parent.GetComp<CompPowerTrader>();
         }
 
-        public override void CompExposeData()
+        public override void PostExposeData()
         {
             Scribe_Values.LookValue(ref _beltPhase, "phase");
 
@@ -77,7 +77,7 @@ namespace A2B
             Scribe_Values.LookValue(ref _thingOrigin, "thingOrigin", IntVec3.Invalid);
         }
 
-        public override void CompDraw()
+        public override void PostDraw()
         {
             foreach (var status in ItemContainer.ThingStatus)
             {
@@ -95,7 +95,6 @@ namespace A2B
             {
                 return;
             }
-
             drawPos.z -= 0.4f;
 
             var screenPos = Find.CameraMap.camera.WorldToScreenPoint(drawPos);
@@ -116,7 +115,7 @@ namespace A2B
             }
             else
             {
-                direction = parent.rotation.FacingSquare;
+                direction = parent.Rotation.FacingSquare;
             }
 
             var progress = (float) status.Counter / BeltSpeed;
@@ -160,7 +159,7 @@ namespace A2B
 
         public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
         {
-            return parent.Position + parent.rotation.FacingSquare;
+            return parent.Position + parent.Rotation.FacingSquare;
         }
 
         private void DoBeltTick()
@@ -219,8 +218,8 @@ namespace A2B
                             {
                                 continue;
                             }
-
-                            if (!destBelt.Empty)
+							// Do not load items unless the next element is both free and online
+							if (!destBelt.Empty || destBelt.BeltPhase == Phase.Offline)
                             {
                                 continue;
                             }
@@ -283,7 +282,7 @@ namespace A2B
         }
 
         [NotNull]
-        public override string CompInspectString()
+        public override string CompInspectStringExtra()
         {
             string statusText;
             switch (_beltPhase)
