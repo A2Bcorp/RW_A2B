@@ -24,6 +24,7 @@
             <WorkToBuild>400</WorkToBuild>
             <MaxHealth>150</MaxHealth>
             <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
         </statBases>
 		<description>The basic unit of a conveyor belt.</description>
         <comps>
@@ -58,7 +59,6 @@
         <selectable>true</selectable>
 		<rotatable>true</rotatable>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
-        <Beauty>0</Beauty>
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
@@ -75,6 +75,7 @@
             <WorkToBuild>400</WorkToBuild>
             <MaxHealth>150</MaxHealth>
             <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
         </statBases>
         <description>The basic unit of a conveyor belt, only curved.</description>
 		<comps>
@@ -109,7 +110,6 @@
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <tickerType>Normal</tickerType>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
-		<Beauty>0</Beauty>
     </ThingDef>
     
     <ThingDef ParentName="BuildingBase">
@@ -147,6 +147,7 @@
             <WorkToBuild>400</WorkToBuild>
             <MaxHealth>150</MaxHealth>
             <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
         </statBases>
         <description>Loads any item you want onto a belt.</description>
         <comps>
@@ -181,9 +182,8 @@
         <designationCategory>Misc</designationCategory>       
         <staticSunShadowHeight>0.34</staticSunShadowHeight>  
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-        <itemSurface>true</itemSurface>              		
+        <itemSurface>true</itemSurface>
 		<researchPrerequisite>A2B</researchPrerequisite>
-        <Beauty>0</Beauty>
 	</ThingDef>  
     
     <ThingDef ParentName="BuildingBase">
@@ -200,6 +200,7 @@
             <WorkToBuild>400</WorkToBuild>
             <MaxHealth>150</MaxHealth>
             <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
         </statBases>
         <description>Unload the content of a conveyor belt into a pile or onto a hopper.</description>
 		<comps>
@@ -233,7 +234,6 @@
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<researchPrerequisite><li>A2B</li></researchPrerequisite>
-		<Beauty>Neutral</Beauty>   
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
@@ -250,6 +250,7 @@
             <WorkToBuild>400</WorkToBuild>
             <MaxHealth>150</MaxHealth>
             <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
         </statBases>
 		<description>Sends items left and right in alternance.</description>
 		<comps>
@@ -283,7 +284,6 @@
         <selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<researchPrerequisite><li>A2B</li></researchPrerequisite>
-		<Beauty>0</Beauty>  
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
@@ -303,6 +303,7 @@
             <WorkToBuild>550</WorkToBuild>
             <MaxHealth>200</MaxHealth>
             <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
         </statBases>
 		<description>Sort and redirect items.</description>
 		<comps>
@@ -336,7 +337,6 @@
         <selectable>true</selectable>
         <rotatable>true</rotatable>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
-		<Beauty>0</Beauty>
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
@@ -353,6 +353,7 @@
             <WorkToBuild>1000</WorkToBuild>
             <MaxHealth>300</MaxHealth>
             <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
         </statBases>
 		<description>Teleports item 1 click further. Requires a receiver to function !</description>
 		<comps>
@@ -387,7 +388,6 @@
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
         <researchPrerequisite><li>A2B2</li></researchPrerequisite>
-		<Beauty>0</Beauty>
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
@@ -404,6 +404,7 @@
             <WorkToBuild>800</WorkToBuild>
             <MaxHealth>300</MaxHealth>
             <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
         </statBases>
 		<description>Receives items from the teleporter. Needs to be build with identical orientation !</description>
 		<comps>
@@ -438,8 +439,5 @@
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
-		<Beauty>0</Beauty>
 	</ThingDef>
-
-    
 </Buildings>
