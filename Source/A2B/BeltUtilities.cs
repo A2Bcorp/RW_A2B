@@ -13,7 +13,7 @@ namespace A2B
         [CanBeNull]
         public static BeltComponent GetBeltComponent(this IntVec3 position)
         {
-            var building = Find.BuildingGrid.BuildingAt(position);
+			var building = (Building)Find.ThingGrid.ThingAt(position, EntityCategory.Building);
 
             return building == null ? null : building.GetComp<BeltComponent>();
         }
