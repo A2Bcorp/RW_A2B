@@ -47,6 +47,7 @@
     <Compile Include="BeltComponentExtensions.cs" />
     <Compile Include="BeltCurveComponent.cs" />
     <Compile Include="BeltItemContainer.cs" />
+    <Compile Include="BeltMergerComponent.cs" />
     <Compile Include="BeltSelectorComponent.cs" />
     <Compile Include="BeltSplitterComponent.cs" />
     <Compile Include="BeltUtilities.cs" />

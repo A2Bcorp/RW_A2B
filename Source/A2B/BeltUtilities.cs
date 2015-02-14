@@ -35,5 +35,18 @@ namespace A2B
 
             return false;
         }
+
+        /**
+         * Get the position corresponding to a rotation relative to the Thing's
+         * current rotation. Used as a convenient way to specify left/right/front/back
+         * without worrying about where the belt is currently facing. 'rotation' must be
+         * one of IntRot.north, IntRot.south, IntRot.east, or IntRot.west.
+         **/
+        public static IntVec3 GetPositionFromRelativeRotation(Thing thing, IntRot rotation)
+        {
+            IntRot rotTotal = new IntRot((thing.Rotation.AsInt + rotation.AsInt) % 4);
+            
+            return thing.Position + rotTotal.FacingSquare;
+        }
     }
 }
