@@ -14,8 +14,8 @@
 		<defName>A2BBelt</defName>
         <eType>BuildingComplex</eType>
 		<label>conveyor belt</label>
-        <thingClass>Building</thingClass>
-        <graphicPath>Things/Building/Belt</graphicPath>
+        <thingClass>A2B.Building_ConveyorBelt</thingClass>
+        <graphicPath>Things/Building/Belt/Belt_f10</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
         <altitudeLayer>Waist</altitudeLayer>
         <passability>Impassable</passability>

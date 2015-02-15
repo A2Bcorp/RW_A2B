@@ -155,47 +155,8 @@ namespace A2B
                 return false;
             }
 
-            // Teleporter only sends items to receivers with the good orientation (avoid visual problems)
-            if (_parentComponent.IsTeleporter() && (!belt.IsReceiver() || _parentComponent.parent.Rotation.AsInt != belt.parent.Rotation.AsInt))
-            {
+            if (!belt.CanAcceptFrom(_parentComponent))
                 return false;
-            }
-
-            // Only a teleporter can send items to a receiver ...
-            if (!_parentComponent.IsTeleporter() && belt.IsReceiver())
-            {
-                return false;
-            }
-
-            // Check that the next belt component has the good orientation: for belt, splitter and unloaders
-            if ((belt.parent.def.defName == "A2BBelt" || belt.parent.def.defName == "A2BSplitter" || belt.parent.def.defName == "A2BUnloader") &&
-                !(_parentComponent.parent.Position == belt.parent.Position - belt.parent.Rotation.FacingSquare))
-            {
-                return false;
-            }
-
-            // Check that the Teleporter has a good orientation with respect to the current element and is shifted properly
-            // (BUG: no check done for splitters, selectors or curves !)
-            if (belt.IsTeleporter() && (_parentComponent.parent.def.defName == "A2BBelt" || _parentComponent.parent.def.defName == "A2BLoader") &&
-                (belt.parent.Rotation.AsInt != _parentComponent.parent.Rotation.AsInt))
-            {
-                return false;
-            }
-
-            // BUG: need to check that Teleporter is 'in-line' with belt element, and not shifted sideways.
-            // BUG: need to check correct orientation for curves & selectors
-
-            // Belt loaders can only be fed manually
-            if (belt.parent.def.defName == "A2BLoader")
-            {
-                return false;
-            }
-
-            // Move beyond 50% only if next component is on ! 
-            if (belt.BeltPhase == Phase.Offline)
-            {
-                return false;
-            }
 
             return belt.Empty;
         }

@@ -13,7 +13,11 @@ namespace A2B
         [CanBeNull]
         public static BeltComponent GetBeltComponent(this IntVec3 position)
         {
-			var building = (Building)Find.ThingGrid.ThingAt(position, EntityCategory.Building);
+            // BUGFIX: Previously, this function would grab the first building it saw at a given position. This is a problem
+            // if a power conduit was on the same tile, as it was possible to miss the BeltComponent entirely. This is a more
+            // robust method of identifying BeltComponents at a given location because it first finds ALL buildings on a tile.
+
+            var building = (Building) Find.ThingGrid.ThingsListAt(position).Find(thing => (thing.TryGetComp<BeltComponent>() != null));
 
             return building == null ? null : building.GetComp<BeltComponent>();
         }
@@ -42,11 +46,11 @@ namespace A2B
          * without worrying about where the belt is currently facing. 'rotation' must be
          * one of IntRot.north, IntRot.south, IntRot.east, or IntRot.west.
          **/
-        public static IntVec3 GetPositionFromRelativeRotation(Thing thing, IntRot rotation)
+        public static IntVec3 GetPositionFromRelativeRotation(BeltComponent belt, IntRot rotation)
         {
-            IntRot rotTotal = new IntRot((thing.Rotation.AsInt + rotation.AsInt) % 4);
-            
-            return thing.Position + rotTotal.FacingSquare;
+            IntRot rotTotal = new IntRot((belt.parent.Rotation.AsInt + rotation.AsInt) % 4);
+
+            return belt.parent.Position + rotTotal.FacingSquare;
         }
     }
 }

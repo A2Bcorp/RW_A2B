@@ -5,6 +5,7 @@ using A2B.Annotations;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using VerseBase;
 
 #endregion
 
@@ -160,6 +161,38 @@ namespace A2B
         public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
         {
             return parent.Position + parent.Rotation.FacingSquare;
+        }
+
+        public virtual bool CanAcceptFrom(BeltComponent belt)
+        {
+            if (!PowerComponent.PowerOn)
+                return false;
+
+            for (int i = 0; i < 4; ++i)
+            {
+                IntRot dir = new IntRot(i);
+                if (CanAcceptFrom(dir) && belt.parent.Position == BeltUtilities.GetPositionFromRelativeRotation(this, dir))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public virtual bool CanAcceptFrom(IntRot direction)
+        {
+            // Belt loaders can only be fed manually
+            if (parent.def.defName == "A2BLoader")
+            {
+                return false;
+            }
+
+            // Move beyond 50% only if next component is on ! 
+            if (BeltPhase == Phase.Offline)
+            {
+                return false;
+            }
+
+            return (direction == IntRot.south);
         }
 
         private void DoBeltTick()
