@@ -55,7 +55,7 @@
 		<killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <placingDraggableDimensions>1</placingDraggableDimensions>
@@ -110,7 +110,7 @@
         <placingDraggableDimensions>1</placingDraggableDimensions>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
-		<designationCategory>Misc</designationCategory>
+		<designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <tickerType>Normal</tickerType>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -184,7 +184,7 @@
 		<filthLeavings>
             <SlagRubble>2</SlagRubble>
 		</filthLeavings> 
-        <designationCategory>Misc</designationCategory>       
+        <designationCategory>ConveyorBelts</designationCategory>       
         <staticSunShadowHeight>0.34</staticSunShadowHeight>  
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <itemSurface>true</itemSurface>
@@ -234,7 +234,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<selectable>true</selectable>
@@ -285,7 +285,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <selectable>true</selectable>
@@ -336,7 +336,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <selectable>true</selectable>
@@ -390,7 +390,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <selectable>true</selectable>
@@ -442,7 +442,7 @@
 		<killedLeavings>
             <ChunkSlag>2</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<selectable>true</selectable>
@@ -494,7 +494,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<selectable>true</selectable>

@@ -293,7 +293,7 @@ namespace A2B
 
         protected virtual void MoveThingTo([NotNull] Thing thing, IntVec3 beltDest)
         {
-            if (this.IsUnloader())
+            if (this.IsUnloader() && Find.TerrainGrid.TerrainAt(beltDest).changeable)
             {
                 ItemContainer.DropItem(thing, beltDest);
             }
