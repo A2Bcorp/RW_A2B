@@ -24,5 +24,10 @@ namespace A2B
             return parent.Position +
                    new IntVec3(parent.Rotation.FacingSquare.z, parent.Rotation.FacingSquare.y, -parent.Rotation.FacingSquare.x);
         }
+
+        public override bool CanAcceptFrom(IntRot direction)
+        {
+            return (direction == IntRot.south || direction == IntRot.west);
+        }
     }
 }

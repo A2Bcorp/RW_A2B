@@ -43,6 +43,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimatedGraphic.cs" />
+    <Compile Include="Building_ConveyorBelt.cs" />
     <Compile Include="BeltComponent.cs" />
     <Compile Include="BeltComponentExtensions.cs" />
     <Compile Include="BeltCurveComponent.cs" />
@@ -52,6 +54,7 @@
     <Compile Include="BeltSplitterComponent.cs" />
     <Compile Include="BeltUtilities.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="ModUtilities.cs" />
     <Compile Include="Phase.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

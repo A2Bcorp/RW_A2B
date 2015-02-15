@@ -8,14 +8,16 @@
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<constructEffect>ConstructMetal</constructEffect>
 		<repairEffect>Repair</repairEffect>
+		<holdsRoof>false</holdsRoof>
+		<blockLight>false</blockLight>
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
 		<defName>A2BBelt</defName>
         <eType>BuildingComplex</eType>
 		<label>conveyor belt</label>
-        <thingClass>Building</thingClass>
-        <graphicPath>Things/Building/Belt</graphicPath>
+        <thingClass>A2B.Building_ConveyorBelt</thingClass>
+        <graphicPath>Things/Building/Belt/Belt_f10</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
         <altitudeLayer>Waist</altitudeLayer>
         <passability>Impassable</passability>
@@ -53,7 +55,7 @@
 		<killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <placingDraggableDimensions>1</placingDraggableDimensions>
@@ -108,7 +110,7 @@
         <placingDraggableDimensions>1</placingDraggableDimensions>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
-		<designationCategory>Misc</designationCategory>
+		<designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <tickerType>Normal</tickerType>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -182,7 +184,7 @@
 		<filthLeavings>
             <SlagRubble>2</SlagRubble>
 		</filthLeavings> 
-        <designationCategory>Misc</designationCategory>       
+        <designationCategory>ConveyorBelts</designationCategory>       
         <staticSunShadowHeight>0.34</staticSunShadowHeight>  
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <itemSurface>true</itemSurface>
@@ -232,7 +234,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<selectable>true</selectable>
@@ -283,7 +285,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <selectable>true</selectable>
@@ -334,7 +336,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <selectable>true</selectable>
@@ -388,7 +390,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <selectable>true</selectable>
@@ -440,7 +442,7 @@
 		<killedLeavings>
             <ChunkSlag>2</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<selectable>true</selectable>
@@ -492,7 +494,7 @@
         <killedLeavings>
             <ChunkSlag>1</ChunkSlag>
 		</killedLeavings>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>ConveyorBelts</designationCategory>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<selectable>true</selectable>

@@ -17,9 +17,9 @@ namespace A2B
             // A list of destinations - indexing modulo 3 lets us cycle them and avoid
             // long chains of if-statements.
             IntVec3[] dests = {
-                BeltUtilities.GetPositionFromRelativeRotation(parent, IntRot.west),
-                BeltUtilities.GetPositionFromRelativeRotation(parent, IntRot.north),
-                BeltUtilities.GetPositionFromRelativeRotation(parent, IntRot.east)
+                BeltUtilities.GetPositionFromRelativeRotation(this, IntRot.west),
+                BeltUtilities.GetPositionFromRelativeRotation(this, IntRot.north),
+                BeltUtilities.GetPositionFromRelativeRotation(this, IntRot.east)
             };
 
             // Determine where we are going in the destination list
@@ -65,7 +65,7 @@ namespace A2B
         private bool IsFreeBelt(IntVec3 position)
         {
             var destBelt = position.GetBeltComponent();
-            return (destBelt != null && destBelt.Empty);
+            return (destBelt != null && destBelt.Empty && destBelt.CanAcceptFrom(this));
         }
     }
 }

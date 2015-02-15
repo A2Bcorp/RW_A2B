@@ -74,6 +74,17 @@ namespace A2B
 			}
 			return ReceiverPos;
 		}
+
+        public override bool CanAcceptFrom(BeltComponent belt)
+        {
+            if (this.IsReceiver())
+            {
+                return (belt.IsTeleporter() && belt.parent.Rotation == parent.Rotation && ((BeltTeleporterComponent) belt).ReceiverPos == parent.Position);
+            }
+
+            return base.CanAcceptFrom(belt);
+        }
+
 		public override void PostDraw()
 		{
 			foreach (var status in ItemContainer.ThingStatus)

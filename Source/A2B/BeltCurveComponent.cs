@@ -12,5 +12,10 @@ namespace A2B
 
             return ThingOrigin == beltDestA ? beltDestB : beltDestA;
         }
+
+        public override bool CanAcceptFrom(IntRot direction)
+        {
+            return (direction == IntRot.south || direction == IntRot.west);
+        }
     }
 }
