@@ -169,7 +169,7 @@
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
 			<li>
-				<compClass>A2B.BeltComponent</compClass>
+				<compClass>A2B.BeltLoaderComponent</compClass>
 			</li>
 		</comps>
         <costList>
@@ -223,7 +223,7 @@
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
 			<li>
-				<compClass>A2B.BeltComponent</compClass>
+				<compClass>A2B.BeltUnloaderComponent</compClass>
 			</li>
 		</comps>
         <size>(1,1)</size>
@@ -402,8 +402,8 @@
 		<defName>A2BTeleporter</defName>
         <eType>BuildingComplex</eType>
 		<label>teleporter</label>
-        <thingClass>Building</thingClass>
-        <graphicPath>Things/Building/Teleporter</graphicPath>
+        <thingClass>A2B.Building_Teleporter</thingClass>
+        <graphicPath>Things/Building/Teleporter/Teleporter_f10</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
@@ -415,7 +415,7 @@
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
-		<description>Teleports item 1 click further. Requires a receiver to function !</description>
+		<description>Teleports items in a straight line. Requires a receiver to function!</description>
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
@@ -467,7 +467,7 @@
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
-		<description>Receives items from the teleporter. Needs to be build with identical orientation !</description>
+		<description>Receives items from a teleporter. Needs to be built with identical orientation!</description>
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>

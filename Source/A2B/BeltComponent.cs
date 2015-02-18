@@ -160,39 +160,44 @@ namespace A2B
 
         public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
         {
-            return parent.Position + parent.Rotation.FacingSquare;
+            //return parent.Position + parent.Rotation.FacingSquare;
+            return this.GetPositionFromRelativeRotation(IntRot.north);
         }
 
         public virtual bool CanAcceptFrom(BeltComponent belt)
         {
-            if (!PowerComponent.PowerOn)
+            // If I can't accept from anyone, I certainly can't accept from you.
+            if (!CanAcceptSomething())
                 return false;
 
             for (int i = 0; i < 4; ++i)
             {
                 IntRot dir = new IntRot(i);
-                if (CanAcceptFrom(dir) && belt.parent.Position == BeltUtilities.GetPositionFromRelativeRotation(this, dir))
+                if (CanAcceptFrom(dir) && belt.parent.Position == this.GetPositionFromRelativeRotation(dir))
                     return true;
             }
 
             return false;
         }
 
+        /**
+         *  This method assumes that the component can accept in general - i.e. If it can accept at all, can
+         *  it accept from the given direction? (If it accepts from the south, but it's currently clogged, this
+         *  method still returns true)
+         **/
         public virtual bool CanAcceptFrom(IntRot direction)
         {
-            // Belt loaders can only be fed manually
-            if (parent.def.defName == "A2BLoader")
-            {
-                return false;
-            }
-
-            // Move beyond 50% only if next component is on ! 
-            if (BeltPhase == Phase.Offline)
-            {
-                return false;
-            }
-
             return (direction == IntRot.south);
+        }
+
+        public virtual bool CanAcceptSomething()
+        {
+            return (Empty && BeltPhase == Phase.Active);
+        }
+
+        public virtual bool CanOutputToNonBelt()
+        {
+            return false;
         }
 
         private void DoBeltTick()
@@ -235,32 +240,7 @@ namespace A2B
 
                 ItemContainer.Tick();
 
-                if (this.IsLoader())
-                {
-                    // If this is a loader check the things that are on the ground at our position
-                    // If the thing can be moved and the destination is empty it can be added to our container
-                    // This should fix the "pawn carry items to the loader all the time"-bug
-                    foreach (var thing in Find.ThingGrid.ThingsAt(parent.Position))
-                    {
-                        if ((thing.def.category == EntityCategory.Item) && (thing != parent))
-                        {
-                            var destination = GetDestinationForThing(thing);
-                            var destBelt = destination.GetBeltComponent();
-
-                            if (destBelt == null)
-                            {
-                                continue;
-                            }
-							// Do not load items unless the next element is both free and online
-							if (!destBelt.Empty || destBelt.BeltPhase == Phase.Offline)
-                            {
-                                continue;
-                            }
-
-                            ItemContainer.AddItem(thing, BeltSpeed / 2);
-                        }
-                    }
-                }
+                PostItemContainerTick();
 
                 if (!ItemContainer.WorkToDo)
                 {
@@ -291,9 +271,14 @@ namespace A2B
             }
         }
 
+        protected virtual void PostItemContainerTick()
+        {
+            // stub
+        }
+
         protected virtual void MoveThingTo([NotNull] Thing thing, IntVec3 beltDest)
         {
-            if (this.IsUnloader() && Find.TerrainGrid.TerrainAt(beltDest).changeable)
+            if (CanOutputToNonBelt() && Find.TerrainGrid.TerrainAt(beltDest).changeable)
             {
                 ItemContainer.DropItem(thing, beltDest);
             }

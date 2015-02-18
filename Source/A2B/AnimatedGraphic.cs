@@ -30,6 +30,10 @@ namespace A2B
 
         public AnimatedGraphic(string folderPath, Shader shader, bool overdraw, Color color) : base(folderPath, shader, overdraw, color)
         {
+            // Unfortunately the method used to populate a Graphic_Collection does not actually put the graphics in order
+            // based on their filename. It's pretty difficult to make an interesting animation where the order of the frames
+            // doesn't matter, so we have to fix this ourselves.
+
             List<string> files = Directory.GetFiles(Path.Combine(ModUtilities.GetTexturePath(), folderPath)).ToList();
             files.Sort((a, b) => a.CompareTo(b));
 
@@ -37,7 +41,6 @@ namespace A2B
             foreach (string file in files)
             {
                 string fileRelative = folderPath + "/" + Path.GetFileNameWithoutExtension(file);
-                //Log.Message("adding graphic " + i + " from file '" + fileRelative + "'");
                 subGraphics[i++] = GraphicDatabase.Get_Single(fileRelative, shader, overdraw, color);
             }
         }

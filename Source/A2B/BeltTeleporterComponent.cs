@@ -12,6 +12,7 @@ namespace A2B
 		private static List<BeltTeleporterComponent> Receivers = new List<BeltTeleporterComponent>();
 		private static List<BeltTeleporterComponent> Teleporters = new List<BeltTeleporterComponent>();
 		private static float basePowerConsumption = 0f;
+
 		public override void PostSpawnSetup()
 		{
 			base.PostSpawnSetup();
@@ -33,6 +34,7 @@ namespace A2B
 				Teleporters.ForEach(e => e.GetReceiverPos());
 			}
 		}
+
 		private void GetReceiverPos()
 		{
 			List<BeltTeleporterComponent> ReceiverList = new List<BeltTeleporterComponent>();
@@ -66,6 +68,7 @@ namespace A2B
 				PowerComponent.powerOutput = basePowerConsumption;
 			}
 		}
+
 		public override IntVec3 GetDestinationForThing(Thing thing)
 		{
 			if (this.IsReceiver())
@@ -131,6 +134,7 @@ namespace A2B
 				DrawGUIOverlay(status, drawPos);
 			}
 		}
+
 		protected override Vector3 GetOffset(ThingStatus status)
 		{
 			var destination = GetDestinationForThing(status.Thing);
@@ -183,6 +187,7 @@ namespace A2B
 			finDirNorm.Normalize(); // Can't normalize, or it doesn't go anywhere ... !
 			return (finDir - finDirNorm);
 		}
+
 		public override void PostDeSpawn()
 		{
 			Receivers.Remove(this);

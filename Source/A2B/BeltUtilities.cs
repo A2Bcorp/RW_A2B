@@ -46,7 +46,7 @@ namespace A2B
          * without worrying about where the belt is currently facing. 'rotation' must be
          * one of IntRot.north, IntRot.south, IntRot.east, or IntRot.west.
          **/
-        public static IntVec3 GetPositionFromRelativeRotation(BeltComponent belt, IntRot rotation)
+        public static IntVec3 GetPositionFromRelativeRotation(this BeltComponent belt, IntRot rotation)
         {
             IntRot rotTotal = new IntRot((belt.parent.Rotation.AsInt + rotation.AsInt) % 4);
 

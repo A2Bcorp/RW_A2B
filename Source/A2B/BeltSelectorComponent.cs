@@ -18,11 +18,13 @@ namespace A2B
             var selectionSettings = slotParent.GetStoreSettings();
             if (selectionSettings.AllowedToAccept(thing))
             {
-                return parent.Position + parent.Rotation.FacingSquare;
+                //return parent.Position + parent.Rotation.FacingSquare;
+                return this.GetPositionFromRelativeRotation(IntRot.north);
             }
 
-            return parent.Position +
-                   new IntVec3(parent.Rotation.FacingSquare.z, parent.Rotation.FacingSquare.y, -parent.Rotation.FacingSquare.x);
+            return this.GetPositionFromRelativeRotation(IntRot.east);
+            // return parent.Position +
+                    //new IntVec3(parent.Rotation.FacingSquare.z, parent.Rotation.FacingSquare.y, -parent.Rotation.FacingSquare.x);
         }
 
         public override bool CanAcceptFrom(IntRot direction)
