@@ -10,19 +10,7 @@ namespace A2B
 {
     public class Building_Teleporter : Building
     {
-        private static AnimatedGraphic animation = null;
         private int prevFrame;
-
-        public override Graphic Graphic
-        {
-            get
-            {
-                if (animation == null)
-                    animation = AnimatedGraphic.FromSingleFrame(base.Graphic);
-
-                return animation;
-            }
-        }
 
         public override void Tick()
         {

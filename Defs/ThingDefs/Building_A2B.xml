@@ -10,6 +10,8 @@
 		<repairEffect>Repair</repairEffect>
 		<holdsRoof>false</holdsRoof>
 		<blockLight>false</blockLight>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<filthLeaving>BuildingRubble</filthLeaving>
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
@@ -17,8 +19,8 @@
         <eType>BuildingComplex</eType>
 		<label>conveyor belt</label>
         <thingClass>A2B.Building_ConveyorBelt</thingClass>
-        <graphicPath>Things/Building/Belt/Belt_f10</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
+        <graphicPath>Things/Building/Belt</graphicPath>
+        <graphicClass>A2B.AnimatedGraphic</graphicClass>
         <altitudeLayer>Waist</altitudeLayer>
         <passability>Impassable</passability>
         <castEdgeShadows>true</castEdgeShadows>
@@ -52,12 +54,9 @@
             <Steel>15</Steel>
 		</costList>
         <tickerType>Normal</tickerType>
-		<killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
         <designationCategory>ConveyorBelts</designationCategory>
+		<designationHotkey>B</designationHotkey>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <placingDraggableDimensions>1</placingDraggableDimensions>
         <selectable>true</selectable>
 		<rotatable>true</rotatable>
@@ -103,14 +102,11 @@
         <costList>
             <Steel>15</Steel>
 		</costList>
-		<killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <placingDraggableDimensions>1</placingDraggableDimensions>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<designationCategory>ConveyorBelts</designationCategory>
+		<designationHotkey>V</designationHotkey>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
         <tickerType>Normal</tickerType>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -178,15 +174,9 @@
         <tickerType>Normal</tickerType>   
         <rotatable>true</rotatable> 
         <neverMultiSelect>true</neverMultiSelect>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-		<filthLeavings>
-            <SlagRubble>2</SlagRubble>
-		</filthLeavings> 
-        <designationCategory>ConveyorBelts</designationCategory>       
+        <designationCategory>ConveyorBelts</designationCategory>    
+		<designationHotkey>L</designationHotkey>		
         <staticSunShadowHeight>0.34</staticSunShadowHeight>  
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <itemSurface>true</itemSurface>
 		<researchPrerequisite>A2B</researchPrerequisite>
 	</ThingDef>  
@@ -231,12 +221,9 @@
             <Steel>15</Steel>
 		</costList>
         <tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
         <designationCategory>ConveyorBelts</designationCategory>
+		<designationHotkey>U</designationHotkey>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -282,12 +269,9 @@
             <Steel>20</Steel>
 		</costList>
         <tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
         <designationCategory>ConveyorBelts</designationCategory>
+		<designationHotkey>P</designationHotkey>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -333,12 +317,9 @@
             <Steel>20</Steel>
 		</costList>
         <tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
         <designationCategory>ConveyorBelts</designationCategory>
+		<designationHotkey>M</designationHotkey>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<researchPrerequisite><li>A2B</li></researchPrerequisite>
@@ -387,12 +368,9 @@
             <Steel>30</Steel>
 		</costList>
 		<tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
         <designationCategory>ConveyorBelts</designationCategory>
+		<designationHotkey>P</designationHotkey>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
         <selectable>true</selectable>
         <rotatable>true</rotatable>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
@@ -403,8 +381,9 @@
         <eType>BuildingComplex</eType>
 		<label>teleporter</label>
         <thingClass>A2B.Building_Teleporter</thingClass>
-        <graphicPath>Things/Building/Teleporter/Teleporter_f10</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
+        <graphicPath>Things/Building/Teleporter</graphicPath>
+        <graphicClass>A2B.AnimatedGraphic</graphicClass>
+		<graphicOverdraw>false</graphicOverdraw>
 		<altitudeLayer>Waist</altitudeLayer>
 		<passability>Impassable</passability>
         <castEdgeShadows>true</castEdgeShadows>
@@ -439,12 +418,9 @@
             <Steel>50</Steel>
 		</costList>
         <tickerType>Normal</tickerType>
-		<killedLeavings>
-            <ChunkSlag>2</ChunkSlag>
-		</killedLeavings>
         <designationCategory>ConveyorBelts</designationCategory>
+		<designationHotkey>T</designationHotkey>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
         <researchPrerequisite><li>A2B2</li></researchPrerequisite>
@@ -491,12 +467,9 @@
             <Steel>40</Steel>
 		</costList>
         <tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
         <designationCategory>ConveyorBelts</designationCategory>
+		<designationHotkey>R</designationHotkey>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>

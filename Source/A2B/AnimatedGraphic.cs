@@ -6,7 +6,6 @@ using System.Text;
 
 using UnityEngine;
 using Verse;
-using VerseBase;
 using RimWorld;
 
 namespace A2B
@@ -19,30 +18,40 @@ namespace A2B
 
         public static AnimatedGraphic FromSingleFrame(Graphic frame)
         {
-            int finalSlash = frame.initPath.LastIndexOf('/');
-            string path = frame.initPath.Substring(0, finalSlash);
+            int finalSlash = frame.path.LastIndexOf('/');
+            string path = frame.path.Substring(0, finalSlash);
 
-            AnimatedGraphic anim = new AnimatedGraphic(path, frame.shader, frame.overdraw, frame.color);
+            AnimatedGraphic anim = (AnimatedGraphic) GraphicDatabase.Get<AnimatedGraphic>(path, frame.shader, frame.drawSize, frame.color, frame.colorTwo);
             anim.DefaultFrame = Array.FindIndex(anim.subGraphics, row => row == frame);
-
             return anim;
         }
 
-        public AnimatedGraphic(string folderPath, Shader shader, bool overdraw, Color color) : base(folderPath, shader, overdraw, color)
-        {
-            // Unfortunately the method used to populate a Graphic_Collection does not actually put the graphics in order
-            // based on their filename. It's pretty difficult to make an interesting animation where the order of the frames
-            // doesn't matter, so we have to fix this ourselves.
+        // Unfortunately the method used to populate a Graphic_Collection does not actually put the graphics in order
+        // based on their filename. It's pretty difficult to make an interesting animation where the order of the frames
+        // doesn't matter, so we have to fix this ourselves.
 
-            List<string> files = Directory.GetFiles(Path.Combine(ModUtilities.GetTexturePath(), folderPath)).ToList();
+        public override void Init(GraphicRequest req)
+        {
+            List<string> files = Directory.GetFiles(Path.Combine(ModUtilities.GetTexturePath(), req.path)).ToList();
             files.Sort((a, b) => a.CompareTo(b));
+
+            subGraphics = new Graphic_Single[files.Count];
+            path = req.path;
+            shader = req.shader;
+            color = req.color;
+            drawSize = req.drawSize;
 
             int i = 0;
             foreach (string file in files)
             {
-                string fileRelative = folderPath + "/" + Path.GetFileNameWithoutExtension(file);
-                subGraphics[i++] = GraphicDatabase.Get_Single(fileRelative, shader, overdraw, color);
+                string fileRelative = req.path + "/" + Path.GetFileNameWithoutExtension(file);
+                subGraphics[i++] = GraphicDatabase.Get<Graphic_Single>(fileRelative, shader, drawSize, color);
             }
+        }
+
+        public override Graphic GetColoredVersion(Shader newShader, Color newColor, Color newColorTwo)
+        {
+            return CurrentGraphic.GetColoredVersion(newShader, newColor, newColorTwo);
         }
 
         public bool IsAnimating

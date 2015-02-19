@@ -5,7 +5,6 @@ using A2B.Annotations;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using VerseBase;
 
 #endregion
 
@@ -101,7 +100,7 @@ namespace A2B
             var screenPos = Find.CameraMap.camera.WorldToScreenPoint(drawPos);
             screenPos.y = Screen.height - screenPos.y;
 
-            GenWorldUI.DrawThingLabel(new Vector2(screenPos.x, screenPos.y), GenString.NumberString(status.Thing.stackCount),
+            GenWorldUI.DrawThingLabel(new Vector2(screenPos.x, screenPos.y), GenString.ToStringCached(status.Thing.stackCount),
                 new Color(1f, 1f, 1f, 0.75f));
         }
 

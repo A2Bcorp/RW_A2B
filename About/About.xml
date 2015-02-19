@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>A2B v0.8.1</name>
+	<name>A2B v0.9.0</name>
 	<author>noone, asarium, FredrikLH, TehJoE</author>
-	<targetVersion>Alpha 8</targetVersion>
+	<targetVersion>Alpha 9</targetVersion>
     <url>https://ludeon.com/forums/index.php?topic=5593.0</url>
-	<description>This mod adds conveyor belts to Rimworld. Now you can efficiently transport goods to the most remote locations of your encampement.</description>
+	<description>This mod adds conveyor belts to Rimworld. Now you can efficiently transport goods to the most remote locations of your encampment.</description>
 </ModMetaData>
