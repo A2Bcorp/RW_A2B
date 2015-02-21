@@ -2,27 +2,40 @@
 <Buildings>
 	<ThingDef Name="BuildingBase" Abstract="True">
 		<category>Building</category>
+		<eType>BuildingComplex</eType>
+		
 		<soundImpactDefault>BulletImpactSteel</soundImpactDefault>
+		
 		<selectable>true</selectable>
-		<drawerType>MapMeshAndRealTime</drawerType>
+		<rotatable>true</rotatable>
+		
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<constructEffect>ConstructMetal</constructEffect>
 		<repairEffect>Repair</repairEffect>
 		<holdsRoof>false</holdsRoof>
 		<blockLight>false</blockLight>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<filthLeaving>BuildingRubble</filthLeaving>
+		
+		<altitudeLayer>Waist</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+		<pathCost>10001</pathCost>
+		
+		<drawerType>MapMeshAndRealTime</drawerType>
+        <castEdgeShadows>true</castEdgeShadows>
+        <fillPercent>1</fillPercent>
+		<staticSunShadowHeight>0.34</staticSunShadowHeight>
+		
+		<tickerType>Normal</tickerType>
+        <designationCategory>ConveyorBelts</designationCategory>
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
 		<defName>A2BBelt</defName>
-        <eType>BuildingComplex</eType>
 		<label>conveyor belt</label>
         <thingClass>A2B.Building_ConveyorBelt</thingClass>
-        <graphicPath>Things/Building/Belt/Belt_f10</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>Impassable</passability>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
+        <graphicPath>Things/Building/Belt</graphicPath>
+        <graphicClass>A2B.AnimatedGraphic</graphicClass>
         <statBases>
             <WorkToMake>400</WorkToMake>
             <MaxHealth>150</MaxHealth>
@@ -51,30 +64,17 @@
         <costList>
             <Steel>15</Steel>
 		</costList>
-        <tickerType>Normal</tickerType>
-		<killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-        <designationCategory>ConveyorBelts</designationCategory>
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<designationHotkey>B</designationHotkey>
         <placingDraggableDimensions>1</placingDraggableDimensions>
-        <selectable>true</selectable>
-		<rotatable>true</rotatable>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BCurve</defName>
-        <eType>BuildingComplex</eType>
 		<label>curved belt</label>
         <thingClass>Building</thingClass>
 		<graphicPath>Things/Building/Curve</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
-        <altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
         <statBases>
             <WorkToMake>400</WorkToMake>
             <MaxHealth>150</MaxHealth>
@@ -103,28 +103,16 @@
         <costList>
             <Steel>15</Steel>
 		</costList>
-		<killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-        <placingDraggableDimensions>1</placingDraggableDimensions>
-		<selectable>true</selectable>
-		<rotatable>true</rotatable>
-		<designationCategory>ConveyorBelts</designationCategory>
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <tickerType>Normal</tickerType>
+		<designationHotkey>V</designationHotkey>
         <researchPrerequisite><li>A2B</li></researchPrerequisite>
     </ThingDef>
     
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BLoader</defName>
-		<eType>BuildingComplex</eType>
 		<label>loader</label>
 		<thingClass>Building_Storage</thingClass>
         <graphicPath>Things/Building/Loader</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
         <building>
 			<fixedStorageSettings>
 				<priority>Important</priority>
@@ -146,8 +134,6 @@
 		<inspectorTabs>
 			<li>ITab_Storage</li>
 		</inspectorTabs>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
         <statBases>
             <WorkToMake>400</WorkToMake>
             <MaxHealth>150</MaxHealth>
@@ -169,39 +155,24 @@
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
 			<li>
-				<compClass>A2B.BeltComponent</compClass>
+				<compClass>A2B.BeltLoaderComponent</compClass>
 			</li>
 		</comps>
         <costList>
             <Steel>15</Steel>
 		</costList>
-        <tickerType>Normal</tickerType>   
-        <rotatable>true</rotatable> 
-        <neverMultiSelect>true</neverMultiSelect>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-		<filthLeavings>
-            <SlagRubble>2</SlagRubble>
-		</filthLeavings> 
-        <designationCategory>ConveyorBelts</designationCategory>       
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>  
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+        <neverMultiSelect>true</neverMultiSelect> 
+		<designationHotkey>L</designationHotkey>
         <itemSurface>true</itemSurface>
 		<researchPrerequisite>A2B</researchPrerequisite>
 	</ThingDef>  
     
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BUnloader</defName>
-        <eType>BuildingComplex</eType>
 		<label>unloader</label>
 		<thingClass>Building</thingClass>
         <graphicPath>Things/Building/Unloader</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
         <statBases>
             <WorkToMake>400</WorkToMake>
             <MaxHealth>150</MaxHealth>
@@ -223,36 +194,23 @@
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
 			<li>
-				<compClass>A2B.BeltComponent</compClass>
+				<compClass>A2B.BeltUnloaderComponent</compClass>
 			</li>
 		</comps>
         <size>(1,1)</size>
         <costList>
             <Steel>15</Steel>
 		</costList>
-        <tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-        <designationCategory>ConveyorBelts</designationCategory>
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-		<selectable>true</selectable>
-		<rotatable>true</rotatable>
+		<designationHotkey>U</designationHotkey>
 		<researchPrerequisite><li>A2B</li></researchPrerequisite>
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BSplitter</defName>
-        <eType>BuildingComplex</eType>
 		<label>splitter</label>
         <thingClass>Building</thingClass>
         <graphicPath>Things/Building/Splitter</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
         <statBases>
             <WorkToMake>400</WorkToMake>
             <MaxHealth>150</MaxHealth>
@@ -281,30 +239,17 @@
         <costList>
             <Steel>20</Steel>
 		</costList>
-        <tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-        <designationCategory>ConveyorBelts</designationCategory>
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-        <selectable>true</selectable>
-		<rotatable>true</rotatable>
+		<designationHotkey>P</designationHotkey>
 		<researchPrerequisite><li>A2B</li></researchPrerequisite>
 	</ThingDef>
 	
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BMerger</defName>
-        <eType>BuildingComplex</eType>
 		<label>merger</label>
         <thingClass>Building</thingClass>
         <graphicPath>Things/Building/Merger</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
-        <statBases>
+		<statBases>
             <WorkToMake>400</WorkToMake>
             <MaxHealth>150</MaxHealth>
             <Flammability>1.0</Flammability>
@@ -332,32 +277,19 @@
         <costList>
             <Steel>20</Steel>
 		</costList>
-        <tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-        <designationCategory>ConveyorBelts</designationCategory>
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-        <selectable>true</selectable>
-		<rotatable>true</rotatable>
+		<designationHotkey>M</designationHotkey>
 		<researchPrerequisite><li>A2B</li></researchPrerequisite>
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BSelector</defName>
-        <eType>BuildingComplex</eType>
 		<label>selector</label>
         <thingClass>Building_Storage</thingClass>
         <graphicPath>Things/Building/Selector</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
         <inspectorTabs>
 			<li>ITab_Storage</li>
 		</inspectorTabs>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
         <statBases>
             <WorkToMake>550</WorkToMake>
             <MaxHealth>200</MaxHealth>
@@ -386,15 +318,7 @@
         <costList>
             <Steel>30</Steel>
 		</costList>
-		<tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-        <designationCategory>ConveyorBelts</designationCategory>
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-        <selectable>true</selectable>
-        <rotatable>true</rotatable>
+		<designationHotkey>P</designationHotkey>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
 	</ThingDef>
     
@@ -402,20 +326,16 @@
 		<defName>A2BTeleporter</defName>
         <eType>BuildingComplex</eType>
 		<label>teleporter</label>
-        <thingClass>Building</thingClass>
+        <thingClass>A2B.Building_Teleporter</thingClass>
         <graphicPath>Things/Building/Teleporter</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
+        <graphicClass>A2B.AnimatedGraphic</graphicClass>
         <statBases>
             <WorkToMake>1000</WorkToMake>
             <MaxHealth>300</MaxHealth>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
-		<description>Teleports item 1 click further. Requires a receiver to function !</description>
+		<description>Teleports items in a straight line. Requires a receiver to function!</description>
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
@@ -438,36 +358,23 @@
         <costList>
             <Steel>50</Steel>
 		</costList>
-        <tickerType>Normal</tickerType>
-		<killedLeavings>
-            <ChunkSlag>2</ChunkSlag>
-		</killedLeavings>
-        <designationCategory>ConveyorBelts</designationCategory>
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-		<selectable>true</selectable>
-		<rotatable>true</rotatable>
+		<designationHotkey>T</designationHotkey>
         <researchPrerequisite><li>A2B2</li></researchPrerequisite>
 	</ThingDef>
     
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BReceiver</defName>
-        <eType>BuildingComplex</eType>
 		<label>receiver</label>
         <thingClass>Building</thingClass>
         <graphicPath>Things/Building/Receiver</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
-		<altitudeLayer>Waist</altitudeLayer>
-		<passability>Impassable</passability>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
         <statBases>
             <WorkToMake>800</WorkToMake>
             <MaxHealth>300</MaxHealth>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
-		<description>Receives items from the teleporter. Needs to be build with identical orientation !</description>
+		<description>Receives items from a teleporter. Needs to be built with identical orientation!</description>
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
@@ -490,15 +397,7 @@
 		<costList>
             <Steel>40</Steel>
 		</costList>
-        <tickerType>Normal</tickerType>
-        <killedLeavings>
-            <ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-        <designationCategory>ConveyorBelts</designationCategory>
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-		<selectable>true</selectable>
-		<rotatable>true</rotatable>
+		<designationHotkey>R</designationHotkey>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
 	</ThingDef>
 </Buildings>

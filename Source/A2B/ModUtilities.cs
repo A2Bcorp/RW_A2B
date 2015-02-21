@@ -7,12 +7,11 @@ using System.Reflection;
 
 using UnityEngine;
 using Verse;
-using VerseBase;
 using RimWorld;
 
 namespace A2B
 {
-    class ModUtilities
+    public static class ModUtilities
     {
 
         public static Mod CurrentMod 
@@ -24,28 +23,34 @@ namespace A2B
             }
         }
 
-        public static string GetTexturePath(Mod mod = null)
+        public static string GetTexturePath(this Mod mod)
         {
-            if (mod == null)
-                mod = CurrentMod;
-
             return mod.RootFolder + "/" + GenFilePaths.ContentPath<Texture2D>();
         }
 
-        public static string GetSoundPath(Mod mod = null)
+        public static string GetTexturePath()
         {
-            if (mod == null)
-                mod = CurrentMod;
+            return CurrentMod.GetTexturePath();
+        }
 
+        public static string GetSoundPath(this Mod mod)
+        {
             return mod.RootFolder + "/" + GenFilePaths.ContentPath<AudioClip>();
         }
 
-        public static string GetStringPath(Mod mod = null)
+        public static string GetSoundPath()
         {
-            if (mod == null)
-                mod = CurrentMod;
+            return CurrentMod.GetSoundPath();
+        }
 
+        public static string GetStringPath(this Mod mod)
+        {
             return mod.RootFolder + "/" + GenFilePaths.ContentPath<string>();
+        }
+
+        public static string GetStringPath()
+        {
+            return CurrentMod.GetStringPath();
         }
     }
 }

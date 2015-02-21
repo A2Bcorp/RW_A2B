@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using UnityEngine;
 using Verse;
 using RimWorld;
 
 namespace A2B
 {
-    public class Building_ConveyorBelt : Building
+    public class Building_Teleporter : Building
     {
-
-        private int prevFrame = 0;
+        private int prevFrame;
 
         public override void Tick()
         {
@@ -32,6 +30,5 @@ namespace A2B
                 prevFrame = animation.CurrentFrame;
             }
         }
-
     }
 }

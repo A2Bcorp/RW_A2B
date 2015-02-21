@@ -143,22 +143,14 @@ namespace A2B
 
             var belt = destination.GetBeltComponent();
 
-            // If no belt items, then move things only if this is an unloader
+            // If no belt items, then move things only if this can output to non-belts
             if (belt == null)
             {
-                if (_parentComponent.IsUnloader())
-                {
-                    // If this is an unloader always increment the counter
-                    return destination.CanPlaceThing(thing);
-                }
-
-                return false;
+                return (_parentComponent.CanOutputToNonBelt() && destination.CanPlaceThing(thing));
             }
 
-            if (!belt.CanAcceptFrom(_parentComponent))
-                return false;
-
-            return belt.Empty;
+            // If there is a belt, only move things if it can accept them from us
+            return belt.CanAcceptFrom(_parentComponent);
         }
 
         public bool AddItem([NotNull] Thing t, int initialCounter = 0)

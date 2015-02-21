@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using Verse;
+using System;
 
 #endregion
 
@@ -17,23 +18,16 @@ namespace A2B
             // A list of destinations - indexing modulo 3 lets us cycle them and avoid
             // long chains of if-statements.
             IntVec3[] dests = {
-                BeltUtilities.GetPositionFromRelativeRotation(this, IntRot.west),
-                BeltUtilities.GetPositionFromRelativeRotation(this, IntRot.north),
-                BeltUtilities.GetPositionFromRelativeRotation(this, IntRot.east)
+                this.GetPositionFromRelativeRotation(IntRot.west),
+                this.GetPositionFromRelativeRotation(IntRot.north),
+                this.GetPositionFromRelativeRotation(IntRot.east)
             };
 
-            // Determine where we are going in the destination list
-            int index;
-            for (index = 0; index < 3; ++index)
-            {
-                if (_splitterDest == dests[index])
-                {
-                    break;
-                }
-            }
+            // Determine where we are going in the destination list (and default to left)
+            int index = Math.Max(0, Array.FindIndex(dests, dir => (dir == _splitterDest)));
 
             // Do we have a new item ?
-            if (_mythingID == thing.ThingID)
+            if (_mythingID == thing.ThingID && IsFreeBelt(_splitterDest))
             {
                 return _splitterDest;
             }
@@ -59,13 +53,13 @@ namespace A2B
 
                 // Give up and use our current destination
                 return _splitterDest;
-            }
+           }
         }
 
         private bool IsFreeBelt(IntVec3 position)
         {
-            var destBelt = position.GetBeltComponent();
-            return (destBelt != null && destBelt.Empty && destBelt.CanAcceptFrom(this));
+            BeltComponent destBelt = position.GetBeltComponent();
+            return (destBelt != null && destBelt.CanAcceptFrom(this));
         }
     }
 }
