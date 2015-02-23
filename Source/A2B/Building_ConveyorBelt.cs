@@ -24,7 +24,7 @@ namespace A2B
             AnimatedGraphic animation = (AnimatedGraphic) Graphic;
 
             // No power, no service.
-            animation.IsAnimating = (power != null && power.PowerOn && belt != null);
+            animation.IsAnimating = belt.BeltPhase == Phase.Active; //(power != null && power.PowerOn && belt != null);
 
             if (animation.CurrentFrame != prevFrame)
             {

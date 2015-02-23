@@ -8,6 +8,15 @@ namespace A2B
 {
     public class BeltLoaderComponent : BeltComponent
     {
+
+        /**
+         * Belt loaders don't freeze.
+         **/
+        protected override void Freeze()
+        {
+            // stub
+        }
+
         /**
          * Belt loaders never accept items from other belt components.
          **/

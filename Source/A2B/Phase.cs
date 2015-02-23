@@ -3,6 +3,7 @@
     public enum Phase
     {
         Offline,
-        Active
+        Active,
+        Frozen
     }
 }

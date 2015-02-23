@@ -2,18 +2,34 @@
 <ResearchProjectDefs>
 	<ResearchProjectDef>
 		<defName>A2B</defName>
-		<label>A2B Conveyor Belts</label>
+		<label>[A2B] Conveyor Belts</label>
 		<description>Allows the construction of the basic elements of the A2B conveyor belts.</description>
-		<totalCost>300</totalCost>
+		<totalCost>500</totalCost>
 		<prerequisites></prerequisites>
 	</ResearchProjectDef>
     
     <ResearchProjectDef>
 		<defName>A2B2</defName>
-		<label>A2B Conveyor Belts [+]</label>
-		<description>Unlocks the 'Selector' and the 'Teleporter'+'Receiver' pair.</description>
-		<totalCost>300</totalCost>
+		<label>[A2B] New Components</label>
+		<description>Unlocks the 'Selector' and the 'Teleporter'/'Receiver' pair.</description>
+		<totalCost>600</totalCost>
 		<prerequisites><li>A2B</li></prerequisites>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef>
+		<defName>A2B_Climatization</defName>
+		<label>[A2B] Climatization</label>
+		<description>Climatized components allow your A2B system to continue functioning at even lower temperatures than before!</description>
+		<totalCost>800</totalCost>
+		<prerequisites><li>A2B</li></prerequisites>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef>
+		<defName>A2B_TeleporterHeat</defName>
+		<label>[A2B] Teleporter Efficiency</label>
+		<description>An improved, highly efficient teleporter design reduces the heat generated when teleporting items. No more flash fires!</description>
+		<totalCost>1000</totalCost>
+		<prerequisites><li>A2B2</li></prerequisites>
 	</ResearchProjectDef>
     
 </ResearchProjectDefs>

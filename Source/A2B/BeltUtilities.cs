@@ -3,6 +3,7 @@
 using A2B.Annotations;
 using RimWorld;
 using Verse;
+using UnityEngine;
 
 #endregion
 
@@ -10,6 +11,27 @@ namespace A2B
 {
     public static class BeltUtilities
     {
+
+        private static Graphic _iceGraphic = null;
+        public static Graphic IceGraphic
+        {
+            get
+            {
+                if (_iceGraphic == null)
+                {
+                    Color color = new Color(1.0f, 1.0f, 1.0f, 0.4f);
+                    _iceGraphic = GraphicDatabase.Get<Graphic_Single>("Effects/ice_64", ShaderDatabase.MetaOverlay, IntVec2.one, color);
+                }
+
+                return _iceGraphic;
+            }
+        }
+
+        public static void DrawIceGraphic(this BeltComponent belt)
+        {
+            IceGraphic.Draw(belt.parent.DrawPos, belt.parent.Rotation, belt.parent);
+        }
+
         [CanBeNull]
         public static BeltComponent GetBeltComponent(this IntVec3 position)
         {
@@ -52,5 +74,33 @@ namespace A2B
 
             return belt.parent.Position + rotTotal.FacingSquare;
         }
+
+        /**
+         * Calculates the chance for this BeltComponent to freeze per check at a given temperature
+         **/
+        public static float FreezeChance(this BeltComponent belt, float currentTemp)
+        {
+            float delta = belt.FreezeTemperature - currentTemp;
+
+            const float MIN_CHANCE          = 0.20f;
+            const float MAX_CHANCE          = 1.00f;
+            const float FLAT_RATE_THRESHOLD = 20.0f;
+
+            // No chance to freeze above the freezing temp
+            if (delta < 0)
+                return 0;
+
+            // Flat rate past a certain point
+            if (delta >= FLAT_RATE_THRESHOLD)
+                return MAX_CHANCE;
+
+            // Transform to [0, 1] (a percentage of the range)
+            float percent = MathUtilities.LinearTransformInv(delta, 0, FLAT_RATE_THRESHOLD);
+
+            // Transform to [MIN_CHANCE, MAX_CHANCE]
+            return MathUtilities.LinearTransform(percent, MIN_CHANCE, MAX_CHANCE);
+        }
+
+
     }
 }

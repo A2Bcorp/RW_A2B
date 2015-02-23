@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="A2BResearch.cs" />
     <Compile Include="AnimatedGraphic.cs" />
     <Compile Include="BeltLoaderComponent.cs" />
     <Compile Include="BeltUnloaderComponent.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="BeltUtilities.cs" />
     <Compile Include="Building_Teleporter.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="MathUtilities.cs" />
     <Compile Include="ModUtilities.cs" />
     <Compile Include="Phase.cs" />
     <Compile Include="Properties\Annotations.cs" />

@@ -170,9 +170,11 @@ namespace A2B
             _thingCounter.Remove(item);
 
             other.AddItem(item);
+
+            _parentComponent.OnItemTransfer(item, other._parentComponent);
         }
 
-        public void DropItem([NotNull] Thing item, IntVec3 position)
+        public void DropItem([NotNull] Thing item, IntVec3 position, bool forced = false)
         {
             var backupSound = item.def.soundDrop;
 
@@ -180,9 +182,19 @@ namespace A2B
             {
                 item.def.soundDrop = null;
 
+                if (!_container.Contains(item))
+                    return;
+
                 Thing droppedItem;
-                if (!_container.TryDrop(item, position, ThingPlaceMode.Direct, out droppedItem))
+                if (!_container.TryDrop(item, position, ThingPlaceMode.Direct, out droppedItem) && !forced)
+                {       
+                    return;
+                }
+                // Might prevent those "has null owner" errors...
+                else if (forced && _container.Contains(item) && !_container.TryDrop(item, position, ThingPlaceMode.Near, out droppedItem))
                 {
+                    _container.Remove(item);
+                    item.holder = null;
                     return;
                 }
 
@@ -193,15 +205,16 @@ namespace A2B
                 }
 
                 _thingCounter.Remove(item);
+                item.holder = null;
 
                 if (droppedItem is ThingWithComponents)
                 {
                     droppedItem.SetForbidden(false);
                 }
 
-                if (droppedItem.def.eType == EntityType.Chunk)
+                if (droppedItem.def.eType == EntityType.Chunk && Find.DesignationManager.DesignationOn(droppedItem, DesignationDefOf.Haul) == null)
                 {
-                    // If this is a chunk make it haulable
+                    // If this is a chunk AND not already haulable ("designated twice" warning) make it haulable
                     Find.DesignationManager.AddDesignation(new Designation(droppedItem, DesignationDefOf.Haul));
                 }
             }
@@ -212,12 +225,12 @@ namespace A2B
             }
         }
 
-        public void DropAll(IntVec3 position)
+        public void DropAll(IntVec3 position, bool forced = false)
         {
             // Check if there is anything on the belt: yes? -> make it accessible to colonists
             foreach (var thing in _container.Contents.ToList())
             {
-                DropItem(thing, position);
+                DropItem(thing, position, forced);
             }
 
             _thingCounter.Clear();
@@ -225,7 +238,7 @@ namespace A2B
 
         public void Destroy()
         {
-            DropAll(_parentComponent.parent.Position);
+            DropAll(_parentComponent.parent.Position, true);
             _container.DestroyContents();
         }
     }
