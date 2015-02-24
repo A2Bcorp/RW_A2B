@@ -3,11 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using RimWorld;
 
 namespace A2B
 {
     public class BeltLoaderComponent : BeltComponent
     {
+
+        private bool hasStorageSettings; 
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+
+            Scribe_Values.LookValue<bool>(ref hasStorageSettings, "hasStorageSettings");
+        }
+
+        public override void PostSpawnSetup()
+        {
+            base.PostSpawnSetup();
+
+            SlotGroupParent slotParent = parent as SlotGroupParent;
+            if (slotParent == null)
+            {
+                throw new InvalidOperationException("parent is not a SlotGroupParent!");
+            }
+
+            // we kinda want to not overwrite custom storage settings every save/load...
+            if (!hasStorageSettings)
+                slotParent.GetStoreSettings().allowances.DisallowAll();
+
+            hasStorageSettings = true;
+        }
 
         /**
          * Belt loaders don't freeze.

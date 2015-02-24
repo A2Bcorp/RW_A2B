@@ -6,30 +6,93 @@ namespace A2B
 {
     public class BeltSelectorComponent : BeltComponent
     {
-        public override IntVec3 GetDestinationForThing(Thing thing)
+
+        private IntRot nextDest = IntRot.west;
+        private bool hasStorageSettings;
+        private string _mythingID;
+        private IntVec3 _splitterDest;
+
+        public override void PostExposeData()
         {
-            // Test the 'selection' idea ...
-            var slotParent = parent as SlotGroupParent;
+            base.PostExposeData();
+
+            Scribe_Values.LookValue<bool>(ref hasStorageSettings, "hasStorageSettings");
+        }
+
+        public override void PostSpawnSetup()
+        {
+            base.PostSpawnSetup();
+
+            SlotGroupParent slotParent = parent as SlotGroupParent;
             if (slotParent == null)
             {
                 throw new InvalidOperationException("parent is not a SlotGroupParent!");
             }
 
-            var selectionSettings = slotParent.GetStoreSettings();
-            if (selectionSettings.AllowedToAccept(thing))
-            {
-                //return parent.Position + parent.Rotation.FacingSquare;
-                return this.GetPositionFromRelativeRotation(IntRot.north);
-            }
+            // we kinda want to not overwrite custom storage settings every save/load...
+            if (!hasStorageSettings)
+                slotParent.GetStoreSettings().allowances.DisallowAll();
 
-            return this.GetPositionFromRelativeRotation(IntRot.east);
-            // return parent.Position +
-                    //new IntVec3(parent.Rotation.FacingSquare.z, parent.Rotation.FacingSquare.y, -parent.Rotation.FacingSquare.x);
+            hasStorageSettings = true;
         }
 
-        public override bool CanAcceptFrom(IntRot direction)
+        public override IntVec3 GetDestinationForThing(Thing thing)
         {
-            return (direction == IntRot.south || direction == IntRot.west);
+            // Test the 'selection' idea ...
+            SlotGroupParent slotParent = parent as SlotGroupParent;
+            if (slotParent == null)
+            {
+                throw new InvalidOperationException("parent is not a SlotGroupParent!");
+            }
+            
+            var selectionSettings = slotParent.GetStoreSettings();
+            if (selectionSettings.AllowedToAccept(thing))
+                return this.GetPositionFromRelativeRotation(IntRot.north);
+
+            // A list of destinations - indexing modulo 2 lets us cycle them and avoid
+            // long chains of if-statements.
+            IntVec3[] dests = {
+                this.GetPositionFromRelativeRotation(IntRot.west),
+                this.GetPositionFromRelativeRotation(IntRot.east)
+            };
+
+            // Determine where we are going in the destination list (and default to left)
+            int index = Math.Max(0, Array.FindIndex(dests, dir => (dir == _splitterDest)));
+
+            // Do we have a new item ?
+            if (_mythingID == thing.ThingID && IsFreeBelt(_splitterDest))
+            {
+                return _splitterDest;
+            }
+            else
+            {
+                _mythingID = thing.ThingID;
+
+                // Try the next destination
+                index = (index + 1) % 2;
+                if (IsFreeBelt(dests[index]))
+                {
+                    _splitterDest = dests[index];
+                    return _splitterDest;
+                }
+
+                // Try the one after that
+                index = (index + 1) % 2;
+                if (IsFreeBelt(dests[index]))
+                {
+                    _splitterDest = dests[index];
+                    return _splitterDest;
+                }
+
+                // Give up and use our current destination
+                return _splitterDest;
+            }
+        }
+
+        private bool IsFreeBelt(IntVec3 position)
+        {
+            BeltComponent destBelt = position.GetBeltComponent();
+            return (destBelt != null && destBelt.CanAcceptFrom(this));
         }
     }
 }
