@@ -45,6 +45,14 @@ namespace A2B
         }
 
         /**
+         * Belt loaders don't jam.
+         **/
+        public override void Jam()
+        {
+            // stub
+        }
+
+        /**
          * Belt loaders never accept items from other belt components.
          **/
         public override bool CanAcceptSomething()

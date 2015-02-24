@@ -22,5 +22,13 @@ namespace A2B
             // stub
         }
 
+        /**
+         * Belt unloaders don't jam.
+         **/
+        public override void Jam()
+        {
+            // stub
+        }
+
     }
 }

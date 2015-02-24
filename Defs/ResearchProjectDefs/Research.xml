@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ResearchProjectDefs>
+
 	<ResearchProjectDef>
 		<defName>A2B</defName>
 		<label>[A2B] Conveyor Belts</label>
@@ -20,6 +21,22 @@
 		<defName>A2B_Climatization</defName>
 		<label>[A2B] Climatization</label>
 		<description>Climatized components allow your A2B system to continue functioning at even lower temperatures than before!</description>
+		<totalCost>800</totalCost>
+		<prerequisites><li>A2B</li></prerequisites>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef>
+		<defName>A2B_Reliability</defName>
+		<label>[A2B] Component Reliability</label>
+		<description>Enhanced production processes yield more reliable components that never jam under normal conditions!</description>
+		<totalCost>800</totalCost>
+		<prerequisites><li>A2B</li></prerequisites>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef>
+		<defName>A2B_Durability</defName>
+		<label>[A2B] Component Durability</label>
+		<description>Stronger building materials result in more durable belts what wear down much slower than before!</description>
 		<totalCost>800</totalCost>
 		<prerequisites><li>A2B</li></prerequisites>
 	</ResearchProjectDef>

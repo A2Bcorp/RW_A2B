@@ -220,21 +220,23 @@ namespace A2B
             if (this.IsReceiver())
                 return;
 
-            int maxPuffs = (Find.ResearchManager.IsFinished(ResearchProjectDef.Named(Constants.A2BTeleporterHeatResearch)) ? 2 : 3);
+            int minPuffs = (A2BResearch.TeleporterHeat.IsResearched() ? 1 : 4);
+            int maxPuffs = (A2BResearch.TeleporterHeat.IsResearched() ? 2 : 6);
+
             float heat = PowerComponent.powerOutput / basePowerConsumption * DegreesPerDistance;
 
             Room room = GridsUtility.GetRoom(parent.Position);
             if (room != null)
                 room.PushHeat(heat);
 
-            for (int i = 0; i < Rand.RangeInclusive(1, maxPuffs); ++i)
-                MoteThrower.ThrowAirPuffUp(Gen.TrueCenter(parent));
+            for (int i = 0; i < Rand.RangeInclusive(minPuffs, maxPuffs); ++i)
+                MoteThrower.ThrowAirPuffUp(parent.DrawPos);
 
             room = GridsUtility.GetRoom(ReceiverPos);
             if (room != null)
                 room.PushHeat(heat);
 
-            for (int i = 0; i < Rand.RangeInclusive(1, maxPuffs); ++i)
+            for (int i = 0; i < Rand.RangeInclusive(minPuffs, maxPuffs); ++i)
                 MoteThrower.ThrowAirPuffUp(Gen.TrueCenter(ReceiverPos, parent.Rotation, new IntVec2(2, 1), 0.5f));
         }
 	}
