@@ -4,6 +4,7 @@
     {
         Offline,
         Active,
-        Frozen
+        Frozen,
+        Jammed
     }
 }

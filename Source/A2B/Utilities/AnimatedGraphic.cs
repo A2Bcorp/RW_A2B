@@ -80,6 +80,14 @@ namespace A2B
             }
         }
 
+        public Graphic DefaultGraphic
+        {
+            get
+            {
+                return subGraphics[DefaultFrame];
+            }
+        }
+
         public override Material MatSingle
         {
             get

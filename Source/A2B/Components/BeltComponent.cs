@@ -13,23 +13,14 @@ namespace A2B
     [UsedImplicitly]
     public class BeltComponent : ThingComp
     {
-        //Changed from private to public for access from BeltItemContainer
 
+        #region Fields/Properties
+        //Changed from private to public for access from BeltItemContainer
         protected BeltItemContainer ItemContainer;
 
         private Phase _beltPhase;
 
         private IntVec3 _thingOrigin;
-
-        public BeltComponent()
-        {
-            _beltPhase = Phase.Offline;
-
-            ItemContainer = new BeltItemContainer(this);
-            ThingOrigin = IntVec3.Invalid;
-
-            BeltSpeed = Constants.DefaultBeltSpeed;
-        }
 
         public Phase BeltPhase
         {
@@ -55,6 +46,31 @@ namespace A2B
             get { return ItemContainer.Empty; }
         }
 
+        public float DeteriorateChance
+        {
+            get
+            {
+                if (A2BResearch.Durability.IsResearched())
+                    return 0.025f;
+
+                return 0.05f;
+            }
+        }
+
+        #endregion
+
+        public BeltComponent()
+        {
+            _beltPhase = Phase.Offline;
+
+            ItemContainer = new BeltItemContainer(this);
+            ThingOrigin = IntVec3.Invalid;
+
+            BeltSpeed = Constants.DefaultBeltSpeed;
+        }
+
+        #region Temperature Stuff
+
         /**
          * Settable by minTargetTemperature in the component defs
          **/
@@ -68,6 +84,163 @@ namespace A2B
                 return props.minTargetTemperature;
             }
         }
+
+        protected virtual void DoFreezeCheck()
+        {
+            float temp = GenTemperature.GetTemperatureForCell(parent.Position);
+
+            if (BeltPhase == Phase.Frozen && temp > FreezeTemperature && Rand.Range(0.0f, 1.0f) < 0.50f)
+                _beltPhase = Phase.Offline;
+
+            if (BeltPhase != Phase.Frozen && Rand.Range(0.0f, 1.0f) < this.FreezeChance(temp))
+                Freeze();
+
+        }
+
+        protected virtual void Freeze()
+        {
+            _beltPhase = Phase.Frozen;
+            Messages.Message(Constants.TxtFrozenMsg.Translate(), MessageSound.Negative);
+
+            MoteThrower.ThrowMicroSparks(Gen.TrueCenter(parent));
+        }
+
+        #endregion
+
+        #region Routing Stuff
+
+        public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
+        {
+            return this.GetPositionFromRelativeRotation(IntRot.north);
+        }
+
+        public virtual bool CanAcceptFrom(BeltComponent belt)
+        {
+            // If I can't accept from anyone, I certainly can't accept from you.
+            if (!CanAcceptSomething())
+                return false;
+
+            for (int i = 0; i < 4; ++i)
+            {
+                IntRot dir = new IntRot(i);
+                if (CanAcceptFrom(dir) && belt.parent.Position == this.GetPositionFromRelativeRotation(dir))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /**
+         *  This method assumes that the component can accept in general - i.e. If it can accept at all, can
+         *  it accept from the given direction? (If it accepts from the south, but it's currently clogged, this
+         *  method still returns true)
+         **/
+        public virtual bool CanAcceptFrom(IntRot direction)
+        {
+            return (direction == IntRot.south);
+        }
+
+        public virtual bool CanAcceptSomething()
+        {
+            return (Empty && BeltPhase == Phase.Active);
+        }
+
+        public virtual bool CanOutputToNonBelt()
+        {
+            return false;
+        }
+
+        protected virtual void MoveThingTo([NotNull] Thing thing, IntVec3 beltDest)
+        {
+            if (CanOutputToNonBelt() && Find.TerrainGrid.TerrainAt(beltDest).changeable)
+            {
+                ItemContainer.DropItem(thing, beltDest);
+            }
+            else
+            {
+                var beltComponent = beltDest.GetBeltComponent();
+
+                //  Check if there is a belt, if it is empty, and also check if it is active !
+                if (beltComponent == null || !beltComponent.ItemContainer.Empty || beltComponent.BeltPhase != Phase.Active)
+                {
+                    return;
+                }
+
+                ItemContainer.TransferItem(thing, beltComponent.ItemContainer);
+
+                // Need to check if it is a receiver or not ...
+                beltComponent.ThingOrigin = parent.Position;
+            }
+        }
+
+        #endregion
+
+        #region Drawing Stuff
+
+        protected static void DrawGUIOverlay([NotNull] ThingStatus status, Vector3 drawPos)
+        {
+            if (Find.CameraMap.CurrentZoom != CameraZoomRange.Closest)
+            {
+                return;
+            }
+            drawPos.z -= 0.4f;
+
+            var screenPos = Find.CameraMap.camera.WorldToScreenPoint(drawPos);
+            screenPos.y = Screen.height - screenPos.y;
+
+            GenWorldUI.DrawThingLabel(new Vector2(screenPos.x, screenPos.y), GenString.ToStringCached(status.Thing.stackCount),
+                new Color(1f, 1f, 1f, 0.75f));
+        }
+
+        protected virtual Vector3 GetOffset([NotNull] ThingStatus status)
+        {
+            var destination = GetDestinationForThing(status.Thing);
+
+            IntVec3 direction;
+            if (ThingOrigin != IntVec3.Invalid)
+            {
+                direction = destination - ThingOrigin;
+            }
+            else
+            {
+                direction = parent.Rotation.FacingSquare;
+            }
+
+            var progress = (float)status.Counter / BeltSpeed;
+
+            if (Math.Abs(direction.x) == 1 && Math.Abs(direction.z) == 1 && ThingOrigin != IntVec3.Invalid)
+            {
+                // Diagonal movement
+                var incoming = (parent.Position - ThingOrigin).ToVector3();
+                var outgoing = (destination - parent.Position).ToVector3();
+
+                // Now adjust the vectors.
+                // Both need to be half the length so they only reach the edge of out square
+
+                // The incoming vector also needs to be negated as it points in the wrong direction
+
+                incoming = (-incoming) / 2;
+                outgoing = outgoing / 2;
+
+                var angle = progress * Mathf.PI / 2;
+
+                var cos = Mathf.Cos(angle);
+                var sin = Mathf.Sin(angle);
+
+                return incoming * (1 - sin) + outgoing * (1 - cos);
+            }
+
+            var dir = direction.ToVector3();
+            dir.Normalize();
+
+            var scaleFactor = progress - .5f;
+
+            return dir * scaleFactor;
+        }
+
+        #endregion
+
+        #region Callbacks (Core)
 
         public override void PostDestroy(DestroyMode mode = DestroyMode.Vanish)
         {
@@ -115,121 +288,47 @@ namespace A2B
             }
         }
 
-        protected static void DrawGUIOverlay([NotNull] ThingStatus status, Vector3 drawPos)
-        {
-            if (Find.CameraMap.CurrentZoom != CameraZoomRange.Closest)
-            {
-                return;
-            }
-            drawPos.z -= 0.4f;
-
-            var screenPos = Find.CameraMap.camera.WorldToScreenPoint(drawPos);
-            screenPos.y = Screen.height - screenPos.y;
-
-            GenWorldUI.DrawThingLabel(new Vector2(screenPos.x, screenPos.y), GenString.ToStringCached(status.Thing.stackCount),
-                new Color(1f, 1f, 1f, 0.75f));
-        }
-
-        protected virtual Vector3 GetOffset([NotNull] ThingStatus status)
-        {
-            var destination = GetDestinationForThing(status.Thing);
-
-            IntVec3 direction;
-            if (ThingOrigin != IntVec3.Invalid)
-            {
-                direction = destination - ThingOrigin;
-            }
-            else
-            {
-                direction = parent.Rotation.FacingSquare;
-            }
-
-            var progress = (float) status.Counter / BeltSpeed;
-
-            if (Math.Abs(direction.x) == 1 && Math.Abs(direction.z) == 1 && ThingOrigin != IntVec3.Invalid)
-            {
-                // Diagonal movement
-                var incoming = (parent.Position - ThingOrigin).ToVector3();
-                var outgoing = (destination - parent.Position).ToVector3();
-
-                // Now adjust the vectors.
-                // Both need to be half the length so they only reach the edge of out square
-
-                // The incoming vector also needs to be negated as it points in the wrong direction
-
-                incoming = (-incoming) / 2;
-                outgoing = outgoing / 2;
-
-                var angle = progress * Mathf.PI / 2;
-
-                var cos = Mathf.Cos(angle);
-                var sin = Mathf.Sin(angle);
-
-                return incoming * (1 - sin) + outgoing * (1 - cos);
-            }
-
-            var dir = direction.ToVector3();
-            dir.Normalize();
-
-            var scaleFactor = progress - .5f;
-
-            return dir * scaleFactor;
-        }
-
         public override void CompTick()
         {
 
             if ((Find.TickManager.TicksGame + GetHashCode()) % (60 * 5) == 0)
-                DoFreezeCheck();
+                OnOccasionalTick();
 
-            if (BeltPhase == Phase.Frozen && Rand.Range(0.0f, 1.0f) < 0.01)
-                    MoteThrower.ThrowAirPuffUp(parent.DrawPos);
+            if (BeltPhase == Phase.Frozen && Rand.Range(0.0f, 1.0f) < 0.05)
+                MoteThrower.ThrowAirPuffUp(parent.DrawPos);
+
+            if (BeltPhase == Phase.Jammed && Rand.Range(0.0f, 1.0f) < 0.05)
+                MoteThrower.ThrowMicroSparks(parent.DrawPos);
 
             DoBeltTick();
 
             ItemContainer.Tick();
         }
 
-        public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
+        #endregion
+
+        #region Callbacks (Custom)
+
+        public virtual void OnOccasionalTick()
         {
-            return this.GetPositionFromRelativeRotation(IntRot.north);
+            DoFreezeCheck();
+
+            if (BeltPhase == Phase.Active || BeltPhase == Phase.Jammed)
+                DoJamCheck();
         }
 
-        public virtual bool CanAcceptFrom(BeltComponent belt)
+        protected virtual void PostItemContainerTick()
         {
-            // If I can't accept from anyone, I certainly can't accept from you.
-            if (!CanAcceptSomething())
-                return false;
-
-            for (int i = 0; i < 4; ++i)
-            {
-                IntRot dir = new IntRot(i);
-                if (CanAcceptFrom(dir) && belt.parent.Position == this.GetPositionFromRelativeRotation(dir))
-                    return true;
-            }
-
-            return false;
+            // stub
         }
 
-        /**
-         *  This method assumes that the component can accept in general - i.e. If it can accept at all, can
-         *  it accept from the given direction? (If it accepts from the south, but it's currently clogged, this
-         *  method still returns true)
-         **/
-        public virtual bool CanAcceptFrom(IntRot direction)
+        public virtual void OnItemTransfer(Thing item, BeltComponent other)
         {
-            return (direction == IntRot.south);
+            if (Rand.Range(0.0f, 1.0f) < DeteriorateChance)
+                parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, Rand.RangeInclusive(0, 2), parent));
         }
 
-        public virtual bool CanAcceptSomething()
-        {
-            return (Empty && BeltPhase == Phase.Active);
-        }
-
-        public virtual bool CanOutputToNonBelt()
-        {
-            return false;
-        }
+        #endregion
 
         private void DoBeltTick()
         {
@@ -302,57 +401,34 @@ namespace A2B
             }
         }
 
-        protected virtual void DoFreezeCheck()
+        public virtual void DoJamCheck()
         {
-            float temp = GenTemperature.GetTemperatureForCell(parent.Position);
-
-            if (BeltPhase == Phase.Frozen && temp > FreezeTemperature && Rand.Range(0.0f, 1.0f) < 0.50f)
+            if (BeltPhase == Phase.Jammed && parent.Health == parent.MaxHealth)
+            {
                 _beltPhase = Phase.Offline;
-
-            if (BeltPhase != Phase.Frozen && Rand.Range(0.0f, 1.0f) < this.FreezeChance(temp))
-                Freeze();
-                
-        }
-
-        protected virtual void Freeze()
-        {
-            _beltPhase = Phase.Frozen;
-            Messages.Message(Constants.TxtFrozenMsg.Translate(), MessageSound.Negative);
-
-            MoteThrower.ThrowMicroSparks(Gen.TrueCenter(parent));
-        }
-
-        protected virtual void PostItemContainerTick()
-        {
-            // stub
-        }
-
-        protected virtual void MoveThingTo([NotNull] Thing thing, IntVec3 beltDest)
-        {
-            if (CanOutputToNonBelt() && Find.TerrainGrid.TerrainAt(beltDest).changeable)
-            {
-                ItemContainer.DropItem(thing, beltDest);
+                return;
             }
-            else
-            {
-                var beltComponent = beltDest.GetBeltComponent();
 
-                //  Check if there is a belt, if it is empty, and also check if it is active !
-                if (beltComponent == null || !beltComponent.ItemContainer.Empty || beltComponent.BeltPhase != Phase.Active)
-                {
+            if (BeltPhase == Phase.Active)
+            {
+                float healthPercent = (float)parent.Health / (float)parent.MaxHealth;
+
+                if (A2BResearch.Reliability.IsResearched() && Rand.Range(0.0f, 1.0f) < 0.50f)
                     return;
-                }
 
-                ItemContainer.TransferItem(thing, beltComponent.ItemContainer);
-
-                // Need to check if it is a receiver or not ...
-                beltComponent.ThingOrigin = parent.Position;
+                if (Rand.Range(0.0f, 1.0f) < this.JamChance(healthPercent))
+                    Jam();
             }
         }
 
-        public virtual void OnItemTransfer(Thing item, BeltComponent other)
+        public virtual void Jam()
         {
-            // stub
+            int max = Rand.RangeInclusive(1, 3);
+            for (int i = 0; i < max; ++i)
+                MoteThrower.ThrowMicroSparks(parent.DrawPos);
+
+            _beltPhase = Phase.Jammed;
+            Messages.Message(Constants.TxtJammedMsg.Translate(), MessageSound.Negative);
         }
 
         [NotNull]
@@ -369,6 +445,9 @@ namespace A2B
                     break;
                 case Phase.Frozen:
                     statusText = Constants.TxtStatus.Translate() + " " + Constants.TxtFrozen.Translate();
+                    break;
+                case Phase.Jammed:
+                    statusText = Constants.TxtStatus.Translate() + " " + Constants.TxtJammed.Translate();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

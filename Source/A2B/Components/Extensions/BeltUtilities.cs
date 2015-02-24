@@ -101,6 +101,33 @@ namespace A2B
             return MathUtilities.LinearTransform(percent, MIN_CHANCE, MAX_CHANCE);
         }
 
+        /**
+        * Calculates the chance for this BeltComponent to jam per check at a given health percentage
+        **/
+        public static float JamChance(this BeltComponent belt, float health)
+        {
+            float delta = 1.0f - health;
+
+            const float MIN_CHANCE = 0.01f;
+            const float MAX_CHANCE = 1.00f;
+            const float FLAT_RATE_THRESHOLD = 10.0f;
+            const float START_THRESHOLD = 0.40f;
+
+            // No chance to freeze above the start threshold
+            if (delta < START_THRESHOLD)
+                return 0;
+
+            // Flat rate past a certain point
+            if (delta >= FLAT_RATE_THRESHOLD)
+                return MAX_CHANCE;
+
+            // Transform to [0, 1] (a percentage of the range)
+            float percent = MathUtilities.LinearTransformInv(delta, 0, FLAT_RATE_THRESHOLD);
+
+            // Transform to [MIN_CHANCE, MAX_CHANCE]
+            return MathUtilities.LinearTransform(percent, MIN_CHANCE, MAX_CHANCE);
+        }
+
 
     }
 }

@@ -5,9 +5,9 @@
 	<A2B_Status>Status:</A2B_Status>
 	<A2B_Offline>Offline</A2B_Offline>
 	<A2B_Active>Active</A2B_Active>
-	
 	<A2B_Frozen>Frozen</A2B_Frozen>
+	<A2B_Jammed>Jammed</A2B_Jammed>
 	
 	<A2B_Frozen_Message>One of your belts has siezed up in the cold.</A2B_Frozen_Message>
-	
+	<A2B_Jammed_Message>One of your belts is jammed! You'll need to repair it.</A2B_Jammed_Message>
 </LanguageData>
