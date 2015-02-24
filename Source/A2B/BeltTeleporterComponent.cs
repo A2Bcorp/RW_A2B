@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using RimWorld;
 #endregion
 namespace A2B
 {
@@ -12,6 +13,24 @@ namespace A2B
 		private static List<BeltTeleporterComponent> Receivers = new List<BeltTeleporterComponent>();
 		private static List<BeltTeleporterComponent> Teleporters = new List<BeltTeleporterComponent>();
 		private static float basePowerConsumption = 0f;
+
+        // Since for now we're limited on what we can actually call properties in XML, the degrees heat increase
+        // per unit distance will be read from heatPushMaxTemperature, so it is at least configurable in XML.
+        private float DegreesPerDistance
+        {
+            get
+            {
+                if (A2BResearch.TeleporterHeat.IsResearched())
+                    return 0.5f * props.heatPushMaxTemperature;
+
+                return props.heatPushMaxTemperature;
+            }
+        }
+
+        protected override void DoFreezeCheck()
+        {
+            // Teleporters / Receivers don't freeze.
+        }
 
 		public override void PostSpawnSetup()
 		{
@@ -174,6 +193,7 @@ namespace A2B
 				var midScaleFactor = progress / 0.5f;
 				return (midDirCorr * midScaleFactor) - midDirOff;
 			}
+
 			// Start the teleportation
 			var randomNumber = Random.Range(0.0f, 1.0f);
 			if (randomNumber > 2 * (progress - 0.5f))
@@ -194,5 +214,28 @@ namespace A2B
 			Teleporters.ForEach(e => e.GetReceiverPos());
 			base.PostDeSpawn();
 		}
+
+        public override void OnItemTransfer(Thing item, BeltComponent other)
+        {
+            if (this.IsReceiver())
+                return;
+
+            int maxPuffs = (Find.ResearchManager.IsFinished(ResearchProjectDef.Named(Constants.A2BTeleporterHeatResearch)) ? 2 : 3);
+            float heat = PowerComponent.powerOutput / basePowerConsumption * DegreesPerDistance;
+
+            Room room = GridsUtility.GetRoom(parent.Position);
+            if (room != null)
+                room.PushHeat(heat);
+
+            for (int i = 0; i < Rand.RangeInclusive(1, maxPuffs); ++i)
+                MoteThrower.ThrowAirPuffUp(Gen.TrueCenter(parent));
+
+            room = GridsUtility.GetRoom(ReceiverPos);
+            if (room != null)
+                room.PushHeat(heat);
+
+            for (int i = 0; i < Rand.RangeInclusive(1, maxPuffs); ++i)
+                MoteThrower.ThrowAirPuffUp(Gen.TrueCenter(ReceiverPos, parent.Rotation, new IntVec2(2, 1), 0.5f));
+        }
 	}
 }

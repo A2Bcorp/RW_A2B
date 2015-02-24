@@ -13,5 +13,14 @@ namespace A2B
         {
             return true;
         }
+
+        /**
+         * Belt unloaders don't freeze.
+         **/
+        protected override void Freeze()
+        {
+            // stub
+        }
+
     }
 }

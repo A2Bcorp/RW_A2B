@@ -55,6 +55,20 @@ namespace A2B
             get { return ItemContainer.Empty; }
         }
 
+        /**
+         * Settable by minTargetTemperature in the component defs
+         **/
+        public float FreezeTemperature
+        {
+            get
+            {
+                if (A2BResearch.Climatization.IsResearched())
+                    return props.minTargetTemperature - 20.0f;
+
+                return props.minTargetTemperature;
+            }
+        }
+
         public override void PostDestroy(DestroyMode mode = DestroyMode.Vanish)
         {
             ItemContainer.Destroy();
@@ -66,6 +80,11 @@ namespace A2B
         {
             GlowerComponent = parent.GetComp<CompGlower>();
             PowerComponent = parent.GetComp<CompPowerTrader>();
+
+            // init ice graphic
+            Graphic g = BeltUtilities.IceGraphic;
+            if (g == null)
+                Log.ErrorOnce("IceGraphic was null!", 12);
         }
 
         public override void PostExposeData()
@@ -79,6 +98,13 @@ namespace A2B
 
         public override void PostDraw()
         {
+            base.PostDraw();
+
+            if (BeltPhase == Phase.Frozen)
+            {
+                this.DrawIceGraphic();
+            }
+
             foreach (var status in ItemContainer.ThingStatus)
             {
                 var drawPos = parent.DrawPos + GetOffset(status) + Altitudes.AltIncVect * Altitudes.AltitudeFor(AltitudeLayer.Item);
@@ -152,6 +178,13 @@ namespace A2B
 
         public override void CompTick()
         {
+
+            if ((Find.TickManager.TicksGame + GetHashCode()) % (60 * 5) == 0)
+                DoFreezeCheck();
+
+            if (BeltPhase == Phase.Frozen && Rand.Range(0.0f, 1.0f) < 0.01)
+                    MoteThrower.ThrowAirPuffUp(parent.DrawPos);
+
             DoBeltTick();
 
             ItemContainer.Tick();
@@ -159,7 +192,6 @@ namespace A2B
 
         public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
         {
-            //return parent.Position + parent.Rotation.FacingSquare;
             return this.GetPositionFromRelativeRotation(IntRot.north);
         }
 
@@ -207,7 +239,7 @@ namespace A2B
                 // ----------------------
                 // phase == offline
 
-                if (_beltPhase == Phase.Offline)
+                if (BeltPhase == Phase.Offline)
                 {
                     // Turn on, incl. 'system online' glow
                     _beltPhase = Phase.Active;
@@ -229,7 +261,7 @@ namespace A2B
                 }
 
                 // phase == active
-                if (_beltPhase != Phase.Active)
+                if (BeltPhase != Phase.Active)
                 {
                     return;
                 }
@@ -259,15 +291,35 @@ namespace A2B
                 // Power off -> reset everything
                 // Let's be smart: check this only once, set the item to 'Unforbidden', and then, let the player choose what he wants to do
                 // i.e. forbid or unforbid them ...
-                if (_beltPhase != Phase.Active)
+                if (BeltPhase != Phase.Active)
                 {
                     return;
                 }
 
                 GlowerComponent.Lit = false;
                 _beltPhase = Phase.Offline;
-                ItemContainer.DropAll(parent.Position);
+                ItemContainer.DropAll(parent.Position, true);
             }
+        }
+
+        protected virtual void DoFreezeCheck()
+        {
+            float temp = GenTemperature.GetTemperatureForCell(parent.Position);
+
+            if (BeltPhase == Phase.Frozen && temp > FreezeTemperature && Rand.Range(0.0f, 1.0f) < 0.50f)
+                _beltPhase = Phase.Offline;
+
+            if (BeltPhase != Phase.Frozen && Rand.Range(0.0f, 1.0f) < this.FreezeChance(temp))
+                Freeze();
+                
+        }
+
+        protected virtual void Freeze()
+        {
+            _beltPhase = Phase.Frozen;
+            Messages.Message(Constants.TxtFrozenMsg.Translate(), MessageSound.Negative);
+
+            MoteThrower.ThrowMicroSparks(Gen.TrueCenter(parent));
         }
 
         protected virtual void PostItemContainerTick()
@@ -286,7 +338,7 @@ namespace A2B
                 var beltComponent = beltDest.GetBeltComponent();
 
                 //  Check if there is a belt, if it is empty, and also check if it is active !
-                if (beltComponent == null || !beltComponent.ItemContainer.Empty || beltComponent._beltPhase == Phase.Offline)
+                if (beltComponent == null || !beltComponent.ItemContainer.Empty || beltComponent.BeltPhase != Phase.Active)
                 {
                     return;
                 }
@@ -298,17 +350,25 @@ namespace A2B
             }
         }
 
+        public virtual void OnItemTransfer(Thing item, BeltComponent other)
+        {
+            // stub
+        }
+
         [NotNull]
         public override string CompInspectStringExtra()
         {
             string statusText;
-            switch (_beltPhase)
+            switch (BeltPhase)
             {
                 case Phase.Offline:
                     statusText = Constants.TxtStatus.Translate() + " " + Constants.TxtOffline.Translate();
                     break;
                 case Phase.Active:
                     statusText = Constants.TxtStatus.Translate() + " " + Constants.TxtActive.Translate();
+                    break;
+                case Phase.Frozen:
+                    statusText = Constants.TxtStatus.Translate() + " " + Constants.TxtFrozen.Translate();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

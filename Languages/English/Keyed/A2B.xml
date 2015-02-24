@@ -6,4 +6,8 @@
 	<A2B_Offline>Offline</A2B_Offline>
 	<A2B_Active>Active</A2B_Active>
 	
+	<A2B_Frozen>Frozen</A2B_Frozen>
+	
+	<A2B_Frozen_Message>One of your belts has siezed up in the cold.</A2B_Frozen_Message>
+	
 </LanguageData>

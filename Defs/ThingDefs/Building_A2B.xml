@@ -19,7 +19,7 @@
 		
 		<altitudeLayer>Waist</altitudeLayer>
         <passability>PassThroughOnly</passability>
-		<pathCost>10001</pathCost>
+		<pathCost>1000</pathCost>
 		
 		<drawerType>MapMeshAndRealTime</drawerType>
         <castEdgeShadows>true</castEdgeShadows>
@@ -58,6 +58,7 @@
 			</li>
 			<li>
 				<compClass>A2B.BeltComponent</compClass>
+				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
         <size>(1,1)</size>
@@ -97,6 +98,7 @@
 			</li>
             <li>
 				<compClass>A2B.BeltCurveComponent</compClass>
+				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
 		<size>(1,1)</size>
@@ -233,6 +235,7 @@
 			</li>
 			<li>
 				<compClass>A2B.BeltSplitterComponent</compClass>
+				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
         <size>(1,1)</size>
@@ -271,6 +274,7 @@
 			</li>
 			<li>
 				<compClass>A2B.BeltMergerComponent</compClass>
+				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
         <size>(1,1)</size>
@@ -312,6 +316,7 @@
 			</li>
 			<li>
 				<compClass>A2B.BeltSelectorComponent</compClass>
+				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
         <size>(1,1)</size>
@@ -352,6 +357,7 @@
 			</li>
 			<li>
 				<compClass>A2B.BeltTeleporterComponent</compClass>
+				<heatPushMaxTemperature>0.45</heatPushMaxTemperature>
 			</li>
 		</comps>
         <size>(2,2)</size>
