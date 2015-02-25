@@ -8,8 +8,10 @@ namespace A2B
     {
 
         public const string 
-            Climatization = "A2B_Climatization",
-            TeleporterHeat = "A2B_TeleporterHeat";
+            Climatization   = "A2B_Climatization",
+            TeleporterHeat  = "A2B_TeleporterHeat",
+            Durability      = "A2B_Durability",
+            Reliability     = "A2B_Reliability";
 
         public static bool IsResearched(this string name)
         {
