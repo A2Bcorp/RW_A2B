@@ -111,7 +111,7 @@ namespace A2B
 
         public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
         {
-            return this.GetPositionFromRelativeRotation(IntRot.north);
+            return this.GetPositionFromRelativeRotation(Rot4.North);
         }
 
         public virtual bool CanAcceptFrom(BeltComponent belt)
@@ -122,7 +122,7 @@ namespace A2B
 
             for (int i = 0; i < 4; ++i)
             {
-                IntRot dir = new IntRot(i);
+                Rot4 dir = new Rot4(i);
                 if (CanAcceptFrom(dir) && belt.parent.Position == this.GetPositionFromRelativeRotation(dir))
                     return true;
             }
@@ -135,9 +135,9 @@ namespace A2B
          *  it accept from the given direction? (If it accepts from the south, but it's currently clogged, this
          *  method still returns true)
          **/
-        public virtual bool CanAcceptFrom(IntRot direction)
+        public virtual bool CanAcceptFrom(Rot4 direction)
         {
-            return (direction == IntRot.south);
+            return (direction == Rot4.South);
         }
 
         public virtual bool CanAcceptSomething()
@@ -203,7 +203,7 @@ namespace A2B
             }
             else
             {
-                direction = parent.Rotation.FacingSquare;
+                direction = parent.Rotation.FacingCell;
             }
 
             var progress = (float)status.Counter / BeltSpeed;
@@ -403,7 +403,7 @@ namespace A2B
 
         public virtual void DoJamCheck()
         {
-            if (BeltPhase == Phase.Jammed && parent.Health == parent.MaxHealth)
+            if (BeltPhase == Phase.Jammed && parent.HitPoints == parent.MaxHitPoints)
             {
                 _beltPhase = Phase.Offline;
                 return;
@@ -411,7 +411,7 @@ namespace A2B
 
             if (BeltPhase == Phase.Active)
             {
-                float healthPercent = (float)parent.Health / (float)parent.MaxHealth;
+                float healthPercent = (float)parent.HitPoints / (float)parent.MaxHitPoints;
 
                 if (A2BResearch.Reliability.IsResearched() && Rand.Range(0.0f, 1.0f) < 0.50f)
                     return;

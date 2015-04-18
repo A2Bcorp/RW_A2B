@@ -2,7 +2,6 @@
 <Buildings>
 	<ThingDef Name="BuildingBase" Abstract="True">
 		<category>Building</category>
-		<eType>BuildingComplex</eType>
 		
 		<soundImpactDefault>BulletImpactSteel</soundImpactDefault>
 		
@@ -38,7 +37,7 @@
         <graphicClass>A2B.AnimatedGraphic</graphicClass>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -78,7 +77,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -138,7 +137,7 @@
 		</inspectorTabs>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -177,7 +176,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -215,7 +214,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -254,7 +253,7 @@
         <graphicClass>Graphic_Single</graphicClass>
 		<statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -296,7 +295,7 @@
 		</inspectorTabs>
         <statBases>
             <WorkToMake>550</WorkToMake>
-            <MaxHealth>200</MaxHealth>
+            <MaxHitPoints>200</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -329,14 +328,13 @@
     
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BTeleporter</defName>
-        <eType>BuildingComplex</eType>
 		<label>teleporter</label>
         <thingClass>A2B.Building_Teleporter</thingClass>
         <graphicPath>Things/Building/Teleporter</graphicPath>
         <graphicClass>A2B.AnimatedGraphic</graphicClass>
         <statBases>
             <WorkToMake>1000</WorkToMake>
-            <MaxHealth>300</MaxHealth>
+            <MaxHitPoints>300</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -376,7 +374,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <statBases>
             <WorkToMake>800</WorkToMake>
-            <MaxHealth>300</MaxHealth>
+            <MaxHitPoints>300</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>

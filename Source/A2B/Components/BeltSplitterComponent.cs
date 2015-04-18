@@ -18,9 +18,9 @@ namespace A2B
             // A list of destinations - indexing modulo 3 lets us cycle them and avoid
             // long chains of if-statements.
             IntVec3[] dests = {
-                this.GetPositionFromRelativeRotation(IntRot.west),
-                this.GetPositionFromRelativeRotation(IntRot.north),
-                this.GetPositionFromRelativeRotation(IntRot.east)
+                this.GetPositionFromRelativeRotation(Rot4.West),
+                this.GetPositionFromRelativeRotation(Rot4.North),
+                this.GetPositionFromRelativeRotation(Rot4.East)
             };
 
             // Determine where we are going in the destination list (and default to left)

@@ -8,9 +8,9 @@ namespace A2B
 {
     public class BeltMergerComponent : BeltComponent
     {
-        public override bool CanAcceptFrom(IntRot direction)
+        public override bool CanAcceptFrom(Rot4 direction)
         {
-            return (direction != IntRot.north);
+            return (direction != Rot4.North);
         }
     }
 }

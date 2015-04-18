@@ -207,12 +207,12 @@ namespace A2B
                 _thingCounter.Remove(item);
                 item.holder = null;
 
-                if (droppedItem is ThingWithComponents)
+                if (droppedItem is ThingWithComps)
                 {
                     droppedItem.SetForbidden(false);
                 }
 
-                if (droppedItem.def.eType == EntityType.Chunk && Find.DesignationManager.DesignationOn(droppedItem, DesignationDefOf.Haul) == null)
+                if (droppedItem.def.defName.Contains("Chunk") && Find.DesignationManager.DesignationOn(droppedItem, DesignationDefOf.Haul) == null)
                 {
                     // If this is a chunk AND not already haulable ("designated twice" warning) make it haulable
                     Find.DesignationManager.AddDesignation(new Designation(droppedItem, DesignationDefOf.Haul));

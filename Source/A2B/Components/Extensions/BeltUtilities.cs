@@ -20,7 +20,7 @@ namespace A2B
                 if (_iceGraphic == null)
                 {
                     Color color = new Color(1.0f, 1.0f, 1.0f, 0.4f);
-                    _iceGraphic = GraphicDatabase.Get<Graphic_Single>("Effects/ice_64", ShaderDatabase.MetaOverlay, IntVec2.one, color);
+                    _iceGraphic = GraphicDatabase.Get<Graphic_Single>("Effects/ice_64", ShaderDatabase.MetaOverlay, IntVec2.One, color);
                 }
 
                 return _iceGraphic;
@@ -68,11 +68,11 @@ namespace A2B
          * without worrying about where the belt is currently facing. 'rotation' must be
          * one of IntRot.north, IntRot.south, IntRot.east, or IntRot.west.
          **/
-        public static IntVec3 GetPositionFromRelativeRotation(this BeltComponent belt, IntRot rotation)
+        public static IntVec3 GetPositionFromRelativeRotation(this BeltComponent belt, Rot4 rotation)
         {
-            IntRot rotTotal = new IntRot((belt.parent.Rotation.AsInt + rotation.AsInt) % 4);
+            Rot4 rotTotal = new Rot4((belt.parent.Rotation.AsInt + rotation.AsInt) % 4);
 
-            return belt.parent.Position + rotTotal.FacingSquare;
+            return belt.parent.Position + rotTotal.FacingCell;
         }
 
         /**
