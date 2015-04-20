@@ -108,8 +108,6 @@ namespace A2B
 					}
 
 					myPosition += step;
-					Log.Warning (myPosition.ToIntVec3().ToString());
-					Log.Warning(belt.parent.Position.ToString());
 
 				} while ( (myPosition.ToIntVec3() != belt.parent.Position) && (IsUndercover));
 
