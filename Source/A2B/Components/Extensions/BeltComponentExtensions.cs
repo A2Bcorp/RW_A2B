@@ -22,10 +22,15 @@ namespace A2B
         {
             return belt.parent.def.defName == "A2BUnloader";
         }
-
         public static bool IsLoader([NotNull] this BeltComponent belt)
         {
             return belt.parent.def.defName == "A2BLoader";
         }
+		public static bool IsUndertaker([NotNull] this BeltComponent belt)
+		{
+			return belt.parent.def.defName == "A2BUndertaker";
+		}
+
+
     }
 }

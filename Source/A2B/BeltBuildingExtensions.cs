@@ -105,6 +105,15 @@ namespace A2B
                         continue;
                     }
 
+					// In case we have an Undercover below a regular belt, I
+					// need to check I am pushing the object to the good belt.
+					var beltComponentDest = beltDest.GetBeltComponent();
+
+					if (!beltComponentDest.CanAcceptFrom(belt))
+					{
+						continue;
+					}
+
                     var beltBuildingInstance = buildDest as IBeltBuilding;
 
                     // Does the target position contain something ? no -> move the stuff there ...
@@ -117,8 +126,8 @@ namespace A2B
                                 belt.Counter = 0;
                             }
                         }
-
-                        continue;
+						continue;
+                        
                     }
 
                     // Move

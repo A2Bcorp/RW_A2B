@@ -2,12 +2,9 @@
 <Buildings>
 	<ThingDef Name="BuildingBase" Abstract="True">
 		<category>Building</category>
-		
 		<soundImpactDefault>BulletImpactSteel</soundImpactDefault>
-		
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
-		
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<constructEffect>ConstructMetal</constructEffect>
 		<repairEffect>Repair</repairEffect>
@@ -15,16 +12,13 @@
 		<blockLight>false</blockLight>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<filthLeaving>BuildingRubble</filthLeaving>
-		
 		<altitudeLayer>Waist</altitudeLayer>
         <passability>PassThroughOnly</passability>
 		<pathCost>1000</pathCost>
-		
 		<drawerType>MapMeshAndRealTime</drawerType>
         <castEdgeShadows>true</castEdgeShadows>
         <fillPercent>1</fillPercent>
 		<staticSunShadowHeight>0.34</staticSunShadowHeight>
-		
 		<tickerType>Normal</tickerType>
         <designationCategory>ConveyorBelts</designationCategory>
 	</ThingDef>
@@ -116,7 +110,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <building>
 			<fixedStorageSettings>
-				<priority>Important</priority>
+				<priority>Normal</priority>
 				<allowances>
 					<categories>
 						<li>Root</li>
@@ -124,7 +118,7 @@
 				</allowances>
 			</fixedStorageSettings>
 			<defaultStorageSettings>
-				<priority>Important</priority>
+				<priority>Normal</priority>
                 <allowances>
                     <categories>
 						<li>Root</li>
@@ -404,4 +398,85 @@
 		<designationHotkey>R</designationHotkey>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
 	</ThingDef>
+    
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BUndercover</defName>
+		<label>undercover</label>
+        <thingClass>Building</thingClass>
+        <category>Building</category>
+        <building>
+            <isInert>true</isInert>
+            <isEdifice>false</isEdifice>
+        </building>
+        <graphicPath>Things/Building/Undercover</graphicPath>
+        <graphicClass>Graphic_Single</graphicClass>
+        <statBases>
+            <WorkToMake>800</WorkToMake>
+            <MaxHitPoints>300</MaxHitPoints>
+            <Flammability>0.2</Flammability>
+            <Beauty>0</Beauty>
+        </statBases>
+        <pathCost>10</pathCost>
+		<description>An underground belt.</description>
+        <altitudeLayer>FloorEmplacement</altitudeLayer>
+        <passability>Standable</passability>
+        <rotatable>false</rotatable>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <constructEffect>ConstructMetal</constructEffect>
+        <comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>10</basePowerConsumption>
+                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+                <transmitsPower>true</transmitsPower>
+			</li>
+		</comps>
+        <size>(1,1)</size>
+        <costList>
+            <Steel>15</Steel>
+		</costList>
+        <placingDraggableDimensions>1</placingDraggableDimensions>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
+	</ThingDef>
+    
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BUndertaker</defName>
+		<label>undertaker</label>
+        <thingClass>Building</thingClass>
+        <graphicPath>Things/Building/Undertaker</graphicPath>
+        <graphicClass>Graphic_Single</graphicClass>
+        <graphicOverdraw>true</graphicOverdraw>
+        <altitudeLayer>Projectile</altitudeLayer>
+        <statBases>
+            <WorkToMake>800</WorkToMake>
+            <MaxHitPoints>300</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
+        </statBases>
+		<description>Connects above and below-ground belts.</description>
+		<comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>15</basePowerConsumption>
+                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+                <transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompGlower</compClass>
+				<glowRadius>3</glowRadius>
+				<glowColor>(255,58,0,0)</glowColor>
+			</li>
+			<li>
+				<compClass>A2B.BeltUndertakerComponent</compClass>
+			</li>
+		</comps>
+        <size>(1,1)</size>
+        <costList>
+            <Steel>50</Steel>
+		</costList>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
+	</ThingDef>
+    
 </Buildings>
