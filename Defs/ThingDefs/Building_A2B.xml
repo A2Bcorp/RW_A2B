@@ -216,7 +216,7 @@
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>20</basePowerConsumption>
+				<basePowerConsumption>15</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>
@@ -255,7 +255,7 @@
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>20</basePowerConsumption>
+				<basePowerConsumption>15</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>
@@ -297,7 +297,7 @@
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>50</basePowerConsumption>
+				<basePowerConsumption>40</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>
@@ -314,7 +314,7 @@
 		</comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>30</Steel>
+            <Steel>25</Steel>
 		</costList>
 		<designationHotkey>P</designationHotkey>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
@@ -434,7 +434,7 @@
 		</comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>15</Steel>
+            <Steel>40</Steel>
 		</costList>
         <placingDraggableDimensions>1</placingDraggableDimensions>
         <researchPrerequisite><li>A2B2</li></researchPrerequisite>
@@ -458,7 +458,7 @@
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>15</basePowerConsumption>
+				<basePowerConsumption>50</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>
