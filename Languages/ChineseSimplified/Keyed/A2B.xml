@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- ConveyorBelts -->
+	<A2B_Status>状态:</A2B_Status>
+	<A2B_Offline>未运行</A2B_Offline>
+	<A2B_Active>运行中</A2B_Active>
+	<A2B_Frozen>Frozen结冰</A2B_Frozen>
+	<A2B_Jammed>Jammed故障</A2B_Jammed>
+	
+	<A2B_Frozen_Message>一个传送带因为太冷结冰卡住了。</A2B_Frozen_Message>
+	<A2B_Jammed_Message>你的一个传送带因故障卡住了！你需要修理它。</A2B_Jammed_Message>
+
+</LanguageData>
