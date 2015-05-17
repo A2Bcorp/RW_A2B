@@ -34,7 +34,7 @@
 
     <A2BReceiver.label>传送接收器</A2BReceiver.label>  
 
-    <A2BReceiver.description>接收发射器传送的货物，必须和发射器在同一排列方向一格间距!</A2BReceiver.description>  
+    <A2BReceiver.description>接收发射器传送的货物，必须和发射器在同一直线方向!</A2BReceiver.description>  
 
     <A2BMerger.label>输送带汇合器</A2BMerger.label>
 
