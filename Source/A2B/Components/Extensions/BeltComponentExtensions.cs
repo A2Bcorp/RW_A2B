@@ -22,15 +22,33 @@ namespace A2B
         {
             return belt.parent.def.defName == "A2BUnloader";
         }
+
         public static bool IsLoader([NotNull] this BeltComponent belt)
         {
             return belt.parent.def.defName == "A2BLoader";
         }
+
 		public static bool IsUndertaker([NotNull] this BeltComponent belt)
+		{
+			return 
+				( belt.IsSlide() )||
+				( belt.IsLift() );
+		}
+
+		public static bool IsLift([NotNull] this BeltComponent belt)
 		{
 			return belt.parent.def.defName == "A2BUndertaker";
 		}
 
+		public static bool IsSlide([NotNull] this BeltComponent belt)
+		{
+			return belt.parent.def.defName == "A2BSlide";
+		}
+
+		public static bool IsUndercover([NotNull] this BeltComponent belt)
+		{
+			return belt.parent.def.defName == "A2BUndercover";
+		}
 
     }
 }

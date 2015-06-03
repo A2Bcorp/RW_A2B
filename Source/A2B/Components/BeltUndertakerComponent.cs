@@ -8,138 +8,254 @@ using RimWorld;
 #endregion
 namespace A2B
 {
+
 	public class BeltUndertakerComponent : BeltComponent
 	{
+		private float powerPerUndercover = 10f;
 
-		private IntVec3 OutertakerPos;
-		private static List<BeltUndertakerComponent> Undertakers = new List<BeltUndertakerComponent>();
-		private static float basePowerConsumption = 0f;
+		private UndertakerMode operationMode;
+		private bool forcedMode;
 
-        protected override void DoFreezeCheck()
-        {
-            // Undertakers don't freeze.
-        }
+		// Lifts use additional power
+		// based on how many undercovers it's pulling from
+		private int undercoverCount;
+
+		public BeltUndertakerComponent()
+		{
+			_beltLevel = Level.Both;
+			operationMode = UndertakerMode.Undefined;
+			forcedMode = false;
+			undercoverCount = 0;
+		}
+
+		public override void PostExposeData()
+		{
+			Scribe_Values.LookValue( ref operationMode, "undertakerMode" );
+			Scribe_Values.LookValue( ref forcedMode, "forcedMode" );
+			Scribe_Values.LookValue( ref undercoverCount, "undercoversAttached" );
+		}
 
 		public override void PostSpawnSetup()
 		{
 			base.PostSpawnSetup();
-            if (basePowerConsumption == 0f)
-					basePowerConsumption = PowerComponent.PowerOutput;
 
-			Undertakers.Add(this);
-			// Try to assign pairs of undertakers
-			Undertakers.ForEach(e => e.GetOutertakerPos());
-
+			// Reset power usage for attached undercovers
+			if( ( operationMode == UndertakerMode.PoweredLift )&&( undercoverCount > 0 ) )
+				PowerComponent.PowerOutput = -( PowerComponent.props.basePowerConsumption + undercoverCount * powerPerUndercover );
 		}
 
-		private void GetOutertakerPos()
+		public override void OnOccasionalTick()
 		{
-			List<BeltUndertakerComponent> OutertakerList = new List<BeltUndertakerComponent>();
-			switch (parent.Rotation.AsInt)
+			// If the undertaker hasn't been forced into a specific operation mode,
+			// do an auto-check to determine it's mode
+			if( !forcedMode )
 			{
-			case 0:
-				OutertakerList = Undertakers.Where(e => e.parent.Position.x == this.parent.Position.x && e.parent.Rotation.AsInt == 2
-				                               && e.parent.Position.z > this.parent.Position.z).OrderBy(e => e.parent.Position.z).ToList();
-				break;
-			case 1:
-				OutertakerList = Undertakers.Where(e => e.parent.Position.z == this.parent.Position.z && e.parent.Rotation.AsInt == 3
-				                               && e.parent.Position.x > this.parent.Position.x).OrderBy(e => e.parent.Position.x).ToList();
-				break;
-			case 2:
-				OutertakerList = Undertakers.Where(e => e.parent.Position.x == this.parent.Position.x && e.parent.Rotation.AsInt == 0
-				                               && e.parent.Position.z < this.parent.Position.z).OrderByDescending(e => e.parent.Position.z).ToList();
-				break;
-			case 3:
-				OutertakerList = Undertakers.Where(e => e.parent.Position.z == this.parent.Position.z && e.parent.Rotation.AsInt == 1
-				                               && e.parent.Position.x < this.parent.Position.x).OrderByDescending(e => e.parent.Position.x).ToList();
-				break;
-			}
-			if (OutertakerList.Count > 0)
-			{
-				OutertakerPos = OutertakerList[0].parent.Position;
-			}
-			else
-			{
-				OutertakerPos = IntVec3.Zero;
-			}
-		}
+				// Get the top belt connection
+				BeltComponent topBelt = this.GetPositionFromRelativeRotation( Rot4.South ).GetBeltComponent( Level.Surface );
 
-		public override IntVec3 GetDestinationForThing(Thing thing)
-		{
-			// If we are coming from above ground, then send to Outeraker.
-			// Else, send to the next tile overground.
-			var beltDestUp = parent.Position - parent.Rotation.FacingCell;
-			var beltDestDown = OutertakerPos;
-			
-			return ThingOrigin == beltDestUp ? beltDestDown : beltDestUp;
-		}
-
-		// Check that two Undertakers are connected by Undercovers all the way.
-		public bool IsConnectedUnder (BeltComponent belt)
-		{
-			var direction = (belt.parent.Position - this.parent.Position);
-			var step = direction.ToVector3();
-			step.Normalize();
-
-			bool IsUndercover = false;
-
-			// First, check if the two belts are in line
-			if (belt.parent.Position.x == this.parent.Position.x || belt.parent.Position.z == this.parent.Position.z) 
-			{
-				var myPosition = this.parent.Position.ToVector3() + step;
-				// If this is already the destination, then there is no Undercover gap at all !
-				if (myPosition.ToIntVec3() == belt.parent.Position)
-					return true;
-
-				do
+				if( topBelt != null )
 				{
-					IsUndercover = false;
-
-					foreach (var target in Find.Map.thingGrid.ThingsAt(myPosition.ToIntVec3()))
+					// We have a belt connected to the top
+					if( topBelt.CanAcceptFrom( this, true ) )
 					{
-						// Check to see if this is an Undercover element.
-						if (target.def.defName == "A2BUndercover")
+						// The top belt can accept from this belt,
+						// therefore this is a powered lift
+						if( !this.IsLift() )
 						{
-							// Also need to check if it is connected to power !
-							PowerComponent = target.TryGetComp<CompPowerTrader>();
-							if (PowerComponent.PowerOn)
-								IsUndercover = true;
+							// Make sure it's a powered version
+							ChangeOperationalMode( UndertakerMode.PoweredLift );
+
+							// Force exit now to allow change
+							return;
 						}
+						// This component is already correct, set the operation mode
+						operationMode = UndertakerMode.PoweredLift;
 					}
+					else
+					{
+						// This undertaker can't feed the top belt, assume the top
+						// belt feeds the undertaker and operate as a slide
+						if( !this.IsSlide() )
+						{
+							// Slides don't use power and we don't want
+							// them to transmit to allow segmenting the
+							// power network used by the conveyors
+							ChangeOperationalMode( UndertakerMode.UnpoweredSlide );
 
-					myPosition += step;
+							// Force exit now to allow change
+							return;
+						}
+						// This component is already correct, set the operation mode
+						operationMode = UndertakerMode.UnpoweredSlide;
+					}
+				}
+			}
 
-				} while ( (myPosition.ToIntVec3() != belt.parent.Position) && (IsUndercover));
+			if( operationMode == UndertakerMode.PoweredLift )
+			{
+				// Powered lifts use additional power based
+				// on how many undercovers it's pulling
+				undercoverCount = CountUndercoversDirection( new Rot4( ( parent.Rotation.AsInt + Rot4.North.AsInt ) % 4 ) );
+				PowerComponent.PowerOutput = -( PowerComponent.props.basePowerConsumption + undercoverCount * powerPerUndercover );
 
-				return IsUndercover;
-			} 
-			return false;
+				// Powered lifts can freeze up
+				DoFreezeCheck();
+			}
+			else //if( operationMode == UndertakerMode.UnpoweredSlide )
+			{
+				// Search for an active powered lift to power this section
+				BeltComponent beltHead = null;
+				Phase newPhase = Phase.Offline;
+
+				IntVec3 curPos = parent.Position;
+				do {
+					curPos = curPos + parent.Rotation.FacingCell;
+					BeltComponent curBelt = curPos.GetBeltComponent( Level.Underground );
+					if( curBelt == null )
+						break;
+					if( curBelt.IsLift() )
+					{
+						// Regardless if the power is on, select this belt head
+						beltHead = curBelt;
+						break;
+					}
+				} while ( true );
+
+				// Did we find a power head and is it on?
+				InferedPowerComponent = beltHead == null ? null : beltHead.PowerComponent;
+				if( ( InferedPowerComponent != null )&&( InferedPowerComponent.PowerOn ) )
+				{
+					// Power head is on
+					newPhase = Phase.Active;
+				}
+				_beltPhase = newPhase;
+
+			}
+
+			// Lifts and slides can jam
+			if( BeltPhase == Phase.Active || BeltPhase == Phase.Jammed )
+				DoJamCheck();
+
 		}
 
-        public override bool CanAcceptFrom (BeltComponent belt)
+		private void ChangeOperationalMode( UndertakerMode newMode, bool forced = false )
 		{
-			// If this is an Undertaker, make sure we are connected underground AND have the good oriantation !
-			if (belt.IsUndertaker() && IsConnectedUnder(belt)) 
+			// Get the def we need
+			string beltDefName;
+			switch ( newMode )
 			{
-				if (parent.Rotation.AsInt == 0)
-					return ((belt.parent.Rotation.AsInt == 2) && (belt.parent.Position.x == this.parent.Position.x) && (belt.parent.Position.z > this.parent.Position.z));
-				if (parent.Rotation.AsInt == 1)
-					return ((belt.parent.Rotation.AsInt == 3) && (belt.parent.Position.z == this.parent.Position.z) && (belt.parent.Position.x > this.parent.Position.x));
-				if (parent.Rotation.AsInt == 2)
-					return ((belt.parent.Rotation.AsInt == 0) && (belt.parent.Position.x == this.parent.Position.x) && (belt.parent.Position.z < this.parent.Position.z));
-				if (parent.Rotation.AsInt == 3)
-					return ((belt.parent.Rotation.AsInt == 1) && (belt.parent.Position.z == this.parent.Position.z) && (belt.parent.Position.x < this.parent.Position.x));
-				else
-					return false; // Should never get here ...
+			case UndertakerMode.PoweredLift:
+				beltDefName = "A2BUndertaker";
+				break;
+			case UndertakerMode.UnpoweredSlide:
+				beltDefName = "A2BSlide";
+				break;
+			default:
+				return; // Invalid mode change
 			}
-			else 
+
+			// Get the thing def for the belt
+			ThingDef beltDef = DefDatabase<ThingDef>.GetNamed( beltDefName );
+
+			// Get our current position and rotation
+			IntVec3 beltPos = parent.Position;
+			Rot4 beltRot = parent.Rotation;
+
+			// Make the new belt
+			Thing beltThing = ThingMaker.MakeThing( beltDef );
+			beltThing.SetFactionDirect( Faction.OfColony );
+			beltThing.HitPoints = parent.HitPoints;
+
+			// Set the new belt mode
+			BeltUndertakerComponent beltComp = beltThing.TryGetComp<BeltUndertakerComponent>();
+			beltComp.forcedMode = forced;
+			beltComp.operationMode = newMode;
+
+			// Remove this belt
+			parent.Destroy( DestroyMode.Vanish );
+
+			// Spawn new belt
+			GenSpawn.Spawn( beltThing, beltPos, beltRot );
+		}
+
+		private int CountUndercoversDirection( Rot4 rot )
+		{
+			// Count all the undercovers in a line, powered 
+			// lifts power all the undercovers they pull
+			IntVec3 curPos = parent.Position;
+			int count = 0;
+			do {
+				curPos = curPos + rot.FacingCell;
+				BeltComponent curBelt = curPos.GetBeltComponent( Level.Underground );
+				if( ( curBelt == null )||
+					( !curBelt.IsUndercover() ) )
+					break;
+				count++;
+			} while ( true );
+			return count;
+		}
+
+		public override void OnItemTransfer(Thing item, BeltComponent other)
+		{
+			// Tell the undercover which direction the item came from
+			if( other.IsUndercover() )
 			{
-				return this.GetPositionFromRelativeRotation(Rot4.South) == belt.parent.Position;
+				// Input is opposite side as output
+				((BeltUndercoverComponent) other).outputDirection = parent.Rotation;
+				((BeltUndercoverComponent) other).inputDirection = new Rot4( ( parent.Rotation.AsInt + 2 ) % 4 );
 			}
+
+			// Do potential belt deterioration
+			if (Rand.Range(0.0f, 1.0f) < DeteriorateChance)
+				parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, Rand.RangeInclusive(0, 2), parent));
+		}
+
+		public override IntVec3 GetDestinationForThing( Thing thing)
+		{
+			// If it's a slide, it only sends to the "North"
+			if( operationMode == UndertakerMode.UnpoweredSlide )
+				return this.GetPositionFromRelativeRotation( Rot4.North );
+
+			// If it's a lift, it only sends to the "South"
+			if( operationMode == UndertakerMode.PoweredLift )
+				return this.GetPositionFromRelativeRotation( Rot4.South );
+
+			// Undefined operation means there is an invalid input connection
+			// This should never happen though but we'll output south by default
+			return this.GetPositionFromRelativeRotation( Rot4.South );
+		}
+
+		public override bool CanAcceptFrom( BeltComponent belt, bool onlyCheckConnection = false )
+		{
+			// If I can't accept from anyone, I certainly can't accept from you.
+			if( !onlyCheckConnection && !CanAcceptSomething() )
+				return false;
+
+			// Undefined operation means there is an invalid input connection
+			if( operationMode == UndertakerMode.Undefined )
+				return false;
+
+			// If it's a slide, it only accepts from "South"
+			if( ( operationMode == UndertakerMode.UnpoweredSlide )&&
+				( belt.parent.Position == this.GetPositionFromRelativeRotation( Rot4.South ) ) )
+				return true;
+
+			// If it's a lift, it only accepts from "North"
+			if( ( operationMode == UndertakerMode.PoweredLift )&&
+				( belt.parent.Position == this.GetPositionFromRelativeRotation( Rot4.North ) ) )
+				return true;
+
+			// Invalid input flow
+			return false;
+
         }
 
 		public override void PostDraw()
 		{	
+			if (BeltPhase == Phase.Frozen)
+			{
+				this.DrawIceGraphic();
+			}
 			foreach (var status in ItemContainer.ThingStatus)
 			{
 				var drawPos = parent.DrawPos + GetOffset(status);
@@ -149,8 +265,13 @@ namespace A2B
 				
 				DrawGUIOverlay(status, drawPos);
 			}
+			if( ( operationMode == UndertakerMode.UnpoweredSlide )&&
+				( BeltPhase == Phase.Offline ) )
+			{
+				OverlayDrawer.DrawOverlay( parent, OverlayTypes.NeedsPower );
+			}
 		}
-		
+
 		protected override Vector3 GetOffset (ThingStatus status)
 		{
 			var destination = GetDestinationForThing (status.Thing);
@@ -186,14 +307,66 @@ namespace A2B
 			}
 
 		}
-		
-		public override void PostDeSpawn()
+
+		public override string CompInspectStringExtra()
 		{
-			Undertakers.Remove(this);
-			Undertakers.ForEach(e => e.GetOutertakerPos());
-			base.PostDeSpawn();
+			string statusText = Constants.TxtUndertakerMode.Translate() + " ";
+
+			switch (operationMode)
+			{
+			case UndertakerMode.Undefined:
+				statusText += Constants.TxtUndertakerModeUndefined.Translate();
+				break;
+			case UndertakerMode.PoweredLift:
+				statusText += Constants.TxtUndertakerModeLift.Translate();
+				break;
+			case UndertakerMode.UnpoweredSlide:
+				statusText += Constants.TxtUndertakerModeSlide.Translate();
+				break;
+			default:
+				throw new ArgumentOutOfRangeException();
+			}
+
+			if( ( operationMode != UndertakerMode.Undefined )&&( forcedMode ) )
+				statusText += " (" + Constants.TxtForced.Translate() + ")";
+
+			return statusText
+				+ "\n"
+				+ base.CompInspectStringExtra();
 		}
 
-
+		public override IEnumerable<Command> CompGetGizmosExtra()
+		{
+			// Show a gizmo button to allow the player to force the operational mode
+			Command_Action actionToggleMode = new Command_Action();
+			if( actionToggleMode != null )
+			{
+				actionToggleMode.icon = ContentFinder<Texture2D>.Get( "Ui/Icons/Commands/UndertakerMode", true);;
+				actionToggleMode.defaultLabel = Constants.TxtUndertakerModeToggle.Translate();
+				actionToggleMode.activateSound = SoundDef.Named( "Click" );
+				if( operationMode == UndertakerMode.PoweredLift )
+				{
+					actionToggleMode.defaultDesc = Constants.TxtUndertakerModeSlide.Translate();
+					actionToggleMode.action = new Action( delegate()
+						{
+							ChangeOperationalMode( UndertakerMode.UnpoweredSlide, true );
+						} );
+				}
+				else
+				{
+					actionToggleMode.defaultDesc = Constants.TxtUndertakerModeLift.Translate();
+					actionToggleMode.action = new Action( delegate()
+						{
+							ChangeOperationalMode( UndertakerMode.PoweredLift, true );
+						} );
+				}
+				if( actionToggleMode.action != null )
+				{
+					yield return actionToggleMode;
+				}
+			}
+			// No more gizmos
+			yield break;
+		}
 	}
 }

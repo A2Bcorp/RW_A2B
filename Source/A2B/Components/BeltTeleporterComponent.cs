@@ -97,14 +97,14 @@ namespace A2B
 			return ReceiverPos;
 		}
 
-        public override bool CanAcceptFrom(BeltComponent belt)
+		public override bool CanAcceptFrom( BeltComponent belt, bool onlyCheckConnection = false )
         {
             if (this.IsReceiver())
             {
                 return (belt.IsTeleporter() && belt.parent.Rotation == parent.Rotation && ((BeltTeleporterComponent) belt).ReceiverPos == parent.Position);
             }
 
-            return base.CanAcceptFrom(belt);
+			return base.CanAcceptFrom(belt, onlyCheckConnection );
         }
 
 		public override void PostDraw()

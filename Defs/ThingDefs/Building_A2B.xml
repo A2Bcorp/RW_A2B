@@ -408,6 +408,7 @@
             <isInert>true</isInert>
             <isEdifice>false</isEdifice>
         </building>
+        <fillPercent>0</fillPercent>
         <graphicPath>Things/Building/Undercover</graphicPath>
         <graphicClass>Graphic_Single</graphicClass>
         <statBases>
@@ -416,7 +417,7 @@
             <Flammability>0.2</Flammability>
             <Beauty>0</Beauty>
         </statBases>
-        <pathCost>10</pathCost>
+        <pathCost>1</pathCost>
 		<description>An underground belt.</description>
         <altitudeLayer>FloorEmplacement</altitudeLayer>
         <passability>Standable</passability>
@@ -425,11 +426,8 @@
         <constructEffect>ConstructMetal</constructEffect>
         <comps>
 			<li>
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>10</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
+				<compClass>A2B.BeltUndercoverComponent</compClass>
+				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
         <size>(1,1)</size>
@@ -479,4 +477,32 @@
         <researchPrerequisite><li>A2B2</li></researchPrerequisite>
 	</ThingDef>
     
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BSlide</defName>
+		<label>undertaker</label>
+        <thingClass>Building</thingClass>
+        <graphicPath>Things/Building/Undertaker</graphicPath>
+        <graphicClass>Graphic_Single</graphicClass>
+        <graphicOverdraw>true</graphicOverdraw>
+        <altitudeLayer>Projectile</altitudeLayer>
+        <statBases>
+            <WorkToMake>800</WorkToMake>
+            <MaxHitPoints>300</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
+        </statBases>
+		<description>Connects above and below-ground belts.</description>
+		<comps>
+			<li>
+				<compClass>A2B.BeltUndertakerComponent</compClass>
+			</li>
+		</comps>
+        <size>(1,1)</size>
+        <costList>
+            <Steel>50</Steel>
+		</costList>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
+        <designationCategory>None</designationCategory>
+	</ThingDef>
+	
 </Buildings>

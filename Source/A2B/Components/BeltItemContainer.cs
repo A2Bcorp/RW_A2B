@@ -141,7 +141,7 @@ namespace A2B
 
             var destination = _parentComponent.GetDestinationForThing(thing);
 
-            var belt = destination.GetBeltComponent();
+			var belt = destination.GetBeltComponent( _parentComponent.BeltLevel );
 
             // If no belt items, then move things only if this can output to non-belts
             if (belt == null)

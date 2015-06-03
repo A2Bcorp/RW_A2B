@@ -33,15 +33,32 @@ namespace A2B
         }
 
         [CanBeNull]
-        public static BeltComponent GetBeltComponent(this IntVec3 position)
+		public static BeltComponent GetBeltComponent(this IntVec3 position, Level lookLevel = Level.Surface )
         {
             // BUGFIX: Previously, this function would grab the first building it saw at a given position. This is a problem
             // if a power conduit was on the same tile, as it was possible to miss the BeltComponent entirely. This is a more
             // robust method of identifying BeltComponents at a given location because it first finds ALL buildings on a tile.
+			// CHANGE: Belts now have a level (underground and surface), this function now looks for a component on an individual level.
 
-            var building = (Building) Find.ThingGrid.ThingsListAt(position).Find(thing => (thing.TryGetComp<BeltComponent>() != null));
+            //var building = (Building) Find.ThingGrid.ThingsListAt(position).Find(thing => (thing.TryGetComp<BeltComponent>() != null));
 
-            return building == null ? null : building.GetComp<BeltComponent>();
+			foreach( Thing t in Find.ThingGrid.ThingsListAt( position ) )
+			{
+				ThingWithComps tc = t as ThingWithComps;
+				if( tc != null )
+				{
+					BeltComponent b = tc.TryGetComp<BeltComponent>();
+					if( b != null )
+					{
+						if( ( lookLevel & b.BeltLevel ) != 0 )
+						{
+							return b;
+						}
+					}
+				}
+			}
+			
+			return null;
         }
 
         public static bool CanPlaceThing(this IntVec3 position, [NotNull] Thing thing)
