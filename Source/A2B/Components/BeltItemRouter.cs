@@ -13,10 +13,10 @@ namespace A2B
     {
         private BeltComponent _parent;
 
-        private List<IntRot> _inputs = GU.List(IntRot.south);
-        private List<IntRot> _outputs = GU.List(IntRot.north);
+        private List<Rot4> _inputs = GU.List(Rot4.South);
+        private List<Rot4> _outputs = GU.List(Rot4.North);
 
-        public List<IntRot> Inputs
+        public List<Rot4> Inputs
         {
             get
             {
@@ -24,7 +24,7 @@ namespace A2B
             }
         }
 
-        public List<IntRot> Outputs
+        public List<Rot4> Outputs
         {
             get
             {
@@ -49,9 +49,9 @@ namespace A2B
          * Gets which direction the item should go, given that it came from
          * a particular input direction.
          **/
-        public virtual IntRot GetDirectionForItem(Thing thing, IntRot inDir)
+        public virtual Rot4 GetDirectionForItem(Thing thing, Rot4 inDir)
         {
-            return IntRot.north;
+            return Rot4.North;
         }
 
     }

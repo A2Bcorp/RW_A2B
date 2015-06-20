@@ -6,16 +6,16 @@ namespace A2B
     {
         public override IntVec3 GetDestinationForThing(Thing thing)
         {
-            var beltDestA = parent.Position - parent.Rotation.FacingSquare;
+            var beltDestA = parent.Position - parent.Rotation.FacingCell;
             var beltDestB = parent.Position +
-                            new IntVec3(-parent.Rotation.FacingSquare.z, parent.Rotation.FacingSquare.y, parent.Rotation.FacingSquare.x);
+                            new IntVec3(-parent.Rotation.FacingCell.z, parent.Rotation.FacingCell.y, parent.Rotation.FacingCell.x);
 
             return ThingOrigin == beltDestA ? beltDestB : beltDestA;
         }
 
-        public override bool CanAcceptFrom(IntRot direction)
+        public override bool CanAcceptFrom(Rot4 direction)
         {
-            return (direction == IntRot.south || direction == IntRot.west);
+            return (direction == Rot4.South || direction == Rot4.West);
         }
     }
 }

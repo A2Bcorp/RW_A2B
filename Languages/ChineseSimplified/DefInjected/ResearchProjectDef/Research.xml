@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+<A2B.label>[A2B] 输送带系统</A2B.label>
+<A2B.description>解锁建造A2B输送带系统。</A2B.description>
+
+<A2B2.label>[A2B] 输送带系统 [升级]</A2B2.label>
+
+<A2B2.description>解锁[输送带分拣器]、[传送发射器]和[传送接收器]组件。</A2B2.description>
+
+
+	<A2B_Climatization.label>[A2B] 顺应气候</A2B_Climatization.label>
+
+	<A2B_Climatization.description>顺应气候调节部件允许你的A2B系统能在比以前更低的温度下继续工作！</A2B_Climatization.description>
+
+	<A2B_Reliability.label>[A2B] 部件可靠性</A2B_Reliability.label>
+
+	<A2B_Reliability.description>提高了A2B系统部件的更可靠的，在正常情况下不会出现故障！</A2B_Reliability.description>
+
+	<A2B_Durability.label>[A2B] 部件耐久性</A2B_Durability.label>
+
+	<A2B_Durability.description>A2B系统使用更加坚固的材料，增加A2B系统的持久，磨损更慢！</A2B_Durability.description>
+
+	<A2B_TeleporterHeat.label>[A2B] 传送效率</A2B_TeleporterHeat.label>
+
+	<A2B_TeleporterHeat.description>一种技术改进，高效的传送设计降低了传送物品过程中所产生的热量。更少发生火灾！</A2B_TeleporterHeat.description>
+
+</LanguageData>

@@ -7,7 +7,7 @@ namespace A2B
     public class BeltSelectorComponent : BeltComponent
     {
 
-        private IntRot nextDest = IntRot.west;
+        private Rot4 nextDest = Rot4.West;
         private bool hasStorageSettings;
         private string _mythingID;
         private IntVec3 _splitterDest;
@@ -47,13 +47,13 @@ namespace A2B
             
             var selectionSettings = slotParent.GetStoreSettings();
             if (selectionSettings.AllowedToAccept(thing))
-                return this.GetPositionFromRelativeRotation(IntRot.north);
+                return this.GetPositionFromRelativeRotation(Rot4.North);
 
             // A list of destinations - indexing modulo 2 lets us cycle them and avoid
             // long chains of if-statements.
             IntVec3[] dests = {
-                this.GetPositionFromRelativeRotation(IntRot.west),
-                this.GetPositionFromRelativeRotation(IntRot.east)
+                this.GetPositionFromRelativeRotation(Rot4.West),
+                this.GetPositionFromRelativeRotation(Rot4.East)
             };
 
             // Determine where we are going in the destination list (and default to left)
@@ -91,7 +91,7 @@ namespace A2B
 
         private bool IsFreeBelt(IntVec3 position)
         {
-            BeltComponent destBelt = position.GetBeltComponent();
+			BeltComponent destBelt = position.GetBeltComponent( this.BeltLevel );
             return (destBelt != null && destBelt.CanAcceptFrom(this));
         }
     }

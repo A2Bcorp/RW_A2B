@@ -10,6 +10,7 @@ using Verse;
 
 namespace A2B
 {
+
     [UsedImplicitly]
     public class BeltComponent : ThingComp
     {
@@ -18,20 +19,27 @@ namespace A2B
         //Changed from private to public for access from BeltItemContainer
         protected BeltItemContainer ItemContainer;
 
-        private Phase _beltPhase;
+        protected Phase _beltPhase;
 
         private IntVec3 _thingOrigin;
+
+		protected Level _beltLevel;
 
         public Phase BeltPhase
         {
             get { return _beltPhase; }
         }
 
-        [NotNull]
-        protected CompGlower GlowerComponent { get; set; }
+		public Level BeltLevel
+		{
+			get { return _beltLevel; }
+		}
 
-        [NotNull]
-        protected CompPowerTrader PowerComponent { get; set; }
+        public CompGlower GlowerComponent { get; set; }
+
+		public CompPowerTrader PowerComponent { get; set; }
+
+		public CompPowerTrader InferedPowerComponent { get; set; }
 
         public int BeltSpeed { get; protected set; }
 
@@ -61,6 +69,7 @@ namespace A2B
 
         public BeltComponent()
         {
+			_beltLevel = Level.Surface;
             _beltPhase = Phase.Offline;
 
             ItemContainer = new BeltItemContainer(this);
@@ -111,18 +120,20 @@ namespace A2B
 
         public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
         {
-            return this.GetPositionFromRelativeRotation(IntRot.north);
+            return this.GetPositionFromRelativeRotation(Rot4.North);
         }
 
-        public virtual bool CanAcceptFrom(BeltComponent belt)
+		// onlyCheckConnection - Skips all other checks except whether a physical link exists
+		// between the two components.
+		public virtual bool CanAcceptFrom( BeltComponent belt, bool onlyCheckConnection = false )
         {
             // If I can't accept from anyone, I certainly can't accept from you.
-            if (!CanAcceptSomething())
+			if( !onlyCheckConnection && !CanAcceptSomething() )
                 return false;
 
             for (int i = 0; i < 4; ++i)
             {
-                IntRot dir = new IntRot(i);
+                Rot4 dir = new Rot4(i);
                 if (CanAcceptFrom(dir) && belt.parent.Position == this.GetPositionFromRelativeRotation(dir))
                     return true;
             }
@@ -135,9 +146,9 @@ namespace A2B
          *  it accept from the given direction? (If it accepts from the south, but it's currently clogged, this
          *  method still returns true)
          **/
-        public virtual bool CanAcceptFrom(IntRot direction)
+        public virtual bool CanAcceptFrom(Rot4 direction)
         {
-            return (direction == IntRot.south);
+            return (direction == Rot4.South);
         }
 
         public virtual bool CanAcceptSomething()
@@ -158,7 +169,22 @@ namespace A2B
             }
             else
             {
-                var beltComponent = beltDest.GetBeltComponent();
+				// Default level to look at is this belts level
+				Level findLevel = BeltLevel;
+
+				// Special case for undertakers
+				if( BeltLevel == Level.Both )
+				{
+					// Lifts output to the surface
+					if( this.IsLift() )
+						findLevel = Level.Surface;
+					// Slides output to underground
+					else if( this.IsSlide() )
+						findLevel = Level.Underground;
+				}
+
+				// Find a belt component at our output level
+				var beltComponent = beltDest.GetBeltComponent( findLevel );
 
                 //  Check if there is a belt, if it is empty, and also check if it is active !
                 if (beltComponent == null || !beltComponent.ItemContainer.Empty || beltComponent.BeltPhase != Phase.Active)
@@ -203,7 +229,7 @@ namespace A2B
             }
             else
             {
-                direction = parent.Rotation.FacingSquare;
+                direction = parent.Rotation.FacingCell;
             }
 
             var progress = (float)status.Counter / BeltSpeed;
@@ -253,6 +279,7 @@ namespace A2B
         {
             GlowerComponent = parent.GetComp<CompGlower>();
             PowerComponent = parent.GetComp<CompPowerTrader>();
+			InferedPowerComponent = null;
 
             // init ice graphic
             Graphic g = BeltUtilities.IceGraphic;
@@ -262,7 +289,7 @@ namespace A2B
 
         public override void PostExposeData()
         {
-            Scribe_Values.LookValue(ref _beltPhase, "phase");
+			Scribe_Values.LookValue(ref _beltPhase, "phase");
 
             Scribe_Deep.LookDeep(ref ItemContainer, "container", this);
 
@@ -332,7 +359,16 @@ namespace A2B
 
         private void DoBeltTick()
         {
-            if (PowerComponent.PowerOn)
+			// Get the power trader
+			CompPowerTrader power = PowerComponent;
+			if( power == null )
+				power = InferedPowerComponent;
+
+			// Belts require power directly or infered through a physical link
+			if( power == null )
+				return;
+
+			if( power.PowerOn )
             {
                 // Power is on -> do work
                 // ----------------------
@@ -342,9 +378,16 @@ namespace A2B
                 {
                     // Turn on, incl. 'system online' glow
                     _beltPhase = Phase.Active;
-                    GlowerComponent.Lit = true;
+					if( GlowerComponent != null )
+                    	GlowerComponent.Lit = true;
 
-                    // Check if there is anything on the belt: yes? -> add it to our container
+					// If it's an underground belt, don't auto-pickup
+					// as it has lost it's targeting vector
+					if( _beltLevel == Level.Underground )
+						return;
+
+					// Surface belts auto-pickup items on them.
+					// Check if there is anything on the belt: yes? -> add it to our container
                     //foreach (var target in Find.Map.thingGrid.ThingsListAt(parent.Position))
                     foreach (var target in Find.Map.thingGrid.ThingsAt(parent.Position))
                     {
@@ -366,7 +409,8 @@ namespace A2B
                 }
 
                 // Active 'yellow' color
-                GlowerComponent.Lit = true; // in principle not required (should be already ON ...)
+				if( GlowerComponent != null )
+                	GlowerComponent.Lit = true; // in principle not required (should be already ON ...)
 
                 ItemContainer.Tick();
 
@@ -390,20 +434,22 @@ namespace A2B
                 // Power off -> reset everything
                 // Let's be smart: check this only once, set the item to 'Unforbidden', and then, let the player choose what he wants to do
                 // i.e. forbid or unforbid them ...
-                if (BeltPhase != Phase.Active)
+				if( ( BeltPhase != Phase.Active )||
+					( ( BeltLevel & Level.Surface ) == 0 ) )
                 {
                     return;
                 }
 
-                GlowerComponent.Lit = false;
-                _beltPhase = Phase.Offline;
+				if( GlowerComponent != null )
+                	GlowerComponent.Lit = false;
+				_beltPhase = Phase.Offline;
                 ItemContainer.DropAll(parent.Position, true);
             }
         }
 
         public virtual void DoJamCheck()
         {
-            if (BeltPhase == Phase.Jammed && parent.Health == parent.MaxHealth)
+            if (BeltPhase == Phase.Jammed && parent.HitPoints == parent.MaxHitPoints)
             {
                 _beltPhase = Phase.Offline;
                 return;
@@ -411,7 +457,7 @@ namespace A2B
 
             if (BeltPhase == Phase.Active)
             {
-                float healthPercent = (float)parent.Health / (float)parent.MaxHealth;
+                float healthPercent = (float)parent.HitPoints / (float)parent.MaxHitPoints;
 
                 if (A2BResearch.Reliability.IsResearched() && Rand.Range(0.0f, 1.0f) < 0.50f)
                     return;
@@ -434,20 +480,20 @@ namespace A2B
         [NotNull]
         public override string CompInspectStringExtra()
         {
-            string statusText;
+			string statusText = Constants.TxtStatus.Translate() + " ";
             switch (BeltPhase)
             {
                 case Phase.Offline:
-                    statusText = Constants.TxtStatus.Translate() + " " + Constants.TxtOffline.Translate();
+                    statusText += Constants.TxtOffline.Translate();
                     break;
                 case Phase.Active:
-                    statusText = Constants.TxtStatus.Translate() + " " + Constants.TxtActive.Translate();
+                    statusText += Constants.TxtActive.Translate();
                     break;
                 case Phase.Frozen:
-                    statusText = Constants.TxtStatus.Translate() + " " + Constants.TxtFrozen.Translate();
+                    statusText += Constants.TxtFrozen.Translate();
                     break;
                 case Phase.Jammed:
-                    statusText = Constants.TxtStatus.Translate() + " " + Constants.TxtJammed.Translate();
+                    statusText += Constants.TxtJammed.Translate();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -458,7 +504,10 @@ namespace A2B
                 return statusText;
             }
 
-            return statusText + "\nContents: " + ((ThingContainerGiver) ItemContainer).GetContainer().ContentsString;
+            return statusText
+				+ "\n"
+				+ Constants.TxtContents.Translate()
+				+ " " + ((ThingContainerGiver) ItemContainer).GetContainer().ContentsString;
         }
     }
 }

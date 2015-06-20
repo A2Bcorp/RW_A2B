@@ -41,14 +41,14 @@ namespace A2B
 				Teleporters.Add(this);
 				// Ensure that Teleporters have minimum energy cost when no receiver exist
 				if (basePowerConsumption == 0f)
-					basePowerConsumption = PowerComponent.powerOutput;
+					basePowerConsumption = PowerComponent.PowerOutput;
 				GetReceiverPos();
 
 			}
 			else
 			{
 				if (basePowerConsumption == 0f)
-					basePowerConsumption = PowerComponent.powerOutput;
+					basePowerConsumption = PowerComponent.PowerOutput;
 				Receivers.Add(this);
 				Teleporters.ForEach(e => e.GetReceiverPos());
 			}
@@ -79,12 +79,12 @@ namespace A2B
 			if (ReceiverList.Count > 0)
 			{
 				ReceiverPos = ReceiverList[0].parent.Position;
-				PowerComponent.powerOutput = Vector3.Distance(ReceiverPos.ToVector3(), parent.Position.ToVector3()) * basePowerConsumption;
+				PowerComponent.PowerOutput = Vector3.Distance(ReceiverPos.ToVector3(), parent.Position.ToVector3()) * basePowerConsumption;
 			}
 			else
 			{
-				ReceiverPos = IntVec3.zero;
-				PowerComponent.powerOutput = basePowerConsumption;
+				ReceiverPos = IntVec3.Zero;
+				PowerComponent.PowerOutput = basePowerConsumption;
 			}
 		}
 
@@ -97,14 +97,14 @@ namespace A2B
 			return ReceiverPos;
 		}
 
-        public override bool CanAcceptFrom(BeltComponent belt)
+		public override bool CanAcceptFrom( BeltComponent belt, bool onlyCheckConnection = false )
         {
             if (this.IsReceiver())
             {
                 return (belt.IsTeleporter() && belt.parent.Rotation == parent.Rotation && ((BeltTeleporterComponent) belt).ReceiverPos == parent.Position);
             }
 
-            return base.CanAcceptFrom(belt);
+			return base.CanAcceptFrom(belt, onlyCheckConnection );
         }
 
 		public override void PostDraw()
@@ -162,19 +162,19 @@ namespace A2B
 			if (ThingOrigin != IntVec3.Invalid && !this.IsReceiver())
 			{
 				direction = destination - ThingOrigin;
-				midDirection = parent.Position + parent.Rotation.FacingSquare - ThingOrigin;
+				midDirection = parent.Position + parent.Rotation.FacingCell - ThingOrigin;
 			}
 			else
 			{
 				if (!this.IsReceiver())
 				{
-					direction = new IntVec3(3 * parent.Rotation.FacingSquare.x, parent.Rotation.FacingSquare.y, 3 * parent.Rotation.FacingSquare.z);
-					midDirection = parent.Rotation.FacingSquare;
+					direction = new IntVec3(3 * parent.Rotation.FacingCell.x, parent.Rotation.FacingCell.y, 3 * parent.Rotation.FacingCell.z);
+					midDirection = parent.Rotation.FacingCell;
 				}
 				else
 				{
-					direction = parent.Rotation.FacingSquare;
-					midDirection = parent.Rotation.FacingSquare; // Should never be used in principle ...
+					direction = parent.Rotation.FacingCell;
+					midDirection = parent.Rotation.FacingCell; // Should never be used in principle ...
 				}
 			}
 			var progress = (float) status.Counter / BeltSpeed;
@@ -223,7 +223,7 @@ namespace A2B
             int minPuffs = (A2BResearch.TeleporterHeat.IsResearched() ? 1 : 4);
             int maxPuffs = (A2BResearch.TeleporterHeat.IsResearched() ? 2 : 6);
 
-            float heat = PowerComponent.powerOutput / basePowerConsumption * DegreesPerDistance;
+            float heat = PowerComponent.PowerOutput / basePowerConsumption * DegreesPerDistance;
 
             Room room = GridsUtility.GetRoom(parent.Position);
             if (room != null)

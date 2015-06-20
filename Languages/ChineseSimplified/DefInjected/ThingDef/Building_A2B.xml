@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<LanguageData> 
+
+    <A2BBelt.label>直线输送带</A2BBelt.label>  
+
+    <A2BBelt.description>输送带系统的基本单元。目的是把货物从A点输送到B点。</A2BBelt.description>  
+
+    <A2BCurve.label>弧线输送带</A2BCurve.label>  
+
+    <A2BCurve.description>输送带系统的基本单元, 弧形的。</A2BCurve.description>  
+
+    <A2BLoader.label>输送带装载器</A2BLoader.label>  
+
+    <A2BLoader.description>将货物装载到输送带上。</A2BLoader.description>  
+
+    <A2BUnloader.label>输送带卸货器</A2BUnloader.label>  
+
+    <A2BUnloader.description>将输送带上的货物卸载堆叠在一起。</A2BUnloader.description>  
+
+    <A2BSplitter.label>输送分流器</A2BSplitter.label>  
+
+    <A2BSplitter.description>将一条输送带上的货物分流到其他三个方向的输送带上。</A2BSplitter.description>  
+
+    <A2BSelector.label>输送带分拣器</A2BSelector.label>  
+
+    <A2BSelector.description>将输送带上的货物分类并按类别改变输送方向。</A2BSelector.description>  
+
+    <A2BTeleporter.label>传送发射器</A2BTeleporter.label>  
+
+    <A2BTeleporter.description>传送一件货物，需要接收器接收！</A2BTeleporter.description>  
+
+    <A2BReceiver.label>传送接收器</A2BReceiver.label>  
+
+    <A2BReceiver.description>接收发射器传送的货物，必须和发射器在同一直线方向!</A2BReceiver.description>  
+
+    <A2BMerger.label>输送带汇合器</A2BMerger.label>
+
+    <A2BMerger.description>将三条输送带的货物汇合到一条输送带上。</A2BMerger.description>
+
+</LanguageData>
+

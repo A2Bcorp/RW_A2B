@@ -2,13 +2,9 @@
 <Buildings>
 	<ThingDef Name="BuildingBase" Abstract="True">
 		<category>Building</category>
-		<eType>BuildingComplex</eType>
-		
 		<soundImpactDefault>BulletImpactSteel</soundImpactDefault>
-		
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
-		
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<constructEffect>ConstructMetal</constructEffect>
 		<repairEffect>Repair</repairEffect>
@@ -16,16 +12,13 @@
 		<blockLight>false</blockLight>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<filthLeaving>BuildingRubble</filthLeaving>
-		
 		<altitudeLayer>Waist</altitudeLayer>
         <passability>PassThroughOnly</passability>
 		<pathCost>1000</pathCost>
-		
 		<drawerType>MapMeshAndRealTime</drawerType>
         <castEdgeShadows>true</castEdgeShadows>
         <fillPercent>1</fillPercent>
 		<staticSunShadowHeight>0.34</staticSunShadowHeight>
-		
 		<tickerType>Normal</tickerType>
         <designationCategory>ConveyorBelts</designationCategory>
 	</ThingDef>
@@ -38,7 +31,7 @@
         <graphicClass>A2B.AnimatedGraphic</graphicClass>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -78,7 +71,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -117,7 +110,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <building>
 			<fixedStorageSettings>
-				<priority>Important</priority>
+				<priority>Normal</priority>
 				<allowances>
 					<categories>
 						<li>Root</li>
@@ -125,7 +118,7 @@
 				</allowances>
 			</fixedStorageSettings>
 			<defaultStorageSettings>
-				<priority>Important</priority>
+				<priority>Normal</priority>
                 <allowances>
                     <categories>
 						<li>Root</li>
@@ -138,7 +131,7 @@
 		</inspectorTabs>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -177,7 +170,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -215,7 +208,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -223,7 +216,7 @@
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>20</basePowerConsumption>
+				<basePowerConsumption>15</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>
@@ -254,7 +247,7 @@
         <graphicClass>Graphic_Single</graphicClass>
 		<statBases>
             <WorkToMake>400</WorkToMake>
-            <MaxHealth>150</MaxHealth>
+            <MaxHitPoints>150</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -262,7 +255,7 @@
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>20</basePowerConsumption>
+				<basePowerConsumption>15</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>
@@ -296,7 +289,7 @@
 		</inspectorTabs>
         <statBases>
             <WorkToMake>550</WorkToMake>
-            <MaxHealth>200</MaxHealth>
+            <MaxHitPoints>200</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -304,7 +297,7 @@
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>50</basePowerConsumption>
+				<basePowerConsumption>40</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
                 <transmitsPower>true</transmitsPower>
@@ -321,7 +314,7 @@
 		</comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>30</Steel>
+            <Steel>25</Steel>
 		</costList>
 		<designationHotkey>P</designationHotkey>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
@@ -329,14 +322,13 @@
     
     <ThingDef ParentName="BuildingBase">
 		<defName>A2BTeleporter</defName>
-        <eType>BuildingComplex</eType>
 		<label>teleporter</label>
         <thingClass>A2B.Building_Teleporter</thingClass>
         <graphicPath>Things/Building/Teleporter</graphicPath>
         <graphicClass>A2B.AnimatedGraphic</graphicClass>
         <statBases>
             <WorkToMake>1000</WorkToMake>
-            <MaxHealth>300</MaxHealth>
+            <MaxHitPoints>300</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -376,7 +368,7 @@
         <graphicClass>Graphic_Single</graphicClass>
         <statBases>
             <WorkToMake>800</WorkToMake>
-            <MaxHealth>300</MaxHealth>
+            <MaxHitPoints>300</MaxHitPoints>
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
@@ -406,4 +398,111 @@
 		<designationHotkey>R</designationHotkey>
 		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
 	</ThingDef>
+    
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BUndercover</defName>
+		<label>undercover</label>
+        <thingClass>Building</thingClass>
+        <category>Building</category>
+        <building>
+            <isInert>true</isInert>
+            <isEdifice>false</isEdifice>
+        </building>
+        <fillPercent>0</fillPercent>
+        <graphicPath>Things/Building/Undercover</graphicPath>
+        <graphicClass>Graphic_Single</graphicClass>
+        <statBases>
+            <WorkToMake>800</WorkToMake>
+            <MaxHitPoints>300</MaxHitPoints>
+            <Flammability>0.2</Flammability>
+            <Beauty>0</Beauty>
+        </statBases>
+        <pathCost>1</pathCost>
+		<description>An underground belt.</description>
+        <altitudeLayer>FloorEmplacement</altitudeLayer>
+        <passability>Standable</passability>
+        <rotatable>false</rotatable>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <constructEffect>ConstructMetal</constructEffect>
+        <comps>
+			<li>
+				<compClass>A2B.BeltUndercoverComponent</compClass>
+				<minTargetTemperature>-10.0</minTargetTemperature>
+			</li>
+		</comps>
+        <size>(1,1)</size>
+        <costList>
+            <Steel>40</Steel>
+		</costList>
+        <placingDraggableDimensions>1</placingDraggableDimensions>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
+	</ThingDef>
+    
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BUndertaker</defName>
+		<label>undertaker</label>
+        <thingClass>Building</thingClass>
+        <graphicPath>Things/Building/Undertaker</graphicPath>
+        <graphicClass>Graphic_Single</graphicClass>
+        <graphicOverdraw>true</graphicOverdraw>
+        <altitudeLayer>Projectile</altitudeLayer>
+        <statBases>
+            <WorkToMake>800</WorkToMake>
+            <MaxHitPoints>300</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
+        </statBases>
+		<description>Connects above and below-ground belts.</description>
+		<comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>50</basePowerConsumption>
+                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+                <transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompGlower</compClass>
+				<glowRadius>3</glowRadius>
+				<glowColor>(255,58,0,0)</glowColor>
+			</li>
+			<li>
+				<compClass>A2B.BeltUndertakerComponent</compClass>
+			</li>
+		</comps>
+        <size>(1,1)</size>
+        <costList>
+            <Steel>50</Steel>
+		</costList>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
+	</ThingDef>
+    
+    <ThingDef ParentName="BuildingBase">
+		<defName>A2BSlide</defName>
+		<label>undertaker</label>
+        <thingClass>Building</thingClass>
+        <graphicPath>Things/Building/Undertaker</graphicPath>
+        <graphicClass>Graphic_Single</graphicClass>
+        <graphicOverdraw>true</graphicOverdraw>
+        <altitudeLayer>Projectile</altitudeLayer>
+        <statBases>
+            <WorkToMake>800</WorkToMake>
+            <MaxHitPoints>300</MaxHitPoints>
+            <Flammability>1.0</Flammability>
+            <Beauty>0</Beauty>
+        </statBases>
+		<description>Connects above and below-ground belts.</description>
+		<comps>
+			<li>
+				<compClass>A2B.BeltUndertakerComponent</compClass>
+			</li>
+		</comps>
+        <size>(1,1)</size>
+        <costList>
+            <Steel>50</Steel>
+		</costList>
+        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
+        <designationCategory>None</designationCategory>
+	</ThingDef>
+	
 </Buildings>
