@@ -1,2 +1,4 @@
+# Travis CI build details
+
 language: csharp
 solution: Source/A2B/A2B.sln
