@@ -4,4 +4,5 @@ language: csharp
 solution: Source/A2B/A2B.sln
 
 before_install:
+ - chmod +x Build-Scripts/decrypt.sh
  - Build-Scripts/decrypt.sh
