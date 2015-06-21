@@ -9,6 +9,8 @@
 #   stored, or otherwise handled beyond verifying the build's status.
 #   Note that only the Linux version's DLLs can be used for this purpose.
 
+#   Also, this probably doesn't actually work.
+
 set -e
 set -u
 
