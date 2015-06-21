@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/TehJoE/RW_A2B.svg?branch=master)](https://travis-ci.org/TehJoE/RW_A2B)
+
 # A2B: conveyor belts & co.
 Is your farm submerged by rotting produces ? Is your base cluttered by enemies' corpses ? Are your colonists repeatedly slacking off ? 
 
