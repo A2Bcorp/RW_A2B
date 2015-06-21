@@ -3,6 +3,11 @@
 language: csharp
 solution: Source/A2B/A2B.sln
 
+addons:
+  apt:
+    packages:
+      - p7zip
+
 before_install:
  - chmod +x Build-Scripts/decrypt.sh
  - Build-Scripts/decrypt.sh $encrypted_d8f806c9345c_key $encrypted_d8f806c9345c_iv
