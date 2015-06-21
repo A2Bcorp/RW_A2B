@@ -12,7 +12,7 @@ pushd $DLL_DIR
 openssl aes-256-cbc -K $1 -iv $2 -in dlls.7z.enc -out dlls.7z -d
 
 # Extract the archive
-7z x dlls.7z
+7za x dlls.7z
 
 popd
 
