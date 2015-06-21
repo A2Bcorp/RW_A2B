@@ -6,7 +6,7 @@ solution: Source/A2B/A2B.sln
 addons:
   apt:
     packages:
-      - p7zip
+      - p7zip-full
 
 before_install:
  - chmod +x Build-Scripts/decrypt.sh
