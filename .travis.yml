@@ -2,3 +2,6 @@
 
 language: csharp
 solution: Source/A2B/A2B.sln
+
+before_install:
+ - Build-Scripts/decrypt.sh
