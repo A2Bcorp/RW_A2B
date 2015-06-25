@@ -25,7 +25,7 @@ namespace A2B
         public int Counter { get; private set; }
     }
 
-    public class BeltItemContainer : Saveable, ThingContainerGiver
+    public class BeltItemContainer : IExposable, IThingContainerGiver
     {
         private readonly BeltComponent _parentComponent;
 
@@ -50,12 +50,12 @@ namespace A2B
         [NotNull]
         public IEnumerable<Thing> ThingsToMove
         {
-            get { return _thingCounter.Where(pair => pair.Value >= _parentComponent.BeltSpeed).Select(pair => pair.Key).ToList(); }
+			get { return _thingCounter.Where(pair => pair.Value >= A2BData.BeltSpeed.TicksToMove).Select(pair => pair.Key).ToList(); }
         }
 
         public bool WorkToDo
         {
-            get { return _thingCounter.Any(pair => pair.Value >= _parentComponent.BeltSpeed); }
+			get { return _thingCounter.Any(pair => pair.Value >= A2BData.BeltSpeed.TicksToMove); }
         }
 
         public bool Empty
@@ -107,11 +107,16 @@ namespace A2B
         #region ThingContainerGiver Members
 
         [NotNull]
-        ThingContainer ThingContainerGiver.GetContainer()
+        ThingContainer IThingContainerGiver.GetContainer()
         {
             return _container;
         }
 
+		[NotNull]
+		IntVec3 IThingContainerGiver.GetPosition()
+		{
+			return _parentComponent.parent.PositionHeld;
+		}
         #endregion
 
         public void Tick()
@@ -127,14 +132,14 @@ namespace A2B
         private bool ShouldIncreaseCounter([NotNull] Thing thing)
         {
             var currentCounter = _thingCounter[thing];
-            if (currentCounter < _parentComponent.BeltSpeed / 2 && !_parentComponent.IsReceiver())
+			if (currentCounter < A2BData.BeltSpeed.TicksToMove / 2 && !_parentComponent.IsReceiver())
             {
                 // Always increase the counter until half the belt speed is reached
                 return true;
             }
 
             // Never go above 100%
-            if (currentCounter >= _parentComponent.BeltSpeed)
+			if (currentCounter >= A2BData.BeltSpeed.TicksToMove)
             {
                 return false;
             }

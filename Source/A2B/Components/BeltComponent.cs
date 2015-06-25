@@ -41,7 +41,7 @@ namespace A2B
 
 		public CompPowerTrader InferedPowerComponent { get; set; }
 
-        public int BeltSpeed { get; protected set; }
+        //public int BeltSpeed { get; protected set; }
 
         protected IntVec3 ThingOrigin
         {
@@ -54,18 +54,7 @@ namespace A2B
             get { return ItemContainer.Empty; }
         }
 
-        public float DeteriorateChance
-        {
-            get
-            {
-                if (A2BResearch.Durability.IsResearched())
-                    return 0.025f;
-
-                return 0.05f;
-            }
-        }
-
-        #endregion
+		#endregion
 
         public BeltComponent()
         {
@@ -75,30 +64,16 @@ namespace A2B
             ItemContainer = new BeltItemContainer(this);
             ThingOrigin = IntVec3.Invalid;
 
-            BeltSpeed = Constants.DefaultBeltSpeed;
+			//BeltSpeed = Constants.DefaultBeltSpeed;
         }
 
         #region Temperature Stuff
-
-        /**
-         * Settable by minTargetTemperature in the component defs
-         **/
-        public float FreezeTemperature
-        {
-            get
-            {
-                if (A2BResearch.Climatization.IsResearched())
-                    return props.minTargetTemperature - 20.0f;
-
-                return props.minTargetTemperature;
-            }
-        }
 
         protected virtual void DoFreezeCheck()
         {
             float temp = GenTemperature.GetTemperatureForCell(parent.Position);
 
-            if (BeltPhase == Phase.Frozen && temp > FreezeTemperature && Rand.Range(0.0f, 1.0f) < 0.50f)
+            if (BeltPhase == Phase.Frozen && temp > A2BData.Climatization.FreezeTemperature && Rand.Range(0.0f, 1.0f) < 0.50f)
                 _beltPhase = Phase.Offline;
 
             if (BeltPhase != Phase.Frozen && Rand.Range(0.0f, 1.0f) < this.FreezeChance(temp))
@@ -232,7 +207,7 @@ namespace A2B
                 direction = parent.Rotation.FacingCell;
             }
 
-            var progress = (float)status.Counter / BeltSpeed;
+			var progress = (float)status.Counter / A2BData.BeltSpeed.TicksToMove;
 
             if (Math.Abs(direction.x) == 1 && Math.Abs(direction.z) == 1 && ThingOrigin != IntVec3.Invalid)
             {
@@ -351,7 +326,7 @@ namespace A2B
 
         public virtual void OnItemTransfer(Thing item, BeltComponent other)
         {
-            if (Rand.Range(0.0f, 1.0f) < DeteriorateChance)
+			if (Rand.Range(0.0f, 1.0f) < A2BData.Durability.DeteriorateChance)
                 parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, Rand.RangeInclusive(0, 2), parent));
         }
 
@@ -392,9 +367,9 @@ namespace A2B
                     foreach (var target in Find.Map.thingGrid.ThingsAt(parent.Position))
                     {
                         // Check and make sure this is not a Pawn, and not the belt itself !
-                        if ((target.def.category == EntityCategory.Item) && (target != parent))
+                        if ((target.def.category == ThingCategory.Item) && (target != parent))
                         {
-                            ItemContainer.AddItem(target, BeltSpeed / 2);
+							ItemContainer.AddItem(target, A2BData.BeltSpeed.TicksToMove / 2);
                         }
                     }
 
@@ -447,6 +422,8 @@ namespace A2B
             }
         }
 
+		#region Reliability Stuff
+
         public virtual void DoJamCheck()
         {
             if (BeltPhase == Phase.Jammed && parent.HitPoints == parent.MaxHitPoints)
@@ -458,9 +435,6 @@ namespace A2B
             if (BeltPhase == Phase.Active)
             {
                 float healthPercent = (float)parent.HitPoints / (float)parent.MaxHitPoints;
-
-                if (A2BResearch.Reliability.IsResearched() && Rand.Range(0.0f, 1.0f) < 0.50f)
-                    return;
 
                 if (Rand.Range(0.0f, 1.0f) < this.JamChance(healthPercent))
                     Jam();
@@ -476,6 +450,8 @@ namespace A2B
             _beltPhase = Phase.Jammed;
             Messages.Message(Constants.TxtJammedMsg.Translate(), MessageSound.Negative);
         }
+
+		#endregion
 
         [NotNull]
         public override string CompInspectStringExtra()
@@ -507,7 +483,7 @@ namespace A2B
             return statusText
 				+ "\n"
 				+ Constants.TxtContents.Translate()
-				+ " " + ((ThingContainerGiver) ItemContainer).GetContainer().ContentsString;
+				+ " " + ((IThingContainerGiver) ItemContainer).GetContainer().ContentsString;
         }
     }
 }

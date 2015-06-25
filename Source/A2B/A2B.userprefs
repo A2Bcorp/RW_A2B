@@ -1,29 +1,13 @@
-﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="BeltBuildingExtensions.cs">
+﻿<Properties StartupItem="A2B.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Buildings\Building_ConveyorBelt.cs">
     <Files>
-      <File FileName="Components/BeltItemContainer.cs" Line="140" Column="14" />
-      <File FileName="Components/BeltUndertakerComponent.cs" Line="43" Column="85" />
-      <File FileName="BeltBuildingExtensions.cs" Line="116" Column="6" />
-      <File FileName="../../../../old/A2B_v0.6.2/Source/A2B/IBeltBuilding.cs" Line="1" Column="1" />
-      <File FileName="Components/BeltTeleporterComponent.cs" Line="140" Column="7" />
-      <File FileName="Components/BeltCurveComponent.cs" Line="16" Column="58" />
-      <File FileName="Components/OperationMode.cs" Line="1" Column="1" />
-      <File FileName="Components/BeltComponent.cs" Line="284" Column="5" />
-      <File FileName="Components/Extensions/BeltComponentExtensions.cs" Line="24" Column="10" />
+      <File FileName="Utilities\A2BResearch.cs" Line="138" Column="44" />
+      <File FileName="Utilities\A2BDataDef.cs" Line="22" Column="41" />
+      <File FileName="Components\Extensions\BeltUtilities.cs" Line="179" Column="1" />
+      <File FileName="Components\BeltComponent.cs" Line="15" Column="43" />
+      <File FileName="Buildings\Building_ConveyorBelt.cs" Line="1" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="A2B" expanded="True">
-            <Node name="Components" expanded="True">
-              <Node name="Extensions" expanded="True" />
-              <Node name="BeltItemContainer.cs" selected="True" />
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

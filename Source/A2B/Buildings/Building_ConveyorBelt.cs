@@ -49,7 +49,7 @@ namespace A2B
 
                 if (animation.CurrentFrame != prevFrame)
                 {
-                    Find.MapDrawer.MapChanged(Position, MapChangeType.Things, true, false);
+					Find.MapDrawer.MapMeshDirty(Position,MapMeshFlag.Things, true, false);
                     prevFrame = animation.CurrentFrame;
                 }
             }

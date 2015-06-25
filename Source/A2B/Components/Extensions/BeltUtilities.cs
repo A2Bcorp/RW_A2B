@@ -1,5 +1,7 @@
 ﻿#region Usings
 
+using System.Collections.Generic;
+using System.Linq;
 using A2B.Annotations;
 using RimWorld;
 using Verse;
@@ -20,7 +22,7 @@ namespace A2B
                 if (_iceGraphic == null)
                 {
                     Color color = new Color(1.0f, 1.0f, 1.0f, 0.4f);
-                    _iceGraphic = GraphicDatabase.Get<Graphic_Single>("Effects/ice_64", ShaderDatabase.MetaOverlay, IntVec2.One, color);
+					_iceGraphic = GraphicDatabase.Get<Graphic_Single>("Effects/ice_64", ShaderDatabase.MetaOverlay, IntVec2.One.ToVector2(), color);
                 }
 
                 return _iceGraphic;
@@ -63,23 +65,49 @@ namespace A2B
 
         public static bool CanPlaceThing(this IntVec3 position, [NotNull] Thing thing)
         {
-            var quality = GenPlace.PlaceSpotQualityAt(position, thing, position);
+			var usable = PlaceSpotPlacability( position, thing );
 
-            if (quality >= PlaceSpotQuality.Okay)
+			if( usable == PlaceSpotUsability.Usable )
             {
                 return true;
             }
 
-            var slotGroup = Find.ThingGrid.ThingAt(position, EntityCategory.Building) as SlotGroupParent;
-            if (slotGroup != null)
+            var slotGroup = Find.ThingGrid.ThingAt( position, ThingCategory.Building ) as ISlotGroupParent;
+            if( slotGroup != null )
             {
-                return slotGroup.GetStoreSettings().AllowedToAccept(thing);
+				return slotGroup.GetStoreSettings().AllowedToAccept(thing);
             }
 
             return false;
         }
 
-        /**
+		public enum PlaceSpotUsability : byte
+		{
+			Unusable,
+			Usable,
+		}
+
+		public static PlaceSpotUsability PlaceSpotPlacability( IntVec3 c, Thing thing )
+		{
+			if( !GenGrid.InBounds( c ) || !GenGrid.Walkable( c ) )
+				return PlaceSpotUsability.Unusable;
+			
+			List< Thing > list = Find.ThingGrid.ThingsListAt( c );
+			for( int index = 0; index < list.Count; ++index )
+			{
+				Thing thing1 = list[ index ];
+
+				if( thing.def.saveCompressible && thing1.def.saveCompressible )
+					return PlaceSpotUsability.Unusable;
+				
+				if( thing1.def.category == ThingCategory.Item )
+					return thing1.def == thing.def && thing1.stackCount < thing.def.stackLimit ? PlaceSpotUsability.Usable : PlaceSpotUsability.Unusable;
+				
+			}
+			return PlaceSpotUsability.Usable;
+		}
+
+		/**
          * Get the position corresponding to a rotation relative to the Thing's
          * current rotation. Used as a convenient way to specify left/right/front/back
          * without worrying about where the belt is currently facing. 'rotation' must be
@@ -97,7 +125,7 @@ namespace A2B
          **/
         public static float FreezeChance(this BeltComponent belt, float currentTemp)
         {
-            float delta = belt.FreezeTemperature - currentTemp;
+			float delta = A2BData.Climatization.FreezeTemperature - currentTemp;
 
             const float MIN_CHANCE          = 0.20f;
             const float MAX_CHANCE          = 1.00f;
@@ -127,22 +155,22 @@ namespace A2B
 
             const float MIN_CHANCE = 0.01f;
             const float MAX_CHANCE = 1.00f;
-            const float FLAT_RATE_THRESHOLD = 10.0f;
-            const float START_THRESHOLD = 0.40f;
+            //const float FLAT_RATE_THRESHOLD = 10.0f;
+            //const float START_THRESHOLD = 0.40f;
 
-            // No chance to freeze above the start threshold
-            if (delta < START_THRESHOLD)
+            // No chance to jam above the start threshold
+			if (delta < A2BData.Reliability.StartThreshold)
                 return 0;
 
             // Flat rate past a certain point
-            if (delta >= FLAT_RATE_THRESHOLD)
-                return MAX_CHANCE;
+			if (delta >= A2BData.Reliability.FlatRateThreshold)
+				return MAX_CHANCE;
 
             // Transform to [0, 1] (a percentage of the range)
-            float percent = MathUtilities.LinearTransformInv(delta, 0, FLAT_RATE_THRESHOLD);
+			float percent = MathUtilities.LinearTransformInv(delta, 0, A2BData.Reliability.FlatRateThreshold);
 
             // Transform to [MIN_CHANCE, MAX_CHANCE]
-            return MathUtilities.LinearTransform(percent, MIN_CHANCE, MAX_CHANCE);
+			return MathUtilities.LinearTransform(percent, MIN_CHANCE, MAX_CHANCE);
         }
 
 

@@ -206,7 +206,7 @@ namespace A2B
 			}
 
 			// Do potential belt deterioration
-			if (Rand.Range(0.0f, 1.0f) < DeteriorateChance)
+			if (Rand.Range(0.0f, 1.0f) < A2BData.Durability.DeteriorateChance)
 				parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, Rand.RangeInclusive(0, 2), parent));
 		}
 
@@ -276,7 +276,7 @@ namespace A2B
 		{
 			var destination = GetDestinationForThing (status.Thing);
 
-			var progress = (float)status.Counter / BeltSpeed;
+			var progress = (float)status.Counter / A2BData.BeltSpeed.TicksToMove;
 
 			// Are we going under or getting out ?
 			if (ThingOrigin == (parent.Position - parent.Rotation.FacingCell)) 
@@ -341,7 +341,7 @@ namespace A2B
 			Command_Action actionToggleMode = new Command_Action();
 			if( actionToggleMode != null )
 			{
-				actionToggleMode.icon = ContentFinder<Texture2D>.Get( "Ui/Icons/Commands/UndertakerMode", true);;
+				actionToggleMode.icon = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/UndertakerMode", true);;
 				actionToggleMode.defaultLabel = Constants.TxtUndertakerModeToggle.Translate();
 				actionToggleMode.activateSound = SoundDef.Named( "Click" );
 				if( operationMode == UndertakerMode.PoweredLift )

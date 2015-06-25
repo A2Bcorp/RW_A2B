@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Buildings>
+<Defs>
+
 	<ThingDef Name="BuildingBase" Abstract="True">
 		<category>Building</category>
+
 		<soundImpactDefault>BulletImpactSteel</soundImpactDefault>
+
 		<selectable>true</selectable>
 		<rotatable>true</rotatable>
+
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<constructEffect>ConstructMetal</constructEffect>
 		<repairEffect>Repair</repairEffect>
@@ -12,37 +16,45 @@
 		<blockLight>false</blockLight>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<filthLeaving>BuildingRubble</filthLeaving>
+
 		<altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
+		<passability>PassThroughOnly</passability>
 		<pathCost>1000</pathCost>
+
 		<drawerType>MapMeshAndRealTime</drawerType>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
 		<staticSunShadowHeight>0.34</staticSunShadowHeight>
+
 		<tickerType>Normal</tickerType>
-        <designationCategory>ConveyorBelts</designationCategory>
+
+		<designationCategory>ConveyorBelts</designationCategory>
+		<researchPrerequisite>A2B</researchPrerequisite>
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
 		<defName>A2BBelt</defName>
 		<label>conveyor belt</label>
-        <thingClass>A2B.Building_ConveyorBelt</thingClass>
-        <graphicPath>Things/Building/Belt</graphicPath>
-        <graphicClass>A2B.AnimatedGraphic</graphicClass>
-        <statBases>
-            <WorkToMake>400</WorkToMake>
-            <MaxHitPoints>150</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
+		<thingClass>A2B.Building_ConveyorBelt</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Belt</texPath>
+			<graphicClass>A2B.AnimatedGraphic</graphicClass>
+		</graphicData>
+		<statBases>
+			<WorkToMake>400</WorkToMake>
+			<MaxHitPoints>150</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+			<Beauty>0</Beauty>
+		</statBases>
 		<description>The basic unit of a conveyor belt.</description>
-        <comps>
+		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>10</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
+				<transmitsPower>true</transmitsPower>
+				<startElectricalFires>true</startElectricalFires> 
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
@@ -51,98 +63,100 @@
 			</li>
 			<li>
 				<compClass>A2B.BeltComponent</compClass>
-				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>15</Steel>
+		<size>(1,1)</size>
+		<costList>
+			<Steel>15</Steel>
 		</costList>
 		<designationHotkey>B</designationHotkey>
-        <placingDraggableDimensions>1</placingDraggableDimensions>
-        <researchPrerequisite><li>A2B</li></researchPrerequisite>
+		<placingDraggableDimensions>1</placingDraggableDimensions>
 	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
+
+	<ThingDef ParentName="BuildingBase">
 		<defName>A2BCurve</defName>
 		<label>curved belt</label>
-        <thingClass>Building</thingClass>
-		<graphicPath>Things/Building/Curve</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <statBases>
-            <WorkToMake>400</WorkToMake>
-            <MaxHitPoints>150</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-        <description>The basic unit of a conveyor belt, only curved.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Curve</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<WorkToMake>400</WorkToMake>
+			<MaxHitPoints>150</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+			<Beauty>0</Beauty>
+		</statBases>
+		<description>The basic unit of a conveyor belt, only curved.</description>
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>10</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
+				<transmitsPower>true</transmitsPower>
+				<startElectricalFires>true</startElectricalFires> 
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
 				<glowRadius>1</glowRadius>
 				<glowColor>(255,200,0,0)</glowColor>
 			</li>
-            <li>
+			<li>
 				<compClass>A2B.BeltCurveComponent</compClass>
-				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
 		<size>(1,1)</size>
-        <costList>
-            <Steel>15</Steel>
+		<costList>
+			<Steel>15</Steel>
 		</costList>
 		<designationHotkey>V</designationHotkey>
-        <researchPrerequisite><li>A2B</li></researchPrerequisite>
-    </ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
+	</ThingDef>
+
+	<ThingDef ParentName="BuildingBase">
 		<defName>A2BLoader</defName>
 		<label>loader</label>
 		<thingClass>Building_Storage</thingClass>
-        <graphicPath>Things/Building/Loader</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <building>
+		<graphicData>
+			<texPath>Things/Building/Loader</texPath>
+		<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<building>
 			<fixedStorageSettings>
 				<priority>Normal</priority>
-				<allowances>
+				<filter>
 					<categories>
 						<li>Root</li>
 					</categories>
-				</allowances>
+				</filter>
 			</fixedStorageSettings>
 			<defaultStorageSettings>
 				<priority>Normal</priority>
-                <allowances>
-                    <categories>
+				<filter>
+					<categories>
 						<li>Root</li>
-                    </categories>
-                </allowances>
+					</categories>
+				</filter>
 			</defaultStorageSettings>
 		</building>
 		<inspectorTabs>
 			<li>ITab_Storage</li>
 		</inspectorTabs>
-        <statBases>
-            <WorkToMake>400</WorkToMake>
-            <MaxHitPoints>150</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-        <description>Loads any item you want onto a belt.</description>
-        <comps>
+		<statBases>
+			<WorkToMake>400</WorkToMake>
+			<MaxHitPoints>150</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+			<Beauty>0</Beauty>
+		</statBases>
+		<description>Loads any item you want onto a belt.</description>
+		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>10</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
+				<transmitsPower>true</transmitsPower>
+				<startElectricalFires>true</startElectricalFires> 
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
@@ -153,35 +167,37 @@
 				<compClass>A2B.BeltLoaderComponent</compClass>
 			</li>
 		</comps>
-        <costList>
-            <Steel>15</Steel>
+		<costList>
+			<Steel>15</Steel>
 		</costList>
-        <neverMultiSelect>true</neverMultiSelect> 
+		<neverMultiSelect>true</neverMultiSelect> 
 		<designationHotkey>L</designationHotkey>
-        <itemSurface>true</itemSurface>
-		<researchPrerequisite>A2B</researchPrerequisite>
-	</ThingDef>  
-    
-    <ThingDef ParentName="BuildingBase">
+		<surfaceType>Item</surfaceType>
+	</ThingDef>	 
+
+	<ThingDef ParentName="BuildingBase">
 		<defName>A2BUnloader</defName>
 		<label>unloader</label>
 		<thingClass>Building</thingClass>
-        <graphicPath>Things/Building/Unloader</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <statBases>
-            <WorkToMake>400</WorkToMake>
-            <MaxHitPoints>150</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-        <description>Unload the content of a conveyor belt into a pile or onto a hopper.</description>
+		<graphicData>
+			<texPath>Things/Building/Unloader</texPath>
+		<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<WorkToMake>400</WorkToMake>
+			<MaxHitPoints>150</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+			<Beauty>0</Beauty>
+		</statBases>
+		<description>Unload the content of a conveyor belt into a pile or onto a hopper.</description>
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>10</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
+				<transmitsPower>true</transmitsPower>
+				<startElectricalFires>true</startElectricalFires> 
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
@@ -192,34 +208,36 @@
 				<compClass>A2B.BeltUnloaderComponent</compClass>
 			</li>
 		</comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>15</Steel>
+		<size>(1,1)</size>
+		<costList>
+			<Steel>15</Steel>
 		</costList>
 		<designationHotkey>U</designationHotkey>
-		<researchPrerequisite><li>A2B</li></researchPrerequisite>
 	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
+
+	<ThingDef ParentName="BuildingBase">
 		<defName>A2BSplitter</defName>
 		<label>splitter</label>
-        <thingClass>Building</thingClass>
-        <graphicPath>Things/Building/Splitter</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <statBases>
-            <WorkToMake>400</WorkToMake>
-            <MaxHitPoints>150</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Splitter</texPath>
+		<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<WorkToMake>400</WorkToMake>
+			<MaxHitPoints>150</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+			<Beauty>0</Beauty>
+		</statBases>
 		<description>Sends items left, forward, and right in sequence.</description>
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>15</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
+				<transmitsPower>true</transmitsPower>
+				<startElectricalFires>true</startElectricalFires> 
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
@@ -228,37 +246,38 @@
 			</li>
 			<li>
 				<compClass>A2B.BeltSplitterComponent</compClass>
-				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>20</Steel>
+		<size>(1,1)</size>
+		<costList>
+			<Steel>20</Steel>
 		</costList>
 		<designationHotkey>P</designationHotkey>
-		<researchPrerequisite><li>A2B</li></researchPrerequisite>
 	</ThingDef>
-	
-    <ThingDef ParentName="BuildingBase">
+
+	<ThingDef ParentName="BuildingBase">
 		<defName>A2BMerger</defName>
 		<label>merger</label>
-        <thingClass>Building</thingClass>
-        <graphicPath>Things/Building/Merger</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Merger</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
 		<statBases>
-            <WorkToMake>400</WorkToMake>
-            <MaxHitPoints>150</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
+			<WorkToMake>400</WorkToMake>
+			<MaxHitPoints>150</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+			<Beauty>0</Beauty>
+		</statBases>
 		<description>Merges up to three belts into one.</description>
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>15</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOn>PowerOnSmall</soundPowerOn>
 				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
+				<transmitsPower>true</transmitsPower>
+				<startElectricalFires>true</startElectricalFires> 
 			</li>
 			<li>
 				<compClass>CompGlower</compClass>
@@ -267,242 +286,13 @@
 			</li>
 			<li>
 				<compClass>A2B.BeltMergerComponent</compClass>
-				<minTargetTemperature>-10.0</minTargetTemperature>
 			</li>
 		</comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>20</Steel>
+		<size>(1,1)</size>
+		<costList>
+			<Steel>20</Steel>
 		</costList>
 		<designationHotkey>M</designationHotkey>
-		<researchPrerequisite><li>A2B</li></researchPrerequisite>
 	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
-		<defName>A2BSelector</defName>
-		<label>selector</label>
-        <thingClass>Building_Storage</thingClass>
-        <graphicPath>Things/Building/Selector</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <inspectorTabs>
-			<li>ITab_Storage</li>
-		</inspectorTabs>
-        <statBases>
-            <WorkToMake>550</WorkToMake>
-            <MaxHitPoints>200</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-		<description>Sort and redirect items.</description>
-		<comps>
-			<li>
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>40</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
-			</li>
-			<li>
-				<compClass>CompGlower</compClass>
-				<glowRadius>1</glowRadius>
-				<glowColor>(255,200,0,0)</glowColor>
-			</li>
-			<li>
-				<compClass>A2B.BeltSelectorComponent</compClass>
-				<minTargetTemperature>-10.0</minTargetTemperature>
-			</li>
-		</comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>25</Steel>
-		</costList>
-		<designationHotkey>P</designationHotkey>
-		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
-	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
-		<defName>A2BTeleporter</defName>
-		<label>teleporter</label>
-        <thingClass>A2B.Building_Teleporter</thingClass>
-        <graphicPath>Things/Building/Teleporter</graphicPath>
-        <graphicClass>A2B.AnimatedGraphic</graphicClass>
-        <statBases>
-            <WorkToMake>1000</WorkToMake>
-            <MaxHitPoints>300</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-		<description>Teleports items in a straight line. Requires a receiver to function!</description>
-		<comps>
-			<li>
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>15</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
-                <startElectricalFires>true</startElectricalFires> 
-			</li>
-			<li>
-				<compClass>CompGlower</compClass>
-				<glowRadius>3</glowRadius>
-				<glowColor>(255,58,0,0)</glowColor>
-			</li>
-			<li>
-				<compClass>A2B.BeltTeleporterComponent</compClass>
-				<heatPushMaxTemperature>0.45</heatPushMaxTemperature>
-			</li>
-		</comps>
-        <size>(2,2)</size>
-        <costList>
-            <Steel>50</Steel>
-		</costList>
-		<designationHotkey>T</designationHotkey>
-        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
-	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
-		<defName>A2BReceiver</defName>
-		<label>receiver</label>
-        <thingClass>Building</thingClass>
-        <graphicPath>Things/Building/Receiver</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <statBases>
-            <WorkToMake>800</WorkToMake>
-            <MaxHitPoints>300</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-		<description>Receives items from a teleporter. Needs to be built with identical orientation!</description>
-		<comps>
-			<li>
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>20</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
-                <startElectricalFires>true</startElectricalFires>
-			</li>
-			<li>
-				<compClass>CompGlower</compClass>
-				<glowRadius>2</glowRadius>
-				<glowColor>(0,230,0,0)</glowColor>
-			</li>
-			<li>
-				<compClass>A2B.BeltTeleporterComponent</compClass>
-			</li>
-		</comps>
-        <size>(2,1)</size>
-		<costList>
-            <Steel>40</Steel>
-		</costList>
-		<designationHotkey>R</designationHotkey>
-		<researchPrerequisite><li>A2B2</li></researchPrerequisite>
-	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
-		<defName>A2BUndercover</defName>
-		<label>undercover</label>
-        <thingClass>Building</thingClass>
-        <category>Building</category>
-        <building>
-            <isInert>true</isInert>
-            <isEdifice>false</isEdifice>
-        </building>
-        <fillPercent>0</fillPercent>
-        <graphicPath>Things/Building/Undercover</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <statBases>
-            <WorkToMake>800</WorkToMake>
-            <MaxHitPoints>300</MaxHitPoints>
-            <Flammability>0.2</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-        <pathCost>1</pathCost>
-		<description>An underground belt.</description>
-        <altitudeLayer>FloorEmplacement</altitudeLayer>
-        <passability>Standable</passability>
-        <rotatable>false</rotatable>
-        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-        <constructEffect>ConstructMetal</constructEffect>
-        <comps>
-			<li>
-				<compClass>A2B.BeltUndercoverComponent</compClass>
-				<minTargetTemperature>-10.0</minTargetTemperature>
-			</li>
-		</comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>40</Steel>
-		</costList>
-        <placingDraggableDimensions>1</placingDraggableDimensions>
-        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
-	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
-		<defName>A2BUndertaker</defName>
-		<label>undertaker</label>
-        <thingClass>Building</thingClass>
-        <graphicPath>Things/Building/Undertaker</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <graphicOverdraw>true</graphicOverdraw>
-        <altitudeLayer>Projectile</altitudeLayer>
-        <statBases>
-            <WorkToMake>800</WorkToMake>
-            <MaxHitPoints>300</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-		<description>Connects above and below-ground belts.</description>
-		<comps>
-			<li>
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>50</basePowerConsumption>
-                <soundPowerOn>PowerOnSmall</soundPowerOn>
-				<soundPowerOff>PowerOffSmall</soundPowerOff>
-                <transmitsPower>true</transmitsPower>
-			</li>
-			<li>
-				<compClass>CompGlower</compClass>
-				<glowRadius>3</glowRadius>
-				<glowColor>(255,58,0,0)</glowColor>
-			</li>
-			<li>
-				<compClass>A2B.BeltUndertakerComponent</compClass>
-			</li>
-		</comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>50</Steel>
-		</costList>
-        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
-	</ThingDef>
-    
-    <ThingDef ParentName="BuildingBase">
-		<defName>A2BSlide</defName>
-		<label>undertaker</label>
-        <thingClass>Building</thingClass>
-        <graphicPath>Things/Building/Undertaker</graphicPath>
-        <graphicClass>Graphic_Single</graphicClass>
-        <graphicOverdraw>true</graphicOverdraw>
-        <altitudeLayer>Projectile</altitudeLayer>
-        <statBases>
-            <WorkToMake>800</WorkToMake>
-            <MaxHitPoints>300</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-		<description>Connects above and below-ground belts.</description>
-		<comps>
-			<li>
-				<compClass>A2B.BeltUndertakerComponent</compClass>
-			</li>
-		</comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>50</Steel>
-		</costList>
-        <researchPrerequisite><li>A2B2</li></researchPrerequisite>
-        <designationCategory>None</designationCategory>
-	</ThingDef>
-	
-</Buildings>
+
+</Defs>
