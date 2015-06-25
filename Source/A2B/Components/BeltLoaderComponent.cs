@@ -23,7 +23,7 @@ namespace A2B
         {
             base.PostSpawnSetup();
 
-            SlotGroupParent slotParent = parent as SlotGroupParent;
+            ISlotGroupParent slotParent = parent as ISlotGroupParent;
             if (slotParent == null)
             {
                 throw new InvalidOperationException("parent is not a SlotGroupParent!");
@@ -31,7 +31,7 @@ namespace A2B
 
             // we kinda want to not overwrite custom storage settings every save/load...
             if (!hasStorageSettings)
-                slotParent.GetStoreSettings().allowances.DisallowAll();
+				slotParent.GetStoreSettings().filter.SetDisallowAll();
 
             hasStorageSettings = true;
         }
@@ -67,7 +67,7 @@ namespace A2B
             // This should fix the "pawn carry items to the loader all the time"-bug
             foreach (var thing in Find.ThingGrid.ThingsAt(parent.Position))
             {
-                if ((thing.def.category == EntityCategory.Item) && (thing != parent))
+                if ((thing.def.category == ThingCategory.Item) && (thing != parent))
                 {
                     var destination = GetDestinationForThing(thing);
                     var destBelt = destination.GetBeltComponent();
@@ -83,7 +83,7 @@ namespace A2B
                         continue;
                     }
 
-                    ItemContainer.AddItem(thing, BeltSpeed / 2);
+					ItemContainer.AddItem(thing, A2BData.BeltSpeed.TicksToMove / 2);
                 }
             }
         }

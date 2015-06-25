@@ -7,10 +7,10 @@ namespace A2B
     public class BeltSelectorComponent : BeltComponent
     {
 
-        private Rot4 nextDest = Rot4.West;
-        private bool hasStorageSettings;
-        private string _mythingID;
-        private IntVec3 _splitterDest;
+        protected Rot4 nextDest = Rot4.West;
+		protected bool hasStorageSettings;
+		protected string _mythingID;
+		protected IntVec3 _splitterDest;
 
         public override void PostExposeData()
         {
@@ -23,7 +23,7 @@ namespace A2B
         {
             base.PostSpawnSetup();
 
-            SlotGroupParent slotParent = parent as SlotGroupParent;
+            ISlotGroupParent slotParent = parent as ISlotGroupParent;
             if (slotParent == null)
             {
                 throw new InvalidOperationException("parent is not a SlotGroupParent!");
@@ -31,7 +31,7 @@ namespace A2B
 
             // we kinda want to not overwrite custom storage settings every save/load...
             if (!hasStorageSettings)
-                slotParent.GetStoreSettings().allowances.DisallowAll();
+				slotParent.GetStoreSettings().filter.SetDisallowAll();
 
             hasStorageSettings = true;
         }
@@ -39,7 +39,7 @@ namespace A2B
         public override IntVec3 GetDestinationForThing(Thing thing)
         {
             // Test the 'selection' idea ...
-            SlotGroupParent slotParent = parent as SlotGroupParent;
+            ISlotGroupParent slotParent = parent as ISlotGroupParent;
             if (slotParent == null)
             {
                 throw new InvalidOperationException("parent is not a SlotGroupParent!");
@@ -89,7 +89,7 @@ namespace A2B
             }
         }
 
-        private bool IsFreeBelt(IntVec3 position)
+        protected bool IsFreeBelt(IntVec3 position)
         {
 			BeltComponent destBelt = position.GetBeltComponent( this.BeltLevel );
             return (destBelt != null && destBelt.CanAcceptFrom(this));

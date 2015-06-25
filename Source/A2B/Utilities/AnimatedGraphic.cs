@@ -21,7 +21,7 @@ namespace A2B
             int finalSlash = frame.path.LastIndexOf('/');
             string path = frame.path.Substring(0, finalSlash);
 
-            AnimatedGraphic anim = (AnimatedGraphic) GraphicDatabase.Get<AnimatedGraphic>(path, frame.shader, frame.drawSize, frame.color, frame.colorTwo);
+            AnimatedGraphic anim = (AnimatedGraphic) GraphicDatabase.Get<AnimatedGraphic>(path, frame.Shader, frame.drawSize, frame.color, frame.colorTwo);
             anim.DefaultFrame = Array.FindIndex(anim.subGraphics, row => row == frame);
             return anim;
         }
@@ -37,7 +37,7 @@ namespace A2B
 
             subGraphics = new Graphic_Single[files.Count];
             path = req.path;
-            shader = req.shader;
+            //Shader = req.shader;
             color = req.color;
             drawSize = req.drawSize;
 
@@ -45,7 +45,7 @@ namespace A2B
             foreach (string file in files)
             {
                 string fileRelative = req.path + "/" + Path.GetFileNameWithoutExtension(file);
-                subGraphics[i++] = GraphicDatabase.Get<Graphic_Single>(fileRelative, shader, drawSize, color);
+                subGraphics[i++] = GraphicDatabase.Get<Graphic_Single>(fileRelative, req.shader, drawSize, color);
             }
         }
 

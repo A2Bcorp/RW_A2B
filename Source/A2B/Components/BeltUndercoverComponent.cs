@@ -103,7 +103,7 @@ namespace A2B
 			}
 
 			// Then, do potential belt deterioration
-			if (Rand.Range(0.0f, 1.0f) < DeteriorateChance)
+			if (Rand.Range(0.0f, 1.0f) < A2BData.Durability.DeteriorateChance)
 				parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, Rand.RangeInclusive(0, 2), parent));
 
 			// Now it's gone
