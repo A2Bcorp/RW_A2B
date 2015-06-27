@@ -83,7 +83,7 @@ namespace A2B
                         continue;
                     }
 
-					ItemContainer.AddItem(thing, A2BData.BeltSpeed.TicksToMove / 2);
+					ItemContainer.AddItem(thing, BeltSpeed / 2);
                 }
             }
         }

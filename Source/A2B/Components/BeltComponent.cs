@@ -41,7 +41,9 @@ namespace A2B
 
 		public CompPowerTrader InferedPowerComponent { get; set; }
 
-        //public int BeltSpeed { get; protected set; }
+        public virtual int BeltSpeed {
+            get { return A2BData.BeltSpeed.TicksToMove; }
+        }
 
         protected IntVec3 ThingOrigin
         {
@@ -93,6 +95,9 @@ namespace A2B
 
         #region Routing Stuff
 
+        /**
+         *  Returns the location the thing should go. This is where the routing happens.
+         **/
         public virtual IntVec3 GetDestinationForThing([NotNull] Thing thing)
         {
             return this.GetPositionFromRelativeRotation(Rot4.North);
@@ -126,11 +131,19 @@ namespace A2B
             return (direction == Rot4.South);
         }
 
+        /**
+         *  Returns whether the component can accept items at all. Useful for locking/disabling components without
+         *  messing with directional routing code.
+         **/
         public virtual bool CanAcceptSomething()
         {
             return (Empty && BeltPhase == Phase.Active);
         }
 
+        /**
+         *  Returns whether the component is allowed to output to anything other than a belt. Most can not - the unloader
+         *  is an example of one that can, however.
+         **/
         public virtual bool CanOutputToNonBelt()
         {
             return false;
@@ -138,6 +151,8 @@ namespace A2B
 
         protected virtual void MoveThingTo([NotNull] Thing thing, IntVec3 beltDest)
         {
+            OnBeginMove(thing, beltDest);
+
             if (CanOutputToNonBelt() && Find.TerrainGrid.TerrainAt(beltDest).changeable)
             {
                 ItemContainer.DropItem(thing, beltDest);
@@ -207,7 +222,7 @@ namespace A2B
                 direction = parent.Rotation.FacingCell;
             }
 
-			var progress = (float)status.Counter / A2BData.BeltSpeed.TicksToMove;
+            var progress = (float)status.Counter / BeltSpeed;
 
             if (Math.Abs(direction.x) == 1 && Math.Abs(direction.z) == 1 && ThingOrigin != IntVec3.Invalid)
             {
@@ -319,16 +334,47 @@ namespace A2B
                 DoJamCheck();
         }
 
+        /**
+         *  Called after the ItemContainer's tick.
+         **/
         protected virtual void PostItemContainerTick()
         {
             // stub
         }
 
+        /**
+         *  Called as soon as a destination is selected and the movement of that
+         *  item begins.
+         **/
+        public virtual void OnBeginMove(Thing thing, IntVec3 dest) {
+            // stub
+        }
+
+        /**
+         *  Called immediately before transferring an item. Returning false here
+         *  is your last chance to prevent the item from moving to the next belt.
+         **/
+        public virtual bool PreItemTransfer(Thing item, BeltComponent other) {
+            return true;
+        }
+
+        /**
+         * Called immediately after transferring an item. Useful for triggering
+         * events every time items get transferred, like deterioration.
+         **/
         public virtual void OnItemTransfer(Thing item, BeltComponent other)
         {
 			if (Rand.Range(0.0f, 1.0f) < A2BData.Durability.DeteriorateChance)
                 parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, Rand.RangeInclusive(0, 2), parent));
         }
+
+        /**
+         *  Called immediately after receiving an item.
+         **/
+        public virtual void OnItemReceived(Thing item, BeltComponent other) {
+            // stub
+        }
+
 
         #endregion
 
@@ -369,7 +415,7 @@ namespace A2B
                         // Check and make sure this is not a Pawn, and not the belt itself !
                         if ((target.def.category == ThingCategory.Item) && (target != parent))
                         {
-							ItemContainer.AddItem(target, A2BData.BeltSpeed.TicksToMove / 2);
+							ItemContainer.AddItem(target, BeltSpeed / 2);
                         }
                     }
 
@@ -400,8 +446,8 @@ namespace A2B
                 {
                     // Alright, I have something to move. Where to ?
                     var beltDest = GetDestinationForThing(thing);
-
-                    MoveThingTo(thing, beltDest);
+                    if (beltDest != IntVec3.Invalid)
+                        MoveThingTo(thing, beltDest);
                 }
             }
             else
