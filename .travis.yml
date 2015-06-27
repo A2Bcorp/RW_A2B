@@ -1,0 +1,13 @@
+# Travis CI build details
+
+language: csharp
+solution: Source/A2B/A2B.sln
+
+addons:
+  apt:
+    packages:
+      - p7zip-full
+
+before_install:
+ - chmod +x Build-Scripts/decrypt.sh
+ - Build-Scripts/decrypt.sh $encrypted_cbdb55ccd389_key $encrypted_cbdb55ccd389_iv
