@@ -18,6 +18,8 @@
 		
 		<defName>A2BCore</defName>
 		
+		<Version>0.11.1</Version>
+		
 		<!-- Belt Speed - Ticks to cross cell -->
 		<BeltSpeedBase>180</BeltSpeedBase>
 		<BeltSpeedOffset>-90</BeltSpeedOffset>

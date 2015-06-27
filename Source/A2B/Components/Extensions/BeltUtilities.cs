@@ -1,5 +1,6 @@
 ﻿#region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using A2B.Annotations;
@@ -35,76 +36,54 @@ namespace A2B
         }
 
         [CanBeNull]
-		public static BeltComponent GetBeltComponent(this IntVec3 position, Level lookLevel = Level.Surface )
+		public static BeltComponent GetBeltComponent(this IntVec3 position, Level lookLevel = Level.Surface)
         {
             // BUGFIX: Previously, this function would grab the first building it saw at a given position. This is a problem
             // if a power conduit was on the same tile, as it was possible to miss the BeltComponent entirely. This is a more
             // robust method of identifying BeltComponents at a given location because it first finds ALL buildings on a tile.
-			// CHANGE: Belts now have a level (underground and surface), this function now looks for a component on an individual level.
+            // CHANGE: Belts now have a level (underground and surface), this function now looks for a component on an individual level.
 
-            //var building = (Building) Find.ThingGrid.ThingsListAt(position).Find(thing => (thing.TryGetComp<BeltComponent>() != null));
+            // Since this query is lazily evaluated, it is much faster than using ThingsListAt.
 
-			foreach( Thing t in Find.ThingGrid.ThingsListAt( position ) )
-			{
-				ThingWithComps tc = t as ThingWithComps;
-				if( tc != null )
-				{
-					BeltComponent b = tc.TryGetComp<BeltComponent>();
-					if( b != null )
-					{
-						if( ( lookLevel & b.BeltLevel ) != 0 )
-						{
-							return b;
-						}
-					}
-				}
-			}
-			
-			return null;
+            try {
+                return Find.ThingGrid.ThingsAt(position)                                // All things at a given position
+                           .OfType<ThingWithComps>()                                    // Only ones that can be converted to ThingWithComps
+                           .Select(tc => tc.TryGetComp<BeltComponent>())                // Grab the BeltComponent from each one
+                           .First(b => b != null && (lookLevel & b.BeltLevel) != 0);    // Get the first non-null entry at the proper level
+            } catch (InvalidOperationException) {
+                return null;                                                            // Didn't find one at all
+            }
         }
 
         public static bool CanPlaceThing(this IntVec3 position, [NotNull] Thing thing)
         {
-			var usable = PlaceSpotPlacability( position, thing );
-
-			if( usable == PlaceSpotUsability.Usable )
-            {
+            if (IsSpotUsable(position, thing))
                 return true;
-            }
 
-            var slotGroup = Find.ThingGrid.ThingAt( position, ThingCategory.Building ) as ISlotGroupParent;
-            if( slotGroup != null )
-            {
+            var slotGroup = Find.ThingGrid.ThingAt(position, ThingCategory.Building) as ISlotGroupParent;
+            if (slotGroup != null)
 				return slotGroup.GetStoreSettings().AllowedToAccept(thing);
-            }
 
             return false;
         }
 
-		public enum PlaceSpotUsability : byte
+        // CHANGE: Unless KindaUsable is an option, this should really just be a boolean. Also, the name was a little
+        //         funky.
+		public static bool IsSpotUsable(IntVec3 c, Thing thing)
 		{
-			Unusable,
-			Usable,
-		}
-
-		public static PlaceSpotUsability PlaceSpotPlacability( IntVec3 c, Thing thing )
-		{
-			if( !GenGrid.InBounds( c ) || !GenGrid.Walkable( c ) )
-				return PlaceSpotUsability.Unusable;
+            if (!GenGrid.InBounds(c) || !GenGrid.Walkable(c))
+                return false;
 			
-			List< Thing > list = Find.ThingGrid.ThingsListAt( c );
-			for( int index = 0; index < list.Count; ++index )
-			{
-				Thing thing1 = list[ index ];
+			List<Thing> list = Find.ThingGrid.ThingsListAtFast(c);
+			foreach (Thing t in list) {
+				if (thing.def.saveCompressible && t.def.saveCompressible)
+					return false;
 
-				if( thing.def.saveCompressible && thing1.def.saveCompressible )
-					return PlaceSpotUsability.Unusable;
-				
-				if( thing1.def.category == ThingCategory.Item )
-					return thing1.def == thing.def && thing1.stackCount < thing.def.stackLimit ? PlaceSpotUsability.Usable : PlaceSpotUsability.Unusable;
-				
+                if (t.def.category == ThingCategory.Item)
+                    return (t.def == thing.def && t.stackCount < thing.def.stackLimit);
 			}
-			return PlaceSpotUsability.Usable;
+
+			return false;
 		}
 
 		/**

@@ -36,6 +36,8 @@ namespace A2B
 		public float			ReliabilityStartThresholdOffset;
 		public List< string >	ReliabilityResearch;
 
+        public string           Version;
+
 	}
 
 }
