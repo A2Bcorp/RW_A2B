@@ -25,7 +25,7 @@ namespace A2B
         public int Counter { get; private set; }
     }
 
-    public class BeltItemContainer : IExposable, IThingContainerGiver
+    public class BeltItemContainer : Saveable, ThingContainerGiver
     {
         private readonly BeltComponent _parentComponent;
 
@@ -50,21 +50,17 @@ namespace A2B
         [NotNull]
         public IEnumerable<Thing> ThingsToMove
         {
-			get { return _thingCounter.Where(pair => pair.Value >= TicksToMove).Select(pair => pair.Key).ToList(); }
+            get { return _thingCounter.Where(pair => pair.Value >= _parentComponent.BeltSpeed).Select(pair => pair.Key).ToList(); }
         }
 
         public bool WorkToDo
         {
-			get { return _thingCounter.Any(pair => pair.Value >= TicksToMove); }
+            get { return _thingCounter.Any(pair => pair.Value >= _parentComponent.BeltSpeed); }
         }
 
         public bool Empty
         {
             get { return _container.Empty; }
-        }
-
-        public int TicksToMove {
-            get { return _parentComponent.BeltSpeed; }
         }
 
         [NotNull]
@@ -111,16 +107,11 @@ namespace A2B
         #region ThingContainerGiver Members
 
         [NotNull]
-        ThingContainer IThingContainerGiver.GetContainer()
+        ThingContainer ThingContainerGiver.GetContainer()
         {
             return _container;
         }
 
-		[NotNull]
-		IntVec3 IThingContainerGiver.GetPosition()
-		{
-			return _parentComponent.parent.PositionHeld;
-		}
         #endregion
 
         public void Tick()
@@ -136,14 +127,14 @@ namespace A2B
         private bool ShouldIncreaseCounter([NotNull] Thing thing)
         {
             var currentCounter = _thingCounter[thing];
-			if (currentCounter < TicksToMove / 2 && !_parentComponent.IsReceiver())
+            if (currentCounter < _parentComponent.BeltSpeed / 2 && !_parentComponent.IsReceiver())
             {
                 // Always increase the counter until half the belt speed is reached
                 return true;
             }
 
             // Never go above 100%
-			if (currentCounter >= TicksToMove)
+            if (currentCounter >= _parentComponent.BeltSpeed)
             {
                 return false;
             }
@@ -175,15 +166,12 @@ namespace A2B
 
         public void TransferItem([NotNull] Thing item, [NotNull] BeltItemContainer other)
         {
-            if (!_parentComponent.PreItemTransfer(item, other._parentComponent))
-                return;
-
             _container.Remove(item);
             _thingCounter.Remove(item);
+
             other.AddItem(item);
 
             _parentComponent.OnItemTransfer(item, other._parentComponent);
-            other._parentComponent.OnItemReceived(item, _parentComponent);
         }
 
         public void DropItem([NotNull] Thing item, IntVec3 position, bool forced = false)

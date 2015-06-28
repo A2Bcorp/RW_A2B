@@ -276,7 +276,7 @@ namespace A2B
 		{
 			var destination = GetDestinationForThing (status.Thing);
 
-			var progress = (float)status.Counter / BeltSpeed;
+			var progress = (float)status.Counter / A2BData.BeltSpeed.TicksToMove;
 
 			// Are we going under or getting out ?
 			if (ThingOrigin == (parent.Position - parent.Rotation.FacingCell)) 
