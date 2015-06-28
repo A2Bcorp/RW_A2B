@@ -1,5 +1,6 @@
 ﻿#region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using A2B.Annotations;
@@ -32,6 +33,29 @@ namespace A2B
         private readonly Dictionary<Thing, int> _thingCounter;
 
         private ThingContainer _container;
+
+        static BeltItemContainer()
+        {
+            A2BMonitor.RegisterTickAction("BeltItemContainer.DoAtmosphereEffects", DoAtmosphereEffects);
+        }
+
+        private static int cycle = 0;
+        public static void DoAtmosphereEffects()
+        {
+            int cells = (int) (Find.Map.Area * 0.0006f);
+           
+            for (int i = 0; i < cells; ++i) {
+                if (cycle >= Find.Map.Area)
+                    cycle = 0;
+
+                var cell = MapCellsInRandomOrder.Get(cycle++);
+                var belt = cell.GetBeltComponent(Level.Both);
+
+                if (belt != null) {
+                    belt.ItemContainer.AtmosphereEffectsTick();
+                }
+            }
+        }
 
         public BeltItemContainer([NotNull] BeltComponent component)
         {
@@ -130,6 +154,24 @@ namespace A2B
             foreach (var thing in Contents.Where(ShouldIncreaseCounter))
             {
                 _thingCounter[thing]++;
+            }
+        }
+
+        public void AtmosphereEffectsTick()
+        {
+            var SteadyAtmosphereEffects = typeof(SteadyAtmosphereEffects);
+            foreach (var thing in Contents.ToList()) {
+                SteadyAtmosphereEffects.Call("TryDoDeteriorate", thing, _parentComponent.parent.Position, false);
+            }
+        }
+
+        // We still want items to rot while sitting on the belts, but ThingContainer doesn't call
+        // TickRare on its contents, which is where the rotting mechanic takes place.
+        public void TickRare()
+        {
+            foreach (var thing in Contents.ToList()) {
+                if (thing.def.tickerType == TickerType.Rare)
+                    thing.TickRare();
             }
         }
 

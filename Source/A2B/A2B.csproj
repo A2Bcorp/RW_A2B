@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utilities\A2BMonitor.cs" />
     <Compile Include="Utilities\A2BResearch.cs" />
     <Compile Include="Utilities\AnimatedGraphic.cs" />
     <Compile Include="Components\BeltItemRouter.cs" />
@@ -66,7 +67,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Scribe_Fixed.cs" />
     <Compile Include="Components\BeltUndertakerComponent.cs" />
-    <Compile Include="Utilities\TickHandler.cs" />
     <Compile Include="Components\BeltUndercoverComponent.cs" />
     <Compile Include="Components\Level.cs" />
     <Compile Include="Components\UndertakerMode.cs" />

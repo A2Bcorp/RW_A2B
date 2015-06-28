@@ -75,6 +75,9 @@ namespace A2B
                 return false;
 			
 			List<Thing> list = Find.ThingGrid.ThingsListAtFast(c);
+            if (!list.Any())
+                return true;
+
 			foreach (Thing t in list) {
 				if (thing.def.saveCompressible && t.def.saveCompressible)
 					return false;
