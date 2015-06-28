@@ -83,7 +83,11 @@ namespace A2B
                         continue;
                     }
 
+<<<<<<< HEAD
 					ItemContainer.AddItem(thing, BeltSpeed / 2);
+=======
+					ItemContainer.AddItem(thing, A2BData.BeltSpeed.TicksToMove / 2);
+>>>>>>> A2Bcorp/master
                 }
             }
         }

@@ -35,11 +35,9 @@
     <Reference Include="System.Core" />
     <Reference Include="Assembly-CSharp">
       <HintPath>Source-DLLs\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>Source-DLLs\UnityEngine.dll</HintPath>
-      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -71,9 +69,12 @@
     <Compile Include="Components\Level.cs" />
     <Compile Include="Components\UndertakerMode.cs" />
     <Compile Include="Utilities\A2BDataDef.cs" />
+<<<<<<< HEAD
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+=======
+>>>>>>> A2Bcorp/master
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

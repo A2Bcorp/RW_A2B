@@ -50,12 +50,20 @@ namespace A2B
         [NotNull]
         public IEnumerable<Thing> ThingsToMove
         {
+<<<<<<< HEAD
 			get { return _thingCounter.Where(pair => pair.Value >= TicksToMove).Select(pair => pair.Key).ToList(); }
+=======
+			get { return _thingCounter.Where(pair => pair.Value >= A2BData.BeltSpeed.TicksToMove).Select(pair => pair.Key).ToList(); }
+>>>>>>> A2Bcorp/master
         }
 
         public bool WorkToDo
         {
+<<<<<<< HEAD
 			get { return _thingCounter.Any(pair => pair.Value >= TicksToMove); }
+=======
+			get { return _thingCounter.Any(pair => pair.Value >= A2BData.BeltSpeed.TicksToMove); }
+>>>>>>> A2Bcorp/master
         }
 
         public bool Empty
@@ -136,14 +144,22 @@ namespace A2B
         private bool ShouldIncreaseCounter([NotNull] Thing thing)
         {
             var currentCounter = _thingCounter[thing];
+<<<<<<< HEAD
 			if (currentCounter < TicksToMove / 2 && !_parentComponent.IsReceiver())
+=======
+			if (currentCounter < A2BData.BeltSpeed.TicksToMove / 2 && !_parentComponent.IsReceiver())
+>>>>>>> A2Bcorp/master
             {
                 // Always increase the counter until half the belt speed is reached
                 return true;
             }
 
             // Never go above 100%
+<<<<<<< HEAD
 			if (currentCounter >= TicksToMove)
+=======
+			if (currentCounter >= A2BData.BeltSpeed.TicksToMove)
+>>>>>>> A2Bcorp/master
             {
                 return false;
             }

@@ -1,6 +1,9 @@
 ﻿#region Usings
 
+<<<<<<< HEAD
 using System;
+=======
+>>>>>>> A2Bcorp/master
 using System.Collections.Generic;
 using System.Linq;
 using A2B.Annotations;
@@ -56,17 +59,34 @@ namespace A2B
         }
 
         public static bool CanPlaceThing(this IntVec3 position, [NotNull] Thing thing)
+<<<<<<< HEAD
         {
             if (IsSpotUsable(position, thing))
+=======
+        {
+			var usable = PlaceSpotPlacability( position, thing );
+
+			if( usable == PlaceSpotUsability.Usable )
+            {
+>>>>>>> A2Bcorp/master
                 return true;
 
+<<<<<<< HEAD
             var slotGroup = Find.ThingGrid.ThingAt(position, ThingCategory.Building) as ISlotGroupParent;
             if (slotGroup != null)
 				return slotGroup.GetStoreSettings().AllowedToAccept(thing);
+=======
+            var slotGroup = Find.ThingGrid.ThingAt( position, ThingCategory.Building ) as ISlotGroupParent;
+            if( slotGroup != null )
+            {
+				return slotGroup.GetStoreSettings().AllowedToAccept(thing);
+            }
+>>>>>>> A2Bcorp/master
 
             return false;
         }
 
+<<<<<<< HEAD
         // CHANGE: Unless KindaUsable is an option, this should really just be a boolean. Also, the name was a little
         //         funky.
 		public static bool IsSpotUsable(IntVec3 c, Thing thing)
@@ -84,6 +104,32 @@ namespace A2B
 			}
 
 			return false;
+=======
+		public enum PlaceSpotUsability : byte
+		{
+			Unusable,
+			Usable,
+		}
+
+		public static PlaceSpotUsability PlaceSpotPlacability( IntVec3 c, Thing thing )
+		{
+			if( !GenGrid.InBounds( c ) || !GenGrid.Walkable( c ) )
+				return PlaceSpotUsability.Unusable;
+			
+			List< Thing > list = Find.ThingGrid.ThingsListAt( c );
+			for( int index = 0; index < list.Count; ++index )
+			{
+				Thing thing1 = list[ index ];
+
+				if( thing.def.saveCompressible && thing1.def.saveCompressible )
+					return PlaceSpotUsability.Unusable;
+				
+				if( thing1.def.category == ThingCategory.Item )
+					return thing1.def == thing.def && thing1.stackCount < thing.def.stackLimit ? PlaceSpotUsability.Usable : PlaceSpotUsability.Unusable;
+				
+			}
+			return PlaceSpotUsability.Usable;
+>>>>>>> A2Bcorp/master
 		}
 
 		/**

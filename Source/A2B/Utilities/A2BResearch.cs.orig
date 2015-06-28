@@ -42,8 +42,11 @@ namespace A2B
 
 		public static A2BDataDef			def;
 
+<<<<<<< HEAD
         public static Version               Version;
 
+=======
+>>>>>>> A2Bcorp/master
 		public static A2B_BeltSpeed			BeltSpeed;
 		public static A2B_Durability		Durability;
 		public static A2B_Climatization		Climatization;
@@ -70,8 +73,12 @@ namespace A2B
 			Reliability.isResearched = false;
 			Reliability.StartThreshold = def.ReliabilityStartThresholdBase;
 			Reliability.FlatRateThreshold = def.ReliabilityFlatRateThresholdBase;
+<<<<<<< HEAD
 
             Version = new Version(def.Version);
+=======
+				
+>>>>>>> A2Bcorp/master
 		}
 
 		public static bool IsReady
@@ -91,6 +98,7 @@ namespace A2B
 				return false;
 			}
 		}
+<<<<<<< HEAD
 
         public static bool IsVersionSupported(Version version) {
             return (Version.Major == version.Major
@@ -103,6 +111,8 @@ namespace A2B
             if (!IsVersionSupported(version))
                 throw new NotSupportedException(msg);
         }
+=======
+>>>>>>> A2Bcorp/master
 
     }
 
