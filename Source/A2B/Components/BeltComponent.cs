@@ -17,7 +17,7 @@ namespace A2B
 
         #region Fields/Properties
         //Changed from private to public for access from BeltItemContainer
-        protected BeltItemContainer ItemContainer;
+        public BeltItemContainer ItemContainer;
 
         protected Phase _beltPhase;
 
@@ -307,6 +307,10 @@ namespace A2B
 
         public override void CompTick()
         {
+            base.CompTick();
+
+            if ((Find.TickManager.TicksGame + GetHashCode()) % 250 == 0)
+                ItemContainer.TickRare();
 
             if ((Find.TickManager.TicksGame + GetHashCode()) % (60 * 5) == 0)
                 OnOccasionalTick();
