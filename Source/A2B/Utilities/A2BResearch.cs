@@ -8,80 +8,91 @@ namespace A2B
 
     public struct A2B_Climatization
     {
-        public bool isResearched;
-        public float FreezeTemperature;
+		public bool		isResearched;
+        public float	FreezeTemperature;
     }
 
     public struct A2B_Durability
     {
-        public bool isResearched;
-        public float DeteriorateChance;
+		public bool		isResearched;
+        public float	DeteriorateChance;
     }
 
     public struct A2B_Reliability
     {
-        public bool isResearched;
-        public float FlatRateThreshold;
-        public float StartThreshold;
+		public bool		isResearched;
+        public float	FlatRateThreshold;
+        public float	StartThreshold;
     }
 
-    public struct A2B_BeltSpeed
-    {
-        public bool isResearched;
-        public int TicksToMove;
-    }
+	public struct A2B_BeltSpeed
+	{
+		public bool		isResearched;
+		public int		TicksToMove;
+	}
 
     public static class A2BData
     {
 
-        public static A2BDataDef            def;
+        private static A2BDataDef           _def;
 
         public static Version               Version;
+
+		public static int					OccasionalTicks;
 
         public static A2B_BeltSpeed         BeltSpeed;
         public static A2B_Durability        Durability;
         public static A2B_Climatization     Climatization;
         public static A2B_Reliability       Reliability;
 
+		public static A2BDataDef def
+		{
+			get {
+				if( _def == null )
+					_def = DefDatabase<A2BDataDef>.GetNamed("A2BCore");
+				if( _def == null )
+					_def = DefDatabase<A2BDataDef>.GetRandom();
+				return _def;
+			}
+		}
+
         static A2BData()
         {
-            def = DefDatabase<A2BDataDef>.GetNamed("A2BCore");
             if (def == null) {
-                Log.ErrorOnce("A2B - Unable to load core data!", 0);
-                return;
+				Log.ErrorOnce( "A2B - Unable to load core data!", 0 );
+				return;
             }
+			Version = new Version(def.Version);
 
-            BeltSpeed.isResearched = false;
+			OccasionalTicks = def.OccasionalTicks;
+
+			BeltSpeed.isResearched = false;
             BeltSpeed.TicksToMove = def.BeltSpeedBase;
+			AnimatedGraphic.animationRate = ( (float)A2BData.BeltSpeed.TicksToMove / 90.0f);
 
-            Climatization.isResearched = false;
+			Climatization.isResearched = false;
             Climatization.FreezeTemperature = def.ClimatizationMinTemperatureBase;
 
-            Durability.isResearched = false;
-            Durability.DeteriorateChance = def.DurabilityBase;
+			Durability.isResearched = false;
+			Durability.DeteriorateChance = def.DurabilityBase;
 
-            Reliability.isResearched = false;
-            Reliability.StartThreshold = def.ReliabilityStartThresholdBase;
+			Reliability.isResearched = false;
+			Reliability.StartThreshold = def.ReliabilityStartThresholdBase;
             Reliability.FlatRateThreshold = def.ReliabilityFlatRateThresholdBase;
 
-            Version = new Version(def.Version);
+			A2BMonitor.RegisterOccasionalAction( "A2BResearch.BeltSpeed", A2BResearch.BeltSpeed );
+			A2BMonitor.RegisterOccasionalAction( "A2BResearch.Climatization", A2BResearch.Climatization );
+			A2BMonitor.RegisterOccasionalAction( "A2BResearch.Durability", A2BResearch.Durability );
+			A2BMonitor.RegisterOccasionalAction( "A2BResearch.Reliability", A2BResearch.Reliability );
+
+			Log.Message( "A2B Initialized" );
+
         }
 
-        public static bool IsReady
-        {
-            get { return def != null; }
-        }
-
-        public static bool AllResearchDone
-        {
-            get
-            {
-                return (BeltSpeed.isResearched &&
-                        Climatization.isResearched &&
-                        Durability.isResearched &&
-                        Reliability.isResearched);
-            }
-        }
+		public static bool IsReady
+		{
+			get { return def != null; }
+		}
 
         public static bool IsVersionSupported(Version version)
         {
@@ -92,52 +103,57 @@ namespace A2B
 
         public static void CheckVersion(Version version)
         {
-            var msg = String.Format("A2B Version not supported: required {0} but {1} is loaded", version, A2BData.Version);
-            if (!IsVersionSupported(version))
+			if (!IsVersionSupported(version)){
+				var msg = String.Format("A2B Version not supported: required {0} but {1} is loaded", version, A2BData.Version);
                 throw new NotSupportedException(msg);
+			}
         }
 
     }
 
     public static class A2BResearch
     {
-        static A2BResearch()
+
+        public static bool BeltSpeed()
         {
-            A2BMonitor.RegisterTickAction("A2BResearch.PerformResearchChecks", PerformResearchChecks);
-        }
+			if (A2BResearch.ResearchGroupComplete(A2BData.def.BeltSpeedResearch)) {
+				A2BData.BeltSpeed.TicksToMove += A2BData.def.BeltSpeedOffset;
+				AnimatedGraphic.animationRate = ( (float)A2BData.BeltSpeed.TicksToMove / 90.0f);
+				A2BData.BeltSpeed.isResearched = true;
+				return true;
+			}
+			return false;
+		}
 
-        public static void PerformResearchChecks()
-        {
-            if (!A2BData.IsReady)
-                return;
+		public static bool Climatization()
+		{
+			if (A2BResearch.ResearchGroupComplete(A2BData.def.ClimatizationResearch)) {
+				A2BData.Climatization.FreezeTemperature += A2BData.def.ClimatizationMinTemperatureOffset;
+				A2BData.Climatization.isResearched = true;
+				return true;
+			}
+			return false;
+		}
 
-            if (A2BData.AllResearchDone)
-                return;
-
-            if ((A2BData.BeltSpeed.isResearched == false) &&
-                (A2BResearch.ResearchGroupComplete(A2BData.def.BeltSpeedResearch))) {
-                A2BData.BeltSpeed.TicksToMove += A2BData.def.BeltSpeedOffset;
-                A2BData.BeltSpeed.isResearched = true;
-            }
-
-            if ((A2BData.Climatization.isResearched == false) &&
-                (A2BResearch.ResearchGroupComplete(A2BData.def.ClimatizationResearch))) {
-                A2BData.Climatization.FreezeTemperature += A2BData.def.ClimatizationMinTemperatureOffset;
-                A2BData.Climatization.isResearched = true;
-            }
-
-            if ((A2BData.Durability.isResearched == false) &&
-                (A2BResearch.ResearchGroupComplete(A2BData.def.DurabilityResearch))) {
+		public static bool Durability()
+		{
+            if (A2BResearch.ResearchGroupComplete(A2BData.def.DurabilityResearch)) {
                 A2BData.Durability.DeteriorateChance += A2BData.def.DurabilityOffset;
-                A2BData.Durability.isResearched = true;
+				A2BData.Durability.isResearched = true;
+				return true;
             }
+			return false;
+		}
 
-            if ((A2BData.Reliability.isResearched == false) &&
-                (A2BResearch.ResearchGroupComplete(A2BData.def.ReliabilityResearch))) {
+		public static bool Reliability()
+		{
+            if (A2BResearch.ResearchGroupComplete(A2BData.def.ReliabilityResearch)) {
                 A2BData.Reliability.FlatRateThreshold += A2BData.def.ReliabilityFlatRateThresholdOffset;
                 A2BData.Reliability.StartThreshold += A2BData.def.ReliabilityStartThresholdOffset;
-                A2BData.Reliability.isResearched = true;
+				A2BData.Reliability.isResearched = true;
+				return true;
             }
+			return false;
         }
 
         public static bool ResearchGroupComplete(List<string> research)
@@ -151,6 +167,4 @@ namespace A2B
         }
 
     }
-
-
 }

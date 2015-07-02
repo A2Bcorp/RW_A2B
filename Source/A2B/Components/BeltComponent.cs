@@ -312,7 +312,7 @@ namespace A2B
             if ((Find.TickManager.TicksGame + GetHashCode()) % 250 == 0)
                 ItemContainer.TickRare();
 
-            if ((Find.TickManager.TicksGame + GetHashCode()) % (60 * 5) == 0)
+			if ((Find.TickManager.TicksGame + GetHashCode()) % A2BData.OccasionalTicks == 0)
                 OnOccasionalTick();
 
             if (BeltPhase == Phase.Frozen && Rand.Range(0.0f, 1.0f) < 0.05)

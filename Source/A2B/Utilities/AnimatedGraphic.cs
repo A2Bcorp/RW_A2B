@@ -12,7 +12,7 @@ namespace A2B
 {
     public class AnimatedGraphic : Graphic_Collection
     {
-        private float animationRate = 1.0f;
+		public static float animationRate = 1.0f;
         private bool isAnimating = true;
         private int defaultFrame = 0;
 
@@ -143,7 +143,7 @@ namespace A2B
                 if (IsAnimating)
                     return ((int) (Time.fixedTime * subGraphics.Length / animationRate)) % subGraphics.Length;
 
-                return 0;
+				return defaultFrame;
             }
         }
     }

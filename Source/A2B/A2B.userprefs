@@ -1,12 +1,14 @@
 ﻿<Properties StartupItem="A2B.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Buildings\Building_ConveyorBelt.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Utilities\A2BResearch.cs">
     <Files>
-      <File FileName="Utilities\A2BResearch.cs" Line="138" Column="44" />
-      <File FileName="Utilities\A2BDataDef.cs" Line="22" Column="41" />
-      <File FileName="Components\Extensions\BeltUtilities.cs" Line="179" Column="1" />
-      <File FileName="Components\BeltComponent.cs" Line="15" Column="43" />
-      <File FileName="Buildings\Building_ConveyorBelt.cs" Line="1" Column="1" />
+      <File FileName="Components\Extensions\BeltUtilities.cs" Line="1" Column="1" />
+      <File FileName="Components\BeltUndercoverComponent.cs" Line="1" Column="1" />
+      <File FileName="Components\Level.cs" Line="1" Column="1" />
+      <File FileName="Components\BeltUndertakerComponent.cs" Line="1" Column="1" />
+      <File FileName="Components\BeltComponent.cs" Line="138" Column="49" />
+      <File FileName="Utilities\A2BResearch.cs" Line="153" Column="24" />
+      <File FileName="Components\BeltItemContainer.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

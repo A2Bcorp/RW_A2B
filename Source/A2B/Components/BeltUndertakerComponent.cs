@@ -20,6 +20,17 @@ namespace A2B
 		// based on how many undercovers it's pulling from
 		private int undercoverCount;
 
+		private Level OutputTo
+		{
+			get{
+				switch (operationMode){
+				case UndertakerMode.PoweredLift    : return Level.Surface;
+				case UndertakerMode.UnpoweredSlide : return Level.Underground;
+				}
+				return Level.Both;
+			}
+		}
+
 		public BeltUndertakerComponent()
 		{
 			_beltLevel = Level.Both;
@@ -44,82 +55,109 @@ namespace A2B
 				PowerComponent.PowerOutput = -( PowerComponent.props.basePowerConsumption + undercoverCount * powerPerUndercover );
 		}
 
-		public override void OnOccasionalTick()
+		private bool modeReset()
 		{
 			// If the undertaker hasn't been forced into a specific operation mode,
 			// do an auto-check to determine it's mode
-			if( !forcedMode )
+			if( forcedMode )
+				return false;
+			
+			// Get the top belt connection
+			BeltComponent topBelt = this.GetPositionFromRelativeRotation( Rot4.South ).GetBeltComponent( Level.Surface );
+
+			if( topBelt != null )
 			{
-				// Get the top belt connection
-				BeltComponent topBelt = this.GetPositionFromRelativeRotation( Rot4.South ).GetBeltComponent( Level.Surface );
-
-				if( topBelt != null )
+				// We have a belt connected to the top
+				if( topBelt.CanAcceptFrom( this, true ) )
 				{
-					// We have a belt connected to the top
-					if( topBelt.CanAcceptFrom( this, true ) )
+					// The top belt can accept from this belt,
+					// therefore this is a powered lift
+					if( !this.IsLift() )
 					{
-						// The top belt can accept from this belt,
-						// therefore this is a powered lift
-						if( !this.IsLift() )
-						{
-							// Make sure it's a powered version
-							ChangeOperationalMode( UndertakerMode.PoweredLift );
+						// Make sure it's a powered version
+						ChangeOperationalMode( UndertakerMode.PoweredLift );
 
-							// Force exit now to allow change
-							return;
-						}
-						// This component is already correct, set the operation mode
-						operationMode = UndertakerMode.PoweredLift;
+						// Force exit now to allow change
+						return true;
 					}
-					else
+					// This component is already correct, set the operation mode
+					operationMode = UndertakerMode.PoweredLift;
+				}
+				else
+				{
+					// This undertaker can't feed the top belt, assume the top
+					// belt feeds the undertaker and operate as a slide
+					if( !this.IsSlide() )
 					{
-						// This undertaker can't feed the top belt, assume the top
-						// belt feeds the undertaker and operate as a slide
-						if( !this.IsSlide() )
-						{
-							// Slides don't use power and we don't want
-							// them to transmit to allow segmenting the
-							// power network used by the conveyors
-							ChangeOperationalMode( UndertakerMode.UnpoweredSlide );
+						// Slides don't use power and we don't want
+						// them to transmit to allow segmenting the
+						// power network used by the conveyors
+						ChangeOperationalMode( UndertakerMode.UnpoweredSlide );
 
-							// Force exit now to allow change
-							return;
-						}
-						// This component is already correct, set the operation mode
-						operationMode = UndertakerMode.UnpoweredSlide;
+						// Force exit now to allow change
+						return true;
 					}
+					// This component is already correct, set the operation mode
+					operationMode = UndertakerMode.UnpoweredSlide;
 				}
 			}
+			return false;
+		}
 
-			if( operationMode == UndertakerMode.PoweredLift )
-			{
+		private void DoPowerCheck()
+		{
+			switch (operationMode){
+			case UndertakerMode.Undefined:
+				return;
+			case UndertakerMode.PoweredLift :
 				// Powered lifts use additional power based
 				// on how many undercovers it's pulling
 				undercoverCount = CountUndercoversDirection( new Rot4( ( parent.Rotation.AsInt + Rot4.North.AsInt ) % 4 ) );
 				PowerComponent.PowerOutput = -( PowerComponent.props.basePowerConsumption + undercoverCount * powerPerUndercover );
-
-				// Powered lifts can freeze up
-				DoFreezeCheck();
-			}
-			else //if( operationMode == UndertakerMode.UnpoweredSlide )
-			{
+				return;
+			case UndertakerMode.UnpoweredSlide :
 				// Search for an active powered lift to power this section
 				BeltComponent beltHead = null;
 				Phase newPhase = Phase.Offline;
+				bool ReachedEnd = false;
 
 				IntVec3 curPos = parent.Position;
 				do {
 					curPos = curPos + parent.Rotation.FacingCell;
-					BeltComponent curBelt = curPos.GetBeltComponent( Level.Underground );
-					if( curBelt == null )
+
+					// Get all underground components
+					List<BeltComponent> belts = curPos.GetBeltComponents( Level.Underground );
+
+					// None?
+					if( belts == null )
 						break;
-					if( curBelt.IsLift() )
-					{
-						// Regardless if the power is on, select this belt head
-						beltHead = curBelt;
-						break;
+
+					bool foundUndercover = false;
+					for( int i = 0; i < belts.Count; ++i ){
+						var b = belts[ i ];
+						if( b.IsLift() )
+						{
+							// Is it the right orientation?
+							if( b.parent.Rotation.AsInt == ( parent.Rotation.AsInt + Rot4.North.AsInt ) )
+							{
+								// Select this belt head
+								beltHead = b;
+
+								// If it's on, we'll accept it
+								if( b.BeltPhase == Phase.Active ){
+									i += belts.Count;
+									ReachedEnd = true;
+									break;
+								}
+							}
+						} else if( b.IsUndercover() ) {
+							foundUndercover = true;
+						}
 					}
-				} while ( true );
+					// This allows us to continue looking if there are more undercovers
+					if( ReachedEnd == false )
+						ReachedEnd = !foundUndercover;
+				} while ( ReachedEnd == false );
 
 				// Did we find a power head and is it on?
 				InferedPowerComponent = beltHead == null ? null : beltHead.PowerComponent;
@@ -129,7 +167,22 @@ namespace A2B
 					newPhase = Phase.Active;
 				}
 				_beltPhase = newPhase;
+				return;
+			}
+		}
 
+		public override void OnOccasionalTick()
+		{
+			// Check for operational mode change
+			if( modeReset() )
+				return;
+			
+			DoPowerCheck();
+
+			if( operationMode == UndertakerMode.PoweredLift )
+			{
+				// Powered lifts can freeze up
+				DoFreezeCheck();
 			}
 
 			// Lifts and slides can jam

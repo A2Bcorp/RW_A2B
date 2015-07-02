@@ -4,54 +4,71 @@ using Verse;
 
 namespace A2B
 {
+	// Return true to automatically deregister
+	// DO NOT DEREGISTER FROM WITHIN A CALLBACK!
+	// Invalidated lists are bad, mmm'kay?
+	public delegate bool MonitorAction();
+
     public class A2BMonitor : MapComponent
     {
-        private static Dictionary<string, Action> tickActions     = new Dictionary<string, Action>();
-        private static Dictionary<string, Action> updateActions   = new Dictionary<string, Action>();
-        private static Dictionary<string, Action> guiActions      = new Dictionary<string, Action>();
-        private static Dictionary<string, Action> exposeActions   = new Dictionary<string, Action>();
+		private static Dictionary<string, MonitorAction> tickActions       = new Dictionary<string, MonitorAction>();
+		private static Dictionary<string, MonitorAction> occasionalActions = new Dictionary<string, MonitorAction>();
+		private static Dictionary<string, MonitorAction> updateActions     = new Dictionary<string, MonitorAction>();
+		private static Dictionary<string, MonitorAction> guiActions        = new Dictionary<string, MonitorAction>();
+		private static Dictionary<string, MonitorAction> exposeActions     = new Dictionary<string, MonitorAction>();
+
+		private static List< string >                    removeKeys        = new List< string >();
+
+		private void ProcessCallbacks( Dictionary<string, MonitorAction> d )
+		{
+			removeKeys.Clear();
+
+			foreach (var p in d)
+				if( p.Value() == true )
+					removeKeys.Add( p.Key );
+
+			foreach (var k in removeKeys)
+				d.Remove( k );
+		}
 
         public override void MapComponentUpdate()
         {
             base.MapComponentUpdate();
 
-            foreach (var p in updateActions) {
-                p.Value();
-            }
+			ProcessCallbacks( updateActions );
         }
 
-        public override void MapComponentTick()
-        {
-            base.MapComponentTick();
+		public override void MapComponentTick()
+		{
+			base.MapComponentTick();
 
-            foreach (var p in tickActions) {
-                p.Value();
-            }
-        }
+			ProcessCallbacks( tickActions );
+
+			// Occasional only get fewer ticks so they don't bomb the system
+			if( ( Find.TickManager.TicksGame + GetHashCode() ) % A2BData.OccasionalTicks == 0 )
+				ProcessCallbacks( occasionalActions );
+		}
 
         public override void MapComponentOnGUI()
         {
             base.MapComponentOnGUI();
 
-            foreach (var p in guiActions) {
-                p.Value();
-            }
+			ProcessCallbacks( guiActions );
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
 
-            foreach (var p in exposeActions) {
-                p.Value();
-            }
+			ProcessCallbacks( exposeActions );
         }
 
         #region Register/Deregister Actions
 
-        public static void RegisterUpdateAction(string name, Action action)
+		public static void RegisterUpdateAction(string name, MonitorAction action)
         {
-            updateActions.Add(name, action);
+			if( !updateActions.ContainsKey( name ) )
+            	updateActions.Add(name, action);
         }
 
         public static void DeregisterUpdateAction(string name)
@@ -59,19 +76,32 @@ namespace A2B
             updateActions.Remove(name);
         }
 
-        public static void RegisterTickAction(string name, Action action)
-        {
-            tickActions.Add(name, action);
-        }
+		public static void RegisterTickAction(string name, MonitorAction action)
+		{
+			if( !tickActions.ContainsKey( name ) )
+				tickActions.Add(name, action);
+		}
 
-        public static void DeregisterTickAction(string name)
-        {
-            tickActions.Remove(name);
-        }
+		public static void DeregisterTickAction(string name)
+		{
+			tickActions.Remove(name);
+		}
 
-        public static void RegisterGUIAction(string name, Action action)
+		public static void RegisterOccasionalAction(string name, MonitorAction action)
+		{
+			if( !occasionalActions.ContainsKey( name ) )
+				occasionalActions.Add(name, action);
+		}
+
+		public static void DeregisterOccasionalAction(string name)
+		{
+			occasionalActions.Remove(name);
+		}
+
+		public static void RegisterGUIAction(string name, MonitorAction action)
         {
-            guiActions.Add(name, action);
+			if( !guiActions.ContainsKey( name ) )
+	            guiActions.Add(name, action);
         }
 
         public static void DeregisterGUIAction(string name)
@@ -79,9 +109,10 @@ namespace A2B
             guiActions.Remove(name);
         }
 
-        public static void RegisterExposeDataAction(string name, Action action)
+		public static void RegisterExposeDataAction(string name, MonitorAction action)
         {
-            exposeActions.Add(name, action);
+			if( !exposeActions.ContainsKey( name ) )
+	            exposeActions.Add(name, action);
         }
 
         public static void DeregisterExposeDataAction(string name)

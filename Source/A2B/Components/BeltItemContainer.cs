@@ -40,7 +40,7 @@ namespace A2B
         }
 
         private static int cycle = 0;
-        public static void DoAtmosphereEffects()
+        public static bool DoAtmosphereEffects()
         {
             int cells = (int) (Find.Map.Area * 0.0006f);
            
@@ -55,6 +55,8 @@ namespace A2B
                     belt.ItemContainer.AtmosphereEffectsTick();
                 }
             }
+
+			return false;
         }
 
         public BeltItemContainer([NotNull] BeltComponent component)
@@ -178,7 +180,7 @@ namespace A2B
         private bool ShouldIncreaseCounter([NotNull] Thing thing)
         {
             var currentCounter = _thingCounter[thing];
-			if (currentCounter < TicksToMove / 2 && !_parentComponent.IsReceiver())
+			if (currentCounter < TicksToMove / 2 )//&& !_parentComponent.IsReceiver())
             {
                 // Always increase the counter until half the belt speed is reached
                 return true;

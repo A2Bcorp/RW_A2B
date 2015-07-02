@@ -41,7 +41,8 @@ namespace A2B
             // BUGFIX: Previously, this function would grab the first building it saw at a given position. This is a problem
             // if a power conduit was on the same tile, as it was possible to miss the BeltComponent entirely. This is a more
             // robust method of identifying BeltComponents at a given location because it first finds ALL buildings on a tile.
-            // CHANGE: Belts now have a level (underground and surface), this function now looks for a component on an individual level.
+            
+			// CHANGE: Belts now have a level (underground and surface), this function now looks for a component filtered by level.
 
             // Since this query is lazily evaluated, it is much faster than using ThingsListAt.
 
@@ -49,11 +50,26 @@ namespace A2B
                 return Find.ThingGrid.ThingsAt(position)                                // All things at a given position
                            .OfType<ThingWithComps>()                                    // Only ones that can be converted to ThingWithComps
                            .Select(tc => tc.TryGetComp<BeltComponent>())                // Grab the BeltComponent from each one
-                           .First(b => b != null && (lookLevel & b.BeltLevel) != 0);    // Get the first non-null entry at the proper level
+                           .First(b => b != null && (lookLevel & b.BeltLevel) != 0 );   // Get the first non-null entry at the proper level
             } catch (InvalidOperationException) {
                 return null;                                                            // Didn't find one at all
             }
         }
+
+		[CanBeNull]
+		public static List<BeltComponent> GetBeltComponents(this IntVec3 position, Level lookLevel = Level.Surface)
+		{
+			// This returns a list for special case scenarios involving underground components
+
+			try {
+				return Find.ThingGrid.ThingsAt(position)                                // All things at a given position
+					.OfType<ThingWithComps>()                                           // Only ones that can be converted to ThingWithComps
+					.Select(tc => tc.TryGetComp<BeltComponent>())                       // Grab the BeltComponent from each one
+					.Where(b => b != null && (lookLevel & b.BeltLevel) != 0 ).ToList(); // Get the all components at the proper level
+			} catch (InvalidOperationException) {
+				return null;                                                            // Didn't find even one
+			}
+		}
 
         public static bool CanPlaceThing(this IntVec3 position, [NotNull] Thing thing)
         {

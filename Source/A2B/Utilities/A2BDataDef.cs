@@ -13,6 +13,12 @@ namespace A2B
 {
 	public class A2BDataDef : Def
 	{
+		// Core mod versioning
+		public string           Version;
+
+		// Occasional ticks
+		public int				OccasionalTicks;
+
 		// Belt Speed data
 		public int				BeltSpeedBase;
 		public int				BeltSpeedOffset;
@@ -28,15 +34,12 @@ namespace A2B
 		public float			DurabilityOffset;
 		public List< string >	DurabilityResearch;
 
-
 		// Reliability data
 		public float			ReliabilityFlatRateThresholdBase;
 		public float			ReliabilityFlatRateThresholdOffset;
 		public float			ReliabilityStartThresholdBase;
 		public float			ReliabilityStartThresholdOffset;
 		public List< string >	ReliabilityResearch;
-
-        public string           Version;
 
 	}
 
