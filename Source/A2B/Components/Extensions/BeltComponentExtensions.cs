@@ -1,5 +1,10 @@
 ﻿#region Usings
 
+using System.Collections.Generic;
+using RimWorld;
+using Verse;
+using UnityEngine;
+using A2B;
 using A2B.Annotations;
 
 #endregion
@@ -28,26 +33,29 @@ namespace A2B
             return belt.parent.def.defName == "A2BLoader";
         }
 
+        public static bool IsUnderground([NotNull] this BeltComponent belt)
+        {
+            return belt.parent.def.defName == "A2BUnderground";
+        }
+
 		public static bool IsUndertaker([NotNull] this BeltComponent belt)
 		{
-			return 
-				( belt.IsSlide() )||
-				( belt.IsLift() );
+            return belt.parent.def.defName == "A2BUndertaker";
 		}
 
 		public static bool IsLift([NotNull] this BeltComponent belt)
 		{
-			return belt.parent.def.defName == "A2BUndertaker";
+            return belt.parent.def.defName == "A2BLift";
 		}
 
 		public static bool IsSlide([NotNull] this BeltComponent belt)
 		{
-			return belt.parent.def.defName == "A2BSlide";
+            return belt.parent.def.defName == "A2BSlide";
 		}
 
 		public static bool IsUndercover([NotNull] this BeltComponent belt)
 		{
-			return belt.parent.def.defName == "A2BUndercover";
+            return belt.parent.def.defName == "A2BUndercover";
 		}
 
     }

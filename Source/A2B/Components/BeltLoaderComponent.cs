@@ -70,7 +70,7 @@ namespace A2B
                 if ((thing.def.category == ThingCategory.Item) && (thing != parent))
                 {
                     var destination = GetDestinationForThing(thing);
-                    var destBelt = destination.GetBeltComponent();
+					var destBelt = destination.GetBeltComponent();
 
                     if (destBelt == null)
                     {

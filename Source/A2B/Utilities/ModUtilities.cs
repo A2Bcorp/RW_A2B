@@ -14,7 +14,7 @@ namespace A2B
     public static class ModUtilities
     {
 
-        public static Mod CurrentMod 
+        public static LoadedMod CurrentMod 
         {
             get
             {
@@ -23,7 +23,7 @@ namespace A2B
             }
         }
 
-        public static string GetTexturePath(this Mod mod)
+        public static string GetTexturePath(this LoadedMod mod)
         {
             return mod.RootFolder + "/" + GenFilePaths.ContentPath<Texture2D>();
         }
@@ -33,7 +33,7 @@ namespace A2B
             return CurrentMod.GetTexturePath();
         }
 
-        public static string GetSoundPath(this Mod mod)
+        public static string GetSoundPath(this LoadedMod mod)
         {
             return mod.RootFolder + "/" + GenFilePaths.ContentPath<AudioClip>();
         }
@@ -43,7 +43,7 @@ namespace A2B
             return CurrentMod.GetSoundPath();
         }
 
-        public static string GetStringPath(this Mod mod)
+        public static string GetStringPath(this LoadedMod mod)
         {
             return mod.RootFolder + "/" + GenFilePaths.ContentPath<string>();
         }

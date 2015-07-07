@@ -3,6 +3,9 @@ namespace A2B
 {
     public static class Constants
     {
+		public const string msgPowerDisconnect = "PowerDisconnect";
+		public const string msgPowerConnect = "PowerConnect";
+
         public const string TxtActive = "A2B_Active";
         public const string TxtOffline = "A2B_Offline";
         public const string TxtFrozen = "A2B_Frozen";
@@ -15,6 +18,8 @@ namespace A2B
 
 		public const string TxtContents = "A2B_Contents";
 		public const string TxtForced = "A2B_Forced";
+
+        public const string TxtLiftDrivingComponents = "A2B_LiftDrivingComponents";
 
 		public const string TxtUndertakerMode = "A2B_Undertaker_Mode";
 		public const string TxtUndertakerModeToggle = "A2B_Undertaker_Mode_Toggle";

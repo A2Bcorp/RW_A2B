@@ -49,7 +49,7 @@ namespace A2B
                     cycle = 0;
 
                 var cell = MapCellsInRandomOrder.Get(cycle++);
-                var belt = cell.GetBeltComponent(Level.Both);
+                var belt = cell.GetBeltComponent();
 
                 if (belt != null) {
                     belt.ItemContainer.AtmosphereEffectsTick();
@@ -193,8 +193,35 @@ namespace A2B
             }
 
             var destination = _parentComponent.GetDestinationForThing(thing);
+            BeltComponent belt = null;
 
-			var belt = destination.GetBeltComponent( _parentComponent.BeltLevel );
+            if( _parentComponent.OutputLevel == Level.Surface )
+            {
+                // Surface belts get the fast treatment
+
+    			belt = destination.GetBeltComponent();
+
+            } else {
+                // Underground belts need more robust checking to handle strange configurations
+                var belts = destination.GetBeltUndergroundComponents();
+
+                // Scan for prefered belt (lift) otherwise continue underground
+                if( ( belts != null )&&
+                    ( belts.Count > 0 ) )
+                {
+
+                    var p = _parentComponent as BeltUndergroundComponent;
+                    var lift = belts.Find( b => b.IsLift() && b.outputDirection == p.outputDirection );
+                    var under = belts.Find( b => b.IsUndercover() );
+                    if( ( lift != null )&&
+                        ( ( lift.BeltPhase == Phase.Active )||
+                            ( under == null ) ) )
+                        belt = lift;
+                    else
+                        belt = under;
+                    
+                }
+            }
 
             // If no belt items, then move things only if this can output to non-belts
             if (belt == null)
@@ -202,7 +229,7 @@ namespace A2B
                 return (_parentComponent.CanOutputToNonBelt() && destination.CanPlaceThing(thing));
             }
 
-            // If there is a belt, only move things if it can accept them from us
+            // There is a belt, only move things if it can accept them from us
             return belt.CanAcceptFrom(_parentComponent);
         }
 

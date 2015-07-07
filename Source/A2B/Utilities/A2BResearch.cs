@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RimWorld;
 using Verse;
 
 namespace A2B
@@ -45,6 +46,9 @@ namespace A2B
         public static A2B_Climatization     Climatization;
         public static A2B_Reliability       Reliability;
 
+        // Power for underground powered belts
+        public static float                 powerPerUndercover = 1000f;
+
 		public static A2BDataDef def
 		{
 			get {
@@ -65,6 +69,13 @@ namespace A2B
 			Version = new Version(def.Version);
 
 			OccasionalTicks = def.OccasionalTicks;
+
+            var baseBelt = DefDatabase<ThingDef>.GetNamed( "A2BBelt" );
+            if( baseBelt != null ){
+                var beltComps = baseBelt.CompDefFor<CompPowerTrader>();
+                if( beltComps != null )
+                    powerPerUndercover = beltComps.basePowerConsumption;
+            }
 
 			BeltSpeed.isResearched = false;
             BeltSpeed.TicksToMove = def.BeltSpeedBase;

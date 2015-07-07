@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System;
+using System.Collections.Generic;
 using A2B.Annotations;
 using RimWorld;
 using UnityEngine;
@@ -23,29 +24,39 @@ namespace A2B
 
         private IntVec3 _thingOrigin;
 
-		protected Level _beltLevel;
+        protected Level _processLevel;
+        protected Level _inputLevel;
+        protected Level _outputLevel;
 
         public Phase BeltPhase
         {
             get { return _beltPhase; }
         }
 
-		public Level BeltLevel
+		public Level ProcessLevel
 		{
-			get { return _beltLevel; }
+			get { return _processLevel; }
 		}
+
+        public Level InputLevel
+        {
+            get { return _inputLevel; }
+        }
+
+        public Level OutputLevel
+        {
+            get { return _outputLevel; }
+        }
 
         public CompGlower GlowerComponent { get; set; }
 
 		public CompPowerTrader PowerComponent { get; set; }
 
-		public CompPowerTrader InferedPowerComponent { get; set; }
-
         public virtual int BeltSpeed {
             get { return A2BData.BeltSpeed.TicksToMove; }
         }
 
-        protected IntVec3 ThingOrigin
+        public IntVec3 ThingOrigin
         {
             set { _thingOrigin = value; }
             get { return _thingOrigin; }
@@ -60,7 +71,9 @@ namespace A2B
 
         public BeltComponent()
         {
-			_beltLevel = Level.Surface;
+            _processLevel = Level.Surface;
+			_inputLevel = Level.Surface;
+            _outputLevel = Level.Surface;
             _beltPhase = Phase.Offline;
 
             ItemContainer = new BeltItemContainer(this);
@@ -111,6 +124,10 @@ namespace A2B
 			if( !onlyCheckConnection && !CanAcceptSomething() )
                 return false;
 
+            // This belt isn't on the other belts output level
+            if( belt.OutputLevel != this.InputLevel )
+                return false;
+
             for (int i = 0; i < 4; ++i)
             {
                 Rot4 dir = new Rot4(i);
@@ -149,6 +166,7 @@ namespace A2B
             return false;
         }
 
+        // This is a fast function for surface belts, underground belts must extend and override
         protected virtual void MoveThingTo([NotNull] Thing thing, IntVec3 beltDest)
         {
             OnBeginMove(thing, beltDest);
@@ -157,35 +175,21 @@ namespace A2B
             {
                 ItemContainer.DropItem(thing, beltDest);
             }
-            else
+            else if ( OutputLevel == Level.Surface )
             {
-				// Default level to look at is this belts level
-				Level findLevel = BeltLevel;
-
-				// Special case for undertakers
-				if( BeltLevel == Level.Both )
-				{
-					// Lifts output to the surface
-					if( this.IsLift() )
-						findLevel = Level.Surface;
-					// Slides output to underground
-					else if( this.IsSlide() )
-						findLevel = Level.Underground;
-				}
-
 				// Find a belt component at our output level
-				var beltComponent = beltDest.GetBeltComponent( findLevel );
+                var belt = beltDest.GetBeltComponent();
 
                 //  Check if there is a belt, if it is empty, and also check if it is active !
-                if (beltComponent == null || !beltComponent.ItemContainer.Empty || beltComponent.BeltPhase != Phase.Active)
+                if (belt == null || !belt.ItemContainer.Empty || belt.BeltPhase != Phase.Active)
                 {
                     return;
                 }
 
-                ItemContainer.TransferItem(thing, beltComponent.ItemContainer);
+                ItemContainer.TransferItem(thing, belt.ItemContainer);
 
                 // Need to check if it is a receiver or not ...
-                beltComponent.ThingOrigin = parent.Position;
+                belt.ThingOrigin = parent.Position;
             }
         }
 
@@ -269,7 +273,6 @@ namespace A2B
         {
             GlowerComponent = parent.GetComp<CompGlower>();
             PowerComponent = parent.GetComp<CompPowerTrader>();
-			InferedPowerComponent = null;
 
             // init ice graphic
             Graphic g = BeltUtilities.IceGraphic;
@@ -384,16 +387,11 @@ namespace A2B
 
         private void DoBeltTick()
         {
-			// Get the power trader
-			CompPowerTrader power = PowerComponent;
-			if( power == null )
-				power = InferedPowerComponent;
-
 			// Belts require power directly or infered through a physical link
-			if( power == null )
+            if( PowerComponent == null )
 				return;
 
-			if( power.PowerOn )
+            if( PowerComponent.PowerOn )
             {
                 // Power is on -> do work
                 // ----------------------
@@ -408,7 +406,7 @@ namespace A2B
 
 					// If it's an underground belt, don't auto-pickup
 					// as it has lost it's targeting vector
-					if( _beltLevel == Level.Underground )
+					if( ProcessLevel == Level.Underground )
 						return;
 
 					// Surface belts auto-pickup items on them.
@@ -460,7 +458,7 @@ namespace A2B
                 // Let's be smart: check this only once, set the item to 'Unforbidden', and then, let the player choose what he wants to do
                 // i.e. forbid or unforbid them ...
 				if( ( BeltPhase != Phase.Active )||
-					( ( BeltLevel & Level.Surface ) == 0 ) )
+					( ( ProcessLevel & Level.Surface ) == 0 ) )
                 {
                     return;
                 }
