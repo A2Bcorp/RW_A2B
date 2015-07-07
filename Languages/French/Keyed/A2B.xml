@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- ConveyorBelts -->
+	<A2B_Status>Statut:</A2B_Status>
+	<A2B_Offline>Eteint</A2B_Offline>
+	<A2B_Active>Actif</A2B_Active>
+	<A2B_Frozen>Gelé</A2B_Frozen>
+	<A2B_Jammed>Coincé</A2B_Jammed>
+
+	<A2B_Frozen_Message>Un de vos tapis-roulant est bloqué par le froid.</A2B_Frozen_Message>
+	<A2B_Jammed_Message>Un de vos tapis-roulant est coincé! Vous devriez le réparer.</A2B_Jammed_Message>
+	
+	<A2B_Contents>Contenu:</A2B_Contents>
+	<A2B_Forced>Forcé</A2B_Forced>
+	
+	<A2B_Undertaker_Mode>Mode:</A2B_Undertaker_Mode>
+	<A2B_Undertaker_Mode_Toggle>Changer de mode</A2B_Undertaker_Mode_Toggle>
+	<A2B_Undertaker_Mode_Undefined>Configuration...</A2B_Undertaker_Mode_Undefined>
+	<A2B_Undertaker_Mode_PoweredLift>Elévateur alimenté</A2B_Undertaker_Mode_PoweredLift>
+	<A2B_Undertaker_Mode_UnpoweredSlide>Glissière non Alimenté</A2B_Undertaker_Mode_UnpoweredSlide>
+
+	<A2B_Undertaker_Flow>Flux:</A2B_Undertaker_Flow>
+	<A2B_Undertaker_FlowTo>vers</A2B_Undertaker_FlowTo>
+	
+	<A2B_Direction_North>Nord</A2B_Direction_North>
+	<A2B_Direction_East>Est</A2B_Direction_East>
+	<A2B_Direction_South>Sud</A2B_Direction_South>
+	<A2B_Direction_West>Ouest</A2B_Direction_West>
+	
+</LanguageData>
