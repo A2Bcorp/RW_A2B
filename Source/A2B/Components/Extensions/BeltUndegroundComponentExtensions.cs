@@ -13,6 +13,7 @@ namespace A2B
 {
     public static class BeltUndergroundComponentExtensions
     {
+        /*
         public static BeltUndergroundComponent FindPoweredLiftInDirection([NotNull] this BeltUndergroundComponent belt, Rot4 direction, Rot4 orientation )
         {
             BeltUndergroundComponent beltHead = null;
@@ -52,6 +53,6 @@ namespace A2B
             // Return any head we found
             return beltHead;
         }
-
+        */
     }
 }

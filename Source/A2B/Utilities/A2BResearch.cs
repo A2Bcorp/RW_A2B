@@ -70,16 +70,7 @@ namespace A2B
 
 			OccasionalTicks = def.OccasionalTicks;
 
-            var baseBelt = DefDatabase<ThingDef>.GetNamed( "A2BBelt" );
-            if( baseBelt != null ){
-                var beltComps = baseBelt.CompDefFor<CompPowerTrader>();
-                if( beltComps != null )
-                    powerPerUndercover = beltComps.basePowerConsumption;
-            }
-
 			BeltSpeed.isResearched = false;
-            BeltSpeed.TicksToMove = def.BeltSpeedBase;
-			AnimatedGraphic.animationRate = ( (float)A2BData.BeltSpeed.TicksToMove / 90.0f);
 
 			Climatization.isResearched = false;
             Climatization.FreezeTemperature = def.ClimatizationMinTemperatureBase;
@@ -91,7 +82,10 @@ namespace A2B
 			Reliability.StartThreshold = def.ReliabilityStartThresholdBase;
             Reliability.FlatRateThreshold = def.ReliabilityFlatRateThresholdBase;
 
-			A2BMonitor.RegisterOccasionalAction( "A2BResearch.BeltSpeed", A2BResearch.BeltSpeed );
+            A2BMonitor.RegisterTickAction( "A2BResearch.UndercoverPowerInit", A2BResearch.UndercoverPowerInit );
+            A2BMonitor.RegisterTickAction( "A2BResearch.BeltSpeedInit", A2BResearch.BeltSpeedInit );
+		    
+            A2BMonitor.RegisterOccasionalAction( "A2BResearch.BeltSpeed", A2BResearch.BeltSpeed );
 			A2BMonitor.RegisterOccasionalAction( "A2BResearch.Climatization", A2BResearch.Climatization );
 			A2BMonitor.RegisterOccasionalAction( "A2BResearch.Durability", A2BResearch.Durability );
 			A2BMonitor.RegisterOccasionalAction( "A2BResearch.Reliability", A2BResearch.Reliability );
@@ -124,6 +118,24 @@ namespace A2B
 
     public static class A2BResearch
     {
+
+        public static bool UndercoverPowerInit()
+        {
+            var baseBelt = DefDatabase<ThingDef>.GetNamed( "A2BBelt" );
+            if( baseBelt != null ){
+                var beltComps = baseBelt.CompDefFor<CompPowerTrader>();
+                if( beltComps != null )
+                    A2BData.powerPerUndercover = beltComps.basePowerConsumption;
+            }
+            return true;
+        }
+
+        public static bool BeltSpeedInit()
+        {
+            A2BData.BeltSpeed.TicksToMove = A2BData.def.BeltSpeedBase;
+            AnimatedGraphic.animationRate = ( (float)A2BData.BeltSpeed.TicksToMove / 90.0f);
+            return true;
+        }
 
         public static bool BeltSpeed()
         {

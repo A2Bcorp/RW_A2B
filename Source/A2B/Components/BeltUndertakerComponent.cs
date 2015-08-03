@@ -22,8 +22,9 @@ namespace A2B
         {   base.PostSpawnSetup();
 
             // Set to surface for initial detection
-            inputDirection = new Rot4( ( parent.Rotation.AsInt + 2 ) % 4 );
-            outputDirection = parent.Rotation;
+            inputDirection = parent.Rotation;
+            outputDirection = new Rot4( ( parent.Rotation.AsInt + 2 ) % 4 );
+
             _processLevel = Level.Surface;
             _inputLevel = Level.Surface;
             _outputLevel = Level.Surface;
@@ -81,10 +82,12 @@ namespace A2B
 		}
 
 		// Stub
+        /*
         protected virtual void DoPowerCheck()
 		{
 			return;
         }
+        */
 
 		public override void OnOccasionalTick()
 		{
@@ -98,7 +101,9 @@ namespace A2B
                 return;
 
             // Configured, now process
-			DoPowerCheck();
+            base.OnOccasionalTick();
+
+			//DoPowerCheck();
 
             if( this.IsLift() )
 			{

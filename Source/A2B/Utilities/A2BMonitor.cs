@@ -19,6 +19,8 @@ namespace A2B
 
 		private static List< string >                    removeKeys        = new List< string >();
 
+        private bool                                     firstTick         = true;
+
 		private void ProcessCallbacks( Dictionary<string, MonitorAction> d )
 		{
 			removeKeys.Clear();
@@ -45,8 +47,11 @@ namespace A2B
 			ProcessCallbacks( tickActions );
 
 			// Occasional only get fewer ticks so they don't bomb the system
-			if( ( Find.TickManager.TicksGame + GetHashCode() ) % A2BData.OccasionalTicks == 0 )
+            if( ( firstTick == true )||
+                ( ( Find.TickManager.TicksGame + GetHashCode() ) % A2BData.OccasionalTicks == 0 ) )
 				ProcessCallbacks( occasionalActions );
+
+            firstTick = false;
 		}
 
         public override void MapComponentOnGUI()
@@ -89,8 +94,11 @@ namespace A2B
 
 		public static void RegisterOccasionalAction(string name, MonitorAction action)
 		{
-			if( !occasionalActions.ContainsKey( name ) )
-				occasionalActions.Add(name, action);
+            if( !occasionalActions.ContainsKey( name ) ){
+                // Invoke accasional actions immediately
+                if( action.Invoke() == false )
+				    occasionalActions.Add(name, action);
+            }
 		}
 
 		public static void DeregisterOccasionalAction(string name)

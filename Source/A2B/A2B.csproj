@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ReleaseVersion>0.11.2.0</ReleaseVersion>
+    <ReleaseVersion>0.11.3.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -76,6 +76,10 @@
     <Compile Include="Components\Extensions\BeltUndergroundUtilities.cs" />
     <Compile Include="Components\BeltSlideComponent.cs" />
     <Compile Include="Components\BeltLiftComponent.cs" />
+    <Compile Include="Components\BeltUndercoverCover.cs" />
+    <Compile Include="Designators\Designator_ToggleUndercoverCover.cs" />
+    <Compile Include="JobDrivers\JobDriver_UndercoverCoverToggle.cs" />
+    <Compile Include="WorkGivers\WorkGiver_UndercoverCoverToggle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -91,4 +95,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Designators\" />
+    <Folder Include="JobDrivers\" />
+    <Folder Include="WorkGivers\" />
+  </ItemGroup>
 </Project>

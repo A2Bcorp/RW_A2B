@@ -211,7 +211,7 @@ namespace A2B
                 {
 
                     var p = _parentComponent as BeltUndergroundComponent;
-                    var lift = belts.Find( b => b.IsLift() && b.outputDirection == p.outputDirection );
+                    var lift = belts.Find( b => b.IsLift() && b.CanAcceptFrom( _parentComponent ) );
                     var under = belts.Find( b => b.IsUndercover() );
                     if( ( lift != null )&&
                         ( ( lift.BeltPhase == Phase.Active )||

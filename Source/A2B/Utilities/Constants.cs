@@ -1,4 +1,6 @@
-﻿
+﻿using UnityEngine;
+using Verse;
+
 namespace A2B
 {
     public static class Constants
@@ -30,10 +32,25 @@ namespace A2B
 		public const string TxtUndertakerFlow = "A2B_Undertaker_Flow";
 		public const string TxtUndertakerFlowTo = "A2B_Undertaker_FlowTo";
 
+        public const string TxtUndercoverCoverToggle = "A2B_UndercoverCover_Toggle";
+        public const string TxtUnderUndercoverCoverToggleDesc = "A2B_UnderUndercoverCover_Toggle_Desc";
+        public const string TxtUnderUndercoverCoverToggleDesignateOnly = "A2B_UnderUndercoverCover_Toggle_DesignateOnly";
+
 		public const string TxtDirectionNorth = "A2B_Direction_North";
 		public const string TxtDirectionEast = "A2B_Direction_East";
 		public const string TxtDirectionSouth = "A2B_Direction_South";
 		public const string TxtDirectionWest = "A2B_Direction_West";
+
+        public static ThingDef DefBeltUndercover = DefDatabase<ThingDef>.GetNamed( "A2BUndercover", true );
+
+        public static Texture2D IconUndercoverCoverToggle = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/UndercoverCoverToggle", true);
+
+        public static DesignationDef DesignationUndercoverCoverToggle = DefDatabase<DesignationDef>.GetNamed( "A2BUndercoverCoverToggleDesignation", true );
+        //public static DesignatorDef DesignatorUndercoverCoverToggle = DefDatabase<DesignatorDef>.GetNamed( "A2BUndercoverCoverToggleDesignator", true );
+
+        public static JobDef JobUndercoverCoverToggle = DefDatabase<JobDef>.GetNamed( "A2BUndercoverCoverToggleJob", true );
+
+        public static KeyBindingDef KeyUndercoverCoverToggle = DefDatabase<KeyBindingDef>.GetNamed( "A2BUndercoverCoverToggleKeyBinding", true );
 
     }
 }
