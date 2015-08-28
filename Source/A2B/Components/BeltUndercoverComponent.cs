@@ -242,7 +242,7 @@ namespace A2B
 
                     var blueprint = GenConstruct.PlaceBlueprintForBuild( UndercoverCoverDef, coverPos, coverRot, Faction.OfColony, null );
 
-                    LastCoverHitPoints = UndercoverCoverDef.BaseMaxHealth;
+                    LastCoverHitPoints = UndercoverCoverDef.BaseMaxHitPoints;
                 }
                 else{
                     // First time/respawn cover
