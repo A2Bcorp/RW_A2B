@@ -540,7 +540,7 @@ namespace A2B
             return statusText
 				+ "\n"
 				+ Constants.TxtContents.Translate()
-				+ " " + ((IThingContainerGiver) ItemContainer).GetContainer().ContentsString;
+				+ " " + ((IThingContainerOwner) ItemContainer).GetContainer().ContentsString;
         }
     }
 }

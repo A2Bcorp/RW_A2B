@@ -26,7 +26,7 @@ namespace A2B
         public int Counter { get; private set; }
     }
 
-    public class BeltItemContainer : IExposable, IThingContainerGiver
+    public class BeltItemContainer : IExposable, IThingContainerOwner
     {
         private readonly BeltComponent _parentComponent;
 
@@ -70,7 +70,7 @@ namespace A2B
         [NotNull]
         public IEnumerable<Thing> Contents
         {
-            get { return _container.Contents; }
+            get { return _container; }
         }
 
         [NotNull]
@@ -86,7 +86,7 @@ namespace A2B
 
         public bool Empty
         {
-            get { return _container.Empty; }
+            get { return !_container.Any(); }
         }
 
         public int TicksToMove {
@@ -96,7 +96,7 @@ namespace A2B
         [NotNull]
         public IEnumerable<ThingStatus> ThingStatus
         {
-            get { return _container.Contents.Select(thing => new ThingStatus(thing, _thingCounter[thing])); }
+            get { return _container.Select(thing => new ThingStatus(thing, _thingCounter[thing])); }
         }
 
         #region Saveable Members
@@ -115,7 +115,7 @@ namespace A2B
                 {
                     foreach (var pair in counterDictionary)
                     {
-                        var thing = _container.Contents.FirstOrDefault(t => t.ThingID == pair.Key);
+                        var thing = _container.FirstOrDefault(t => t.ThingID == pair.Key);
 
                         if (thing != null)
                         {
@@ -137,13 +137,13 @@ namespace A2B
         #region ThingContainerGiver Members
 
         [NotNull]
-        ThingContainer IThingContainerGiver.GetContainer()
+        ThingContainer IThingContainerOwner.GetContainer()
         {
             return _container;
         }
 
 		[NotNull]
-		IntVec3 IThingContainerGiver.GetPosition()
+		IntVec3 IThingContainerOwner.GetPosition()
 		{
 			return _parentComponent.parent.PositionHeld;
 		}
@@ -311,7 +311,7 @@ namespace A2B
         public void DropAll(IntVec3 position, bool forced = false)
         {
             // Check if there is anything on the belt: yes? -> make it accessible to colonists
-            foreach (var thing in _container.Contents.ToList())
+            foreach (var thing in _container.ToList())
             {
                 DropItem(thing, position, forced);
             }
@@ -322,7 +322,7 @@ namespace A2B
         public void Destroy()
         {
             DropAll(_parentComponent.parent.Position, true);
-            _container.DestroyContents();
+            _container.ClearAndDestroyContents();
         }
     }
 }
