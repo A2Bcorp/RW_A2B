@@ -77,7 +77,7 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>A2BUndercover</defName>
-        <label>undercover</label>
+        <label>underground belt</label>
         <thingClass>Building</thingClass>
         <category>Building</category>
         <building>
@@ -86,9 +86,14 @@
         </building>
         <fillPercent>0</fillPercent>
         <graphicData>
-            <texPath>Things/Building/Undercover</texPath>
-        <graphicClass>Graphic_Single</graphicClass>
+            <texPath>Things/Building/Underground_Atlas</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <linkType>Basic</linkType>
+            <linkFlags>
+                <li>Custom10</li>
+            </linkFlags>
         </graphicData>
+        <uiIconPath>Things/Building/UndergroundCover</uiIconPath>
         <statBases>
             <WorkToMake>800</WorkToMake>
             <MaxHitPoints>300</MaxHitPoints>
@@ -96,11 +101,11 @@
             <Beauty>0</Beauty>
         </statBases>
         <altitudeLayer>FloorEmplacement</altitudeLayer>
-        <pathCost>1</pathCost>
+        <pathCost>1000</pathCost>
         <description>An underground belt.</description>
         <passability>Standable</passability>
         <rotatable>false</rotatable>
-        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
         <constructEffect>ConstructMetal</constructEffect>
         <comps>
             <li>
@@ -113,6 +118,47 @@
         </costList>
         <placingDraggableDimensions>1</placingDraggableDimensions>
         <designationHotkey>G</designationHotkey>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>A2BUndercoverCover</defName>
+        <label>underground belt cover</label>
+        <thingClass>Building</thingClass>
+        <category>Building</category>
+        <selectable>false</selectable>
+        <building>
+            <isInert>true</isInert>
+            <isEdifice>false</isEdifice>
+        </building>
+        <fillPercent>0</fillPercent>
+        <graphicData>
+            <texPath>Things/Building/UndergroundCover</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+        </graphicData>
+        <statBases>
+            <WorkToMake>200</WorkToMake>
+            <MaxHitPoints>50</MaxHitPoints>
+            <Flammability>0.2</Flammability>
+            <Beauty>0</Beauty>
+        </statBases>
+        <costList>
+            <Steel>10</Steel>
+        </costList>
+        <altitudeLayer>Filth</altitudeLayer>
+        <pathCost>-999</pathCost>
+        <description>The cover to an underground belt.</description>
+        <passability>Standable</passability>
+        <rotatable>false</rotatable>
+        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+        <constructEffect>ConstructMetal</constructEffect>
+        <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+        <comps>
+            <li>
+                <compClass>A2B.BeltUndercoverCover</compClass>
+            </li>
+        </comps>
+        <size>(1,1)</size>
+        <designationCategory>None</designationCategory>
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
@@ -131,7 +177,7 @@
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
-        <description>Connects above and below-ground belts.</description>
+        <description>Connects surface and underground belts.</description>
         <comps>
             <li>
                 <compClass>A2B.BeltUndertakerComponent</compClass>
@@ -141,7 +187,7 @@
         <costList>
             <Steel>50</Steel>
         </costList>
-        <designationHotkey>T</designationHotkey>
+        <designationHotkey>R</designationHotkey>
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
@@ -160,7 +206,7 @@
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
-        <description>Connects above and below-ground belts.</description>
+        <description>Connects surface and underground belts.</description>
         <comps>
             <li>
                 <compClass>CompPowerTrader</compClass>
@@ -202,7 +248,7 @@
             <Flammability>1.0</Flammability>
             <Beauty>0</Beauty>
         </statBases>
-        <description>Connects above and below-ground belts.</description>
+        <description>Connects surface and underground belts.</description>
         <comps>
             <li>
                 <compClass>A2B.BeltSlideComponent</compClass>

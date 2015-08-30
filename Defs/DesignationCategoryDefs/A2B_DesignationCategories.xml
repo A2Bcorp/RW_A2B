@@ -9,6 +9,7 @@
 		<specialDesignatorClasses>
 			<li>Designator_Cancel</li>
 			<li>Designator_Deconstruct</li>
+			<li>A2B.Designator_ToggleUndercoverCover</li>
 		</specialDesignatorClasses>
 	</DesignationCategoryDef>
 

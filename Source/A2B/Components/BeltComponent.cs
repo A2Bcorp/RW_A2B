@@ -197,19 +197,36 @@ namespace A2B
 
         #region Drawing Stuff
 
-        protected static void DrawGUIOverlay([NotNull] ThingStatus status, Vector3 drawPos)
+        protected static void DrawGUIOverlay([NotNull] ThingStatus status, Vector3 drawPos )
         {
-            if (Find.CameraMap.CurrentZoom != CameraZoomRange.Closest)
-            {
+            if( Find.CameraMap.CurrentZoom != CameraZoomRange.Closest )
                 return;
-            }
-            drawPos.z -= 0.4f;
 
-            var screenPos = Find.CameraMap.camera.WorldToScreenPoint(drawPos);
+            var labelText = "";
+            if( status.Thing.def.stackLimit > 1 )
+                labelText = GenString.ToStringCached( status.Thing.stackCount );
+            else
+            {
+                QualityCategory qc;
+                if( !QualityUtility.TryGetQuality( status.Thing, out qc ) )
+                    return;
+
+                labelText = QualityUtility.GetLabelShort( qc );
+            }
+
+            drawPos.z += -0.4f;
+            var screenPos = Find.CameraMap.camera.WorldToScreenPoint( drawPos );
             screenPos.y = Screen.height - screenPos.y;
 
-            GenWorldUI.DrawThingLabel(new Vector2(screenPos.x, screenPos.y), GenString.ToStringCached(status.Thing.stackCount),
-                new Color(1f, 1f, 1f, 0.75f));
+            var labelPos = new Vector2( screenPos.x, screenPos.y );
+
+            //Log.Message( "DrawGUIOverlay() :: " + status.Thing.ThingID + " - " + labelText + " @ " + drawPos.ToString() + " -> " + labelPos.ToString() );
+
+            GenWorldUI.DrawThingLabel(
+                labelPos,
+                labelText,
+                Color.white );
+
         }
 
         protected virtual Vector3 GetOffset([NotNull] ThingStatus status)
@@ -388,10 +405,8 @@ namespace A2B
         private void DoBeltTick()
         {
 			// Belts require power directly or infered through a physical link
-            if( PowerComponent == null )
-				return;
-
-            if( PowerComponent.PowerOn )
+            if( ( PowerComponent != null )&&
+                ( PowerComponent.PowerOn ) )
             {
                 // Power is on -> do work
                 // ----------------------
@@ -457,16 +472,27 @@ namespace A2B
                 // Power off -> reset everything
                 // Let's be smart: check this only once, set the item to 'Unforbidden', and then, let the player choose what he wants to do
                 // i.e. forbid or unforbid them ...
-				if( ( BeltPhase != Phase.Active )||
-					( ( ProcessLevel & Level.Surface ) == 0 ) )
-                {
-                    return;
-                }
 
+                // Already inactive and empty
+				if( ( BeltPhase != Phase.Active )&&
+                    ( ItemContainer.Empty == true ) )
+                    return;
+
+                // Turn glower off
 				if( GlowerComponent != null )
                 	GlowerComponent.Lit = false;
-				_beltPhase = Phase.Offline;
-                ItemContainer.DropAll(parent.Position, true);
+
+                // Phase, inactive
+                _beltPhase = Phase.Offline;
+
+                // Only drop items for surface belts and underground belts without covers
+                if( ( ProcessLevel == Level.Underground )&&
+                    ( ( (BeltUndergroundComponent)this ).CoverIsOn == true ) )
+                    return;
+
+                // Drop items
+                if( ItemContainer.Empty == false )
+                    ItemContainer.DropAll(parent.Position, true);
             }
         }
 
@@ -531,7 +557,7 @@ namespace A2B
             return statusText
 				+ "\n"
 				+ Constants.TxtContents.Translate()
-				+ " " + ((IThingContainerGiver) ItemContainer).GetContainer().ContentsString;
+				+ " " + ((IThingContainerOwner) ItemContainer).GetContainer().ContentsString;
         }
     }
 }

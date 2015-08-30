@@ -35,6 +35,29 @@ namespace A2B
             IceGraphic.Draw(belt.parent.DrawPos, belt.parent.Rotation, belt.parent);
         }
 
+        private static Material     _undercoverMaterial = null;
+        public static Material      UndercoverFrame
+        {
+            get
+            {
+                if( _undercoverMaterial == null )
+                {
+                    _undercoverMaterial = MaterialPool.MatFrom( "Things/Building/UndergroundFrame", ShaderDatabase.TransparentPostLight );
+                }
+
+                return _undercoverMaterial;
+            }
+        }
+
+        public static void DrawUndercoverFrame( this BeltUndercoverComponent belt )
+        {
+            // Compute the render matrix
+            Matrix4x4 matrix = default(Matrix4x4);
+            matrix.SetTRS( belt.parent.DrawPos + Altitudes.AltIncVect * 2.0f, (0f).ToQuat(), new Vector3( 1.0f, 1.0f, 1.0f ) );
+            // Render the mesh
+            Graphics.DrawMesh( MeshPool.plane10, matrix, UndercoverFrame, 0 );
+        }
+
         [CanBeNull]
         public static BeltComponent GetBeltComponent(this IntVec3 position )
         {

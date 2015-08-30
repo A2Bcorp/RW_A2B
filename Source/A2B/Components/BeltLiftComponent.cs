@@ -21,18 +21,27 @@ namespace A2B
 
             // This component is already correct, set the operation mode
             inputDirection = parent.Rotation;
-            outputDirection = new Rot4( ( parent.Rotation.AsInt + 2 ) % 4 );
+            outputDirection = parent.Rotation.OppositeOf();
+
             _processLevel = Level.Surface;
             _inputLevel = Level.Underground;
             _outputLevel = Level.Surface;
+
+            // Power
+            PowerHead = this;
+            PowerDirection = outputDirection;
         }
 
-        protected override void DoPowerCheck()
-		{
-			// Powered lifts use additional power based
-			// on how many components it's driving
-			PowerComponent.PowerOutput = -( PowerComponent.props.basePowerConsumption + poweredCount * A2BData.powerPerUndercover );
-		}
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            if( Scribe.mode == LoadSaveMode.ResolvingCrossRefs ){
+                // Power
+                PowerHead = this;
+                PowerDirection = outputDirection;
+            }
+        }
+
 
 		public override void OnItemTransfer(Thing item, BeltComponent other)
 		{
@@ -41,7 +50,7 @@ namespace A2B
 				parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, Rand.RangeInclusive(0, 2), parent));
 		}
 
-		public override IntVec3 GetDestinationForThing( Thing thing)
+		public override IntVec3 GetDestinationForThing( Thing thing )
 		{
 			return this.GetPositionFromRelativeRotation( Rot4.South );
 		}
