@@ -20,7 +20,7 @@ namespace A2B
         {   base.PostSpawnSetup();
 
             // This component is already correct, set the operation mode
-            inputDirection = new Rot4( ( parent.Rotation.AsInt + 2 ) % 4 );
+            inputDirection = parent.Rotation.OppositeOf();
             outputDirection = parent.Rotation;
 
             _processLevel = Level.Surface;
@@ -50,7 +50,7 @@ namespace A2B
             if( ( lift != null )&&
                 ( ( lift.BeltPhase == Phase.Active )||
                     ( under == null ) ) )
-                // Use the lift unless it's unpowered and there is an undertaker
+                // Use the lift unless it's unpowered and there is an undercover
                 belt = lift;
             else
                 belt = under;

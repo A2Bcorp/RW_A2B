@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ReleaseVersion>0.11.3.0</ReleaseVersion>
+    <ReleaseVersion>0.12.0.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -80,6 +80,7 @@
     <Compile Include="Designators\Designator_ToggleUndercoverCover.cs" />
     <Compile Include="JobDrivers\JobDriver_UndercoverCoverToggle.cs" />
     <Compile Include="WorkGivers\WorkGiver_UndercoverCoverToggle.cs" />
+    <Compile Include="Utilities\Rot4_Extension.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

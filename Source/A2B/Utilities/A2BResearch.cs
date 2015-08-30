@@ -55,7 +55,7 @@ namespace A2B
 				if( _def == null )
 					_def = DefDatabase<A2BDataDef>.GetNamed("A2BCore");
 				if( _def == null )
-					_def = DefDatabase<A2BDataDef>.GetRandom();
+                    _def = DefDatabase<A2BDataDef>.GetRandom();
 				return _def;
 			}
 		}

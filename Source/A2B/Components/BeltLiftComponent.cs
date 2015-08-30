@@ -21,7 +21,7 @@ namespace A2B
 
             // This component is already correct, set the operation mode
             inputDirection = parent.Rotation;
-            outputDirection = new Rot4( ( parent.Rotation.AsInt + 2 ) % 4 );
+            outputDirection = parent.Rotation.OppositeOf();
 
             _processLevel = Level.Surface;
             _inputLevel = Level.Underground;

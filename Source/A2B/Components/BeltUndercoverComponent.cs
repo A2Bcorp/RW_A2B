@@ -36,7 +36,7 @@ namespace A2B
             }
         }
 
-        public bool                CoverBlueprint ()
+        public bool                 CoverBlueprint ()
         {
             var blueprints = parent.Position.GetThingList().FindAll( c => ( c.def == UndercoverCoverDef.blueprintDef ) );
             return ( blueprints != null )&&( blueprints.Count > 0 );
@@ -109,7 +109,7 @@ namespace A2B
             belt.ThingOrigin = parent.Position;
         }
 
-        public override void OnOccasionalTick()
+        public override void        OnOccasionalTick()
         {
             // Call base power check
             base.OnOccasionalTick();
@@ -144,38 +144,41 @@ namespace A2B
 
         public override void        PostDraw()
         {
-            if( CoverIsOn == true ){
+            if( CoverIsOn == false ){
 
-                if (BeltPhase == Phase.Frozen)
-                {
-                    this.DrawIceGraphic();
-                }
-                if( BeltPhase == Phase.Offline )
-                {
-                    OverlayDrawer.DrawOverlay( parent, OverlayTypes.NeedsPower );
-                }
-            } else {
-                base.PostDraw();
-
-                if (BeltPhase == Phase.Frozen)
-                {
-                    this.DrawIceGraphic();
-                }
-
+                // Draw items scaled 75%
                 foreach (var status in ItemContainer.ThingStatus)
                 {
-                    var drawPos = parent.DrawPos + GetOffset(status) + Altitudes.AltIncVect * Altitudes.AltitudeFor(AltitudeLayer.FloorEmplacement);
+                    var parentPos = parent.DrawPos;
+                    var statusOffset = GetOffset( status );
+                    var overlayPos = parentPos + statusOffset;
+                    var drawPos = parentPos + statusOffset + Altitudes.AltIncVect;
 
-                    status.Thing.DrawAt(drawPos);
+                    Material thingMat = status.Thing.Graphic.MatSingleFor( status.Thing );
+                    Matrix4x4 thingMatrix = default(Matrix4x4);
+                    thingMatrix.SetTRS( drawPos, (0f).ToQuat(), new Vector3( 0.75f, 0.0f, 0.75f ) );
 
-                    DrawGUIOverlay(status, drawPos);
+                    Graphics.DrawMesh( MeshPool.plane10, thingMatrix, thingMat, 0 );
+
+                    DrawGUIOverlay( status, overlayPos );
                 }
 
-                if( BeltPhase == Phase.Offline )
-                {
-                    OverlayDrawer.DrawOverlay( parent, OverlayTypes.NeedsPower );
-                }
+                // Draw frame
+                this.DrawUndercoverFrame();
+
             }
+            // Draw frozen
+            if (BeltPhase == Phase.Frozen)
+            {
+                this.DrawIceGraphic();
+            }
+
+            // Draw offline
+            if( BeltPhase == Phase.Offline )
+            {
+                OverlayDrawer.DrawOverlay( parent, OverlayTypes.NeedsPower );
+            }
+
         }
 
         public override void        PostDeSpawn()
@@ -242,7 +245,7 @@ namespace A2B
 
                     var blueprint = GenConstruct.PlaceBlueprintForBuild( UndercoverCoverDef, coverPos, coverRot, Faction.OfColony, null );
 
-                    LastCoverHitPoints = UndercoverCoverDef.BaseMaxHealth;
+                    LastCoverHitPoints = UndercoverCoverDef.BaseMaxHitPoints;
                 }
                 else{
                     // First time/respawn cover

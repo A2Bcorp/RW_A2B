@@ -28,8 +28,10 @@ namespace A2B
             
             // Accept input from any flow and try to route it out
             inputDirection = input;
+
             // Always try straight first
-            var outDir = new Rot4( ( input.AsInt + 2 ) % 4 );
+            var outDir = input.OppositeOf();
+
             // Current output?
             if( PowerDirection == outDir ){
                 outputDirection = outDir;
@@ -45,7 +47,7 @@ namespace A2B
             }
 
             // Look at side one
-            var v1 = new Rot4( ( outDir.AsInt + 1 ) % 4 );
+            var v1 = outDir.LeftOf();
             lift = PowerEndPoint( v1 );
             if( lift != null ){
                 // Register in direction
@@ -54,7 +56,7 @@ namespace A2B
             }
 
             // Look at side two
-            var v2 = new Rot4( ( v1.AsInt + 2 ) % 4 );
+            var v2 = outDir.RightOf();
             lift = PowerEndPoint( v2 );
             if( lift != null ){
                 // Register in direction
@@ -90,11 +92,11 @@ namespace A2B
         }
 
         // Direction from us to power source
-        protected Rot4                PowerDirection = Rot4.Invalid;
+        protected Rot4              PowerDirection = Rot4.Invalid;
 
         // Who's sucking power off us
         protected List< BeltUndergroundComponent > poweredBelts = null;
-        protected int poweredCount
+        protected int               poweredCount
         {   // Make sure we only return undercover count, slides require a powered lift but do not draw power
             get { return poweredBelts == null ? 0 : 
                 poweredBelts.FindAll( b => ( ( b as BeltUndercoverComponent ) != null ) ).Count; }
@@ -110,7 +112,7 @@ namespace A2B
 
         #region Infered Power Stuff
 
-        public void RecomputerPower()
+        public void                 RecomputerPower()
         {
             if( this.IsLift() ){
                 // Powered lifts use additional power based
@@ -119,7 +121,7 @@ namespace A2B
             }
         }
 
-        public bool RegisterInferedPowerComponent( BeltUndergroundComponent belt, Rot4 dir )
+        public bool                 RegisterInferedPowerComponent( BeltUndergroundComponent belt, Rot4 dir )
         {
             if( poweredBelts == null )
                 poweredBelts = new List< BeltUndergroundComponent >();
@@ -139,7 +141,7 @@ namespace A2B
             return true;
         }
 
-        public bool UnregisterInferedPowerComponent( BeltUndergroundComponent belt )
+        public bool                 UnregisterInferedPowerComponent( BeltUndergroundComponent belt )
         {
 
             if( ( poweredBelts == null )||
@@ -159,67 +161,70 @@ namespace A2B
             return true;
         }
 
-        private Rot4                    _PowerEndLast = Rot4.Invalid;
-        private BeltUndergroundComponent PowerEndPoint( Rot4 outDir )
+        private Rot4                    _lastLookDir = Rot4.Invalid;
+        private BeltUndergroundComponent PowerEndPoint( Rot4 lookDir )
         {
-            // Last asked for this, must have looped around
-            if( outDir == _PowerEndLast ){
+            // Last looked in this direction, must have looped around
+            if( lookDir == _lastLookDir ){
                 return null;
             }
-            _PowerEndLast = outDir;
+            _lastLookDir = lookDir;
 
-            IntVec3 checkPos = parent.Position + outDir.FacingCell;
+            // Compute cell to examine
+            IntVec3 checkPos = parent.Position + lookDir.FacingCell;
 
+            // Get list of underground components in cell
             var belts = checkPos.GetBeltUndergroundComponents();
             if( ( belts == null )||
                 ( belts.Count == 0 ) ){
                 // Nothing here
-                _PowerEndLast = Rot4.Invalid;
+                _lastLookDir = Rot4.Invalid;
                 return null;
             }
 
             // Is there a valid lift there?
-            var lift = belts.Find( b => ( b.IsLift() == true )&&( b.PowerDirection == outDir ) );
+            var lift = belts.Find( b => ( b.IsLift() == true )&&( b.PowerDirection == lookDir ) );
             if( lift != null ){
-                _PowerEndLast = Rot4.Invalid;
+                _lastLookDir = Rot4.Invalid;
                 return lift;
             }
 
             // Check multivector
             var under = belts.Find( b => ( b.IsUndercover() == true ) );
             if( under != null ){
+                
                 // Check straight first
-                lift = under.PowerEndPoint( outDir );
+                lift = under.PowerEndPoint( lookDir );
                 if( lift != null ){
                     // Register in direction
-                    lift.RegisterInferedPowerComponent( under, outDir );
-                    _PowerEndLast = Rot4.Invalid;
+                    lift.RegisterInferedPowerComponent( under, lookDir );
+                    _lastLookDir = Rot4.Invalid;
                     return lift;
                 }
 
                 // Look at side one
-                var v1 = new Rot4( ( outDir.AsInt + 1 ) % 4 );
+                var v1 = lookDir.LeftOf();
                 lift = under.PowerEndPoint( v1 );
                 if( lift != null ){
                     // Register in direction
                     lift.RegisterInferedPowerComponent( under, v1 );
-                    _PowerEndLast = Rot4.Invalid;
+                    _lastLookDir = Rot4.Invalid;
                     return lift;
                 }
 
                 // Look at side two
-                var v2 = new Rot4( ( v1.AsInt + 2 ) % 4 );
+                var v2 = lookDir.RightOf();
                 lift = under.PowerEndPoint( v2 );
                 if( lift != null ){
                     // Register in direction
                     lift.RegisterInferedPowerComponent( under, v2 );
-                    _PowerEndLast = Rot4.Invalid;
+                    _lastLookDir = Rot4.Invalid;
                     return lift;
                 }
             }
 
             // No end point reached
-            _PowerEndLast = Rot4.Invalid;
+            _lastLookDir = Rot4.Invalid;
             return null;
         }
 
@@ -231,24 +236,29 @@ namespace A2B
             if( this.IsLift() )
                 return;
 
-            // Occasionally check power links for everyone else though
-            BeltUndergroundComponent lift = null;
-
-            // Sometimes on load we lose our power component reference???
-            if( ( PowerHead != null )&&
+            // RimWorld load bug work around:
+            // Sometimes on load we lose our power component reference
+            if( ( _powerHead != null )&&
                 ( PowerComponent == null ) )
                 PowerComponent = _headParent.TryGetComp<CompPowerTrader>();
 
-            if( ( PowerHead == null )||
+            // If this component has no power head, or;
+            // The head parent is not this components parent, and;
+            // The power head is off
+            if( ( _powerHead == null )||
                 ( ( _headParent != this.parent )&&
                     ( PowerComponent.PowerOn == false ) ) )
             {
+                // Check power link
+                BeltUndergroundComponent lift = null;
+
                 _beltPhase = Phase.Offline;
 
                 if( outputDirection != Rot4.Invalid ){
                     // Single vector/targetted output first
                     lift = PowerEndPoint( outputDirection );
                     if( lift != null ){
+                        // Register in direction
                         lift.RegisterInferedPowerComponent( this, outputDirection );
                         return;
                     }
@@ -270,7 +280,7 @@ namespace A2B
                         var d = new Rot4( i );
                         lift = PowerEndPoint( d );
                         if( lift != null ){
-                            // Register in direction
+                            // Registered in direction
                             lift.RegisterInferedPowerComponent( this, d );
                             return;
                         }
@@ -285,7 +295,7 @@ namespace A2B
             // Tell the undercover which direction the item came from
             if( other.IsUndercover() )
             {
-                ((BeltUndercoverComponent) other).SetItemFlow( new Rot4( ( outputDirection.AsInt + 2 ) % 4 ) );
+                ((BeltUndercoverComponent) other).SetItemFlow( outputDirection.OppositeOf() );
             }
 
             // Then, do potential belt deterioration
@@ -353,32 +363,16 @@ namespace A2B
                 if( statusText != "" )
                     statusText += "\n";
 
-                statusText += Constants.TxtUndertakerFlow.Translate() 
-                    + " " + RotationName( inputDirection )
-                    + " " + Constants.TxtUndertakerFlowTo.Translate() 
-                    + " " + RotationName( outputDirection );
+                statusText += Constants.TxtUndertakerFlow.Translate()
+                    + " " + inputDirection.Name()
+                    + " " + Constants.TxtUndertakerFlowTo.Translate()
+                    + " " + outputDirection.Name();
             }
 
             return statusText;
         }
 
         #endregion
-
-        private string              RotationName( Rot4 r )
-        {
-            if( r == Rot4.North )
-                return Constants.TxtDirectionNorth.Translate();
-            if( r == Rot4.East )
-                return Constants.TxtDirectionEast.Translate();
-            if( r == Rot4.South )
-                return Constants.TxtDirectionSouth.Translate();
-            if( r == Rot4.West )
-                return Constants.TxtDirectionWest.Translate();
-            if( r == Rot4.Invalid )
-                return "...";
-
-            return "Unknown (" + r.ToString() + ")";
-        }
 
     }
 }

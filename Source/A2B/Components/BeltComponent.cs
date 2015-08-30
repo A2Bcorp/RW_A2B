@@ -199,17 +199,34 @@ namespace A2B
 
         protected static void DrawGUIOverlay([NotNull] ThingStatus status, Vector3 drawPos )
         {
-            if (Find.CameraMap.CurrentZoom != CameraZoomRange.Closest)
-            {
+            if( Find.CameraMap.CurrentZoom != CameraZoomRange.Closest )
                 return;
-            }
-            drawPos.z -= 0.4f;
 
-            var screenPos = Find.CameraMap.camera.WorldToScreenPoint(drawPos);
+            var labelText = "";
+            if( status.Thing.def.stackLimit > 1 )
+                labelText = GenString.ToStringCached( status.Thing.stackCount );
+            else
+            {
+                QualityCategory qc;
+                if( !QualityUtility.TryGetQuality( status.Thing, out qc ) )
+                    return;
+
+                labelText = QualityUtility.GetLabelShort( qc );
+            }
+
+            drawPos.z += -0.4f;
+            var screenPos = Find.CameraMap.camera.WorldToScreenPoint( drawPos );
             screenPos.y = Screen.height - screenPos.y;
 
-            GenWorldUI.DrawThingLabel(new Vector2(screenPos.x, screenPos.y), GenString.ToStringCached(status.Thing.stackCount),
-                new Color(1f, 1f, 1f, 0.75f));
+            var labelPos = new Vector2( screenPos.x, screenPos.y );
+
+            //Log.Message( "DrawGUIOverlay() :: " + status.Thing.ThingID + " - " + labelText + " @ " + drawPos.ToString() + " -> " + labelPos.ToString() );
+
+            GenWorldUI.DrawThingLabel(
+                labelPos,
+                labelText,
+                Color.white );
+
         }
 
         protected virtual Vector3 GetOffset([NotNull] ThingStatus status)
@@ -540,7 +557,7 @@ namespace A2B
             return statusText
 				+ "\n"
 				+ Constants.TxtContents.Translate()
-				+ " " + ((IThingContainerGiver) ItemContainer).GetContainer().ContentsString;
+				+ " " + ((IThingContainerOwner) ItemContainer).GetContainer().ContentsString;
         }
     }
 }

@@ -45,8 +45,9 @@ namespace A2B
 
         public static Texture2D IconUndercoverCoverToggle = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/UndercoverCoverToggle", true);
 
+        //public static Material UndercoverFrame = MaterialPool.MatFrom( "Things/Building/UndergroundFrame" );
+
         public static DesignationDef DesignationUndercoverCoverToggle = DefDatabase<DesignationDef>.GetNamed( "A2BUndercoverCoverToggleDesignation", true );
-        //public static DesignatorDef DesignatorUndercoverCoverToggle = DefDatabase<DesignatorDef>.GetNamed( "A2BUndercoverCoverToggleDesignator", true );
 
         public static JobDef JobUndercoverCoverToggle = DefDatabase<JobDef>.GetNamed( "A2BUndercoverCoverToggleJob", true );
 

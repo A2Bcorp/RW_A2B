@@ -3,15 +3,17 @@
 
 	<ResearchProjectDef>
 		<defName>A2B</defName>
-		<label>[A2B] Conveyor Belts</label>
+		<label>Conveyor Belts</label>
 		<description>Allows the construction of the basic elements of the A2B conveyor belts.</description>
 		<totalCost>500</totalCost>
-		<prerequisites/>
+		<prerequisites>
+			<li>Machining</li>
+		</prerequisites>
 	</ResearchProjectDef>
 
 	<ResearchProjectDef>
 		<defName>A2B2</defName>
-		<label>[A2B] New Components</label>
+		<label>New Conveyor Components</label>
 		<description>Unlocks the 'Selector' and the 'Undercover'/'Undertaker' pair.</description>
 		<totalCost>600</totalCost>
 		<prerequisites>
@@ -21,7 +23,7 @@
 
 	<ResearchProjectDef>
 		<defName>A2B_Climatization</defName>
-		<label>[A2B] Climatization</label>
+		<label>Conveyor Climatization</label>
 		<description>Climatized components allow your A2B system to continue functioning at even lower temperatures than before!</description>
 		<totalCost>800</totalCost>
 		<prerequisites>
@@ -31,7 +33,7 @@
 
 	<ResearchProjectDef>
 		<defName>A2B_Durability</defName>
-		<label>[A2B] Component Durability</label>
+		<label>Conveyor Durability</label>
 		<description>Stronger building materials result in more durable belts what wear down much slower than before!</description>
 		<totalCost>800</totalCost>
 		<prerequisites>
@@ -41,7 +43,7 @@
 
 	<ResearchProjectDef>
 		<defName>A2B_Reliability</defName>
-		<label>[A2B] Component Reliability</label>
+		<label>Conveyor Reliability</label>
 		<description>Enhanced production processes yield more reliable components that never jam under normal conditions!</description>
 		<totalCost>800</totalCost>
 		<prerequisites>
@@ -51,7 +53,7 @@
 
 	<ResearchProjectDef>
 		<defName>A2B_BeltSpeed</defName>
-		<label>[A2B] Faster Belts</label>
+		<label>Faster Conveyor Belts</label>
 		<description>By upgrading the motors which drive the belts, components can deliver goods at a much faster speed.</description>
 		<totalCost>800</totalCost>
 		<prerequisites>
