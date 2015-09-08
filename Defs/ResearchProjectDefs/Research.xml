@@ -6,9 +6,6 @@
 		<label>Conveyor Belts</label>
 		<description>Allows the construction of the basic elements of the A2B conveyor belts.</description>
 		<totalCost>500</totalCost>
-		<prerequisites>
-			<li>Machining</li>
-		</prerequisites>
 	</ResearchProjectDef>
 
 	<ResearchProjectDef>

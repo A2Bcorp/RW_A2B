@@ -171,7 +171,7 @@ namespace A2B
         {
             OnBeginMove(thing, beltDest);
 
-            if (CanOutputToNonBelt() && Find.TerrainGrid.TerrainAt(beltDest).changeable)
+            if( CanOutputToNonBelt() && beltDest.NoStorageBlockersIn( thing ) )
             {
                 ItemContainer.DropItem(thing, beltDest);
             }

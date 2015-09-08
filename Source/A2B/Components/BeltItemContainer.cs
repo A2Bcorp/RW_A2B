@@ -226,7 +226,7 @@ namespace A2B
             // If no belt items, then move things only if this can output to non-belts
             if (belt == null)
             {
-                return (_parentComponent.CanOutputToNonBelt() && destination.CanPlaceThing(thing));
+                return (_parentComponent.CanOutputToNonBelt() && destination.NoStorageBlockersIn(thing));
             }
 
             // There is a belt, only move things if it can accept them from us
