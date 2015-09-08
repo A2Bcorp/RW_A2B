@@ -79,39 +79,35 @@ namespace A2B
             }
         }
 
-        public static bool CanPlaceThing(this IntVec3 position, [NotNull] Thing thing)
+        public static bool NoStorageBlockersIn(this IntVec3 c, Thing thing)
         {
-            if (IsSpotUsable(position, thing))
-                return true;
-
-            var slotGroup = Find.ThingGrid.ThingAt(position, ThingCategory.Building) as ISlotGroupParent;
-            if (slotGroup != null)
-				return slotGroup.GetStoreSettings().AllowedToAccept(thing);
-
-            return false;
+            List<Thing> list = Find.ThingGrid.ThingsListAt( c );
+            for( int index = 0; index < list.Count; ++index )
+            {
+                Thing thing1 = list[index];
+                if(
+                    (
+                        ( thing1.def.EverStoreable )&&
+                        (
+                            ( thing1.def != thing.def )||
+                            ( thing1.stackCount >= thing.def.stackLimit )
+                        )
+                    )||
+                    (
+                        ( thing1.def.entityDefToBuild != null )&&
+                        ( thing1.def.entityDefToBuild.passability != Traversability.Standable )
+                    )||
+                    (
+                        ( thing1.def.surfaceType == SurfaceType.None )&&
+                        ( thing1.def.passability != Traversability.Standable )
+                    )
+                )
+                {
+                    return false;
+                }
+            }
+            return true;
         }
-
-        // CHANGE: Unless KindaUsable is an option, this should really just be a boolean. Also, the name was a little
-        //         funky.
-		public static bool IsSpotUsable(IntVec3 c, Thing thing)
-		{
-            if (!GenGrid.InBounds(c) || !GenGrid.Walkable(c))
-                return false;
-			
-			List<Thing> list = Find.ThingGrid.ThingsListAtFast(c);
-            if (!list.Any())
-                return true;
-
-			foreach (Thing t in list) {
-				if (thing.def.saveCompressible && t.def.saveCompressible)
-					return false;
-
-                if (t.def.category == ThingCategory.Item)
-                    return (t.def == thing.def && t.stackCount < thing.def.stackLimit);
-			}
-
-			return false;
-		}
 
 		/**
          * Get the position corresponding to a rotation relative to the Thing's
