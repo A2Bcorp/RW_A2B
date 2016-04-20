@@ -12,6 +12,18 @@ using Verse;
 namespace A2B
 {
 
+    public struct UndertakerToggleData
+    {
+        public BeltUndertakerComponent     target;
+        public bool                        forced;
+
+        public UndertakerToggleData( BeltUndertakerComponent target, bool forced )
+        {
+            this.target = target;
+            this.forced = forced;
+        }
+    }
+
     [UsedImplicitly]
 	public class BeltUndertakerComponent : BeltUndergroundComponent
 	{
@@ -33,7 +45,7 @@ namespace A2B
 		public override void PostExposeData()
 		{
             base.PostExposeData();
-			Scribe_Values.LookValue( ref forcedMode, "forcedMode" );
+            Scribe_Values.LookValue( ref forcedMode, "forcedMode" );
 		}
 
 		private bool modeReset()
@@ -43,41 +55,16 @@ namespace A2B
 			if( forcedMode )
 				return false;
 			
-			// Get the top belt connection
-			BeltComponent topBelt = this.GetPositionFromRelativeRotation( Rot4.South ).GetBeltComponent();
+            // Needs mode toggle, register for update
+            if(
+                ( !this.IsSlide() )&&
+                ( !this.IsLift() )
+            )
+            {
+                A2BMonitor.RegisterTickAction( this.parent.ThingID, UndertakerToggleMode, new UndertakerToggleData( this, false ) );
+                return true;
+            }
 
-			if( topBelt != null )
-			{
-				// We have a belt connected to the top
-				if( topBelt.CanAcceptFrom( this, true ) )
-				{
-					// The top belt can accept from this belt,
-					// therefore this is a powered lift
-					if( !this.IsLift() )
-					{
-						// Make sure it's a powered version
-						ChangeOperationalMode( UndertakerMode.PoweredLift );
-
-						// Force exit now to allow change
-						return true;
-					}
-				}
-				else
-				{
-					// This undertaker can't feed the top belt, assume the top
-					// belt feeds the undertaker and operate as a slide
-					if( !this.IsSlide() )
-					{
-						// Slides don't use power and we don't want
-						// them to transmit to allow segmenting the
-						// power network used by the conveyors
-						ChangeOperationalMode( UndertakerMode.UnpoweredSlide );
-
-						// Force exit now to allow change
-						return true;
-					}
-				}
-			}
 			return false;
 		}
 
@@ -95,11 +82,6 @@ namespace A2B
 			if( modeReset() )
 				return;
 			
-            // Abort if still in config mode
-            if( ( !this.IsSlide() )&&
-                ( !this.IsLift() ) )
-                return;
-
             // Configured, now process
             base.OnOccasionalTick();
 
@@ -115,45 +97,6 @@ namespace A2B
 			if( BeltPhase == Phase.Active || BeltPhase == Phase.Jammed )
 				DoJamCheck();
 
-		}
-
-		private void ChangeOperationalMode( UndertakerMode newMode, bool forced = false )
-		{
-			// Get the def we need
-			string beltDefName;
-			switch ( newMode )
-			{
-			case UndertakerMode.PoweredLift:
-				beltDefName = "A2BLift";
-				break;
-			case UndertakerMode.UnpoweredSlide:
-				beltDefName = "A2BSlide";
-				break;
-			default:
-				return; // Invalid mode change
-			}
-
-			// Get the thing def for the belt
-			ThingDef beltDef = DefDatabase<ThingDef>.GetNamed( beltDefName );
-
-			// Get our current position and rotation
-			IntVec3 beltPos = parent.Position;
-			Rot4 beltRot = parent.Rotation;
-
-			// Make the new belt
-			Thing beltThing = ThingMaker.MakeThing( beltDef );
-			beltThing.SetFactionDirect( Faction.OfColony );
-			beltThing.HitPoints = parent.HitPoints;
-
-			// Set the new belt mode
-			BeltUndertakerComponent beltComp = beltThing.TryGetComp<BeltUndertakerComponent>();
-			beltComp.forcedMode = forced;
-
-			// Remove this belt
-			parent.Destroy( DestroyMode.Vanish );
-
-			// Spawn new belt
-			GenSpawn.Spawn( beltThing, beltPos, beltRot );
 		}
 
         public override IntVec3 GetDestinationForThing( Thing thing)
@@ -174,7 +117,7 @@ namespace A2B
 				
 				status.Thing.DrawAt(drawPos);
 				
-				DrawGUIOverlay(status, drawPos);
+				//DrawGUIOverlay(status, drawPos);
 			}
             if( ( ( !this.IsSlide() )&&( !this.IsLift() ) )||
                 ( ( this.IsSlide() )&&( BeltPhase == Phase.Offline ) ) )
@@ -245,25 +188,21 @@ namespace A2B
 			Command_Action actionToggleMode = new Command_Action();
 			if( actionToggleMode != null )
 			{
-				actionToggleMode.icon = ContentFinder<Texture2D>.Get( "UI/Icons/Commands/UndertakerMode", true);;
+                actionToggleMode.icon = Constants.IconUndertakerToggle;
 				actionToggleMode.defaultLabel = Constants.TxtUndertakerModeToggle.Translate();
-				actionToggleMode.activateSound = SoundDef.Named( "Click" );
+                actionToggleMode.activateSound = Constants.ButtonClick;
                 if( this.IsLift() )
 				{
 					actionToggleMode.defaultDesc = Constants.TxtUndertakerModeSlide.Translate();
-					actionToggleMode.action = new Action( delegate()
-						{
-							ChangeOperationalMode( UndertakerMode.UnpoweredSlide, true );
-						} );
 				}
 				else
 				{
 					actionToggleMode.defaultDesc = Constants.TxtUndertakerModeLift.Translate();
-					actionToggleMode.action = new Action( delegate()
-						{
-							ChangeOperationalMode( UndertakerMode.PoweredLift, true );
-						} );
 				}
+                actionToggleMode.action = new Action( delegate()
+                    {
+                    A2BMonitor.RegisterTickAction( this.parent.ThingID, UndertakerToggleMode, new UndertakerToggleData( this, true ) );
+                    } );
 				if( actionToggleMode.action != null )
 				{
 					yield return actionToggleMode;
@@ -272,5 +211,104 @@ namespace A2B
 			// No more gizmos
 			yield break;
 		}
+
+        #region Static Callbacks
+
+        public static bool UndertakerToggleMode( object target )
+        {
+            var toggleData = (UndertakerToggleData) target;
+            UndertakerMode toggleMode = UndertakerMode.Undefined;
+            if( toggleData.target.IsLift() )
+            {
+                toggleMode = UndertakerMode.UnpoweredSlide;
+            }
+            else if( toggleData.target.IsSlide() )
+            {
+                toggleMode = UndertakerMode.PoweredLift;
+            }
+            else
+            {
+                toggleMode = UndertakerMode.AutoDetect;
+            }
+            return ChangeOperationalMode( toggleData.target, toggleMode, toggleData.forced );
+        }
+
+        private static bool ChangeOperationalMode( BeltUndertakerComponent undertaker, UndertakerMode newMode, bool forced )
+        {
+            // Get the new def
+            ThingDef beltDef;
+            switch ( newMode )
+            {
+            case UndertakerMode.PoweredLift:
+                beltDef = Constants.DefBeltLift;
+                break;
+            case UndertakerMode.UnpoweredSlide:
+                beltDef = Constants.DefBeltSlide;
+                break;
+            case UndertakerMode.AutoDetect:
+                BeltComponent topBelt = undertaker.GetPositionFromRelativeRotation( Rot4.South ).GetBeltSurfaceComponent();
+
+                if( topBelt != null )
+                {
+                    // We have a belt connected to the top
+                    if( topBelt.CanAcceptFrom( undertaker, true ) )
+                    {
+                        // The top belt can accept from this belt,
+                        // therefore this is a powered lift
+                        if( undertaker.IsLift() )
+                        {
+                            // Already a lift
+                            return true;
+                        }
+
+                        // Switch this to a lift
+                        beltDef = Constants.DefBeltLift;
+                        break;
+                    }
+                    else
+                    {
+                        // This undertaker can't feed the top belt, assume the top
+                        // belt feeds the undertaker and operate as a slide
+                        if( undertaker.IsSlide() )
+                        {
+                            // Already a slide
+                            return true;
+                        }
+
+                        // Switch this to a slide
+                        beltDef = Constants.DefBeltSlide;
+                        break;
+                    }
+                }
+                // No top belt, don't do anything yet
+                return false;
+            default:
+                // Invalid mode change, deregister to allow for a proper mode change
+                return true;
+            }
+
+            // Get target position and rotation
+            IntVec3 beltPos = undertaker.parent.Position;
+            Rot4 beltRot = undertaker.parent.Rotation;
+
+            // Make the new belt
+            Thing beltThing = ThingMaker.MakeThing( beltDef );
+            beltThing.SetFactionDirect( Faction.OfColony );
+            beltThing.HitPoints = undertaker.parent.HitPoints;
+
+            // Set the new belt mode
+            BeltUndertakerComponent beltComp = beltThing.TryGetComp<BeltUndertakerComponent>();
+            beltComp.forcedMode = forced;
+
+            // Remove the existing belt
+            undertaker.parent.Destroy();
+
+            // Spawn new belt
+            GenSpawn.Spawn( beltThing, beltPos, beltRot );
+            return true;
+        }
+
+        #endregion
+
 	}
 }

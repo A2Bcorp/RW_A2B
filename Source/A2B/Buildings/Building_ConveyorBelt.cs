@@ -40,8 +40,8 @@ namespace A2B
         {
             base.Tick();
 
-            CompPowerTrader power = GetComp<CompPowerTrader>();
-            BeltComponent belt = GetComp<BeltComponent>();
+            //CompPowerTrader power = GetComp<CompPowerTrader>();
+            //BeltComponent belt = GetComp<BeltComponent>();
 
             if (Graphic.GetType() == typeof(AnimatedGraphic))
             {

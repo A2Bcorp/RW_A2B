@@ -13,15 +13,21 @@ namespace A2B
 
     public class Designator_ToggleUndercoverCover : Designator
     {
-        public Designator_ToggleUndercoverCover()
+        
+        public void LoadDesignatorIcon()
         {
             this.icon = Constants.IconUndercoverCoverToggle;
+        }
+
+        public Designator_ToggleUndercoverCover()
+        {
+            LongEventHandler.ExecuteWhenFinished( LoadDesignatorIcon );
             this.defaultLabel = Constants.TxtUndercoverCoverToggle.Translate();
             this.defaultDesc = Constants.TxtUnderUndercoverCoverToggleDesc.Translate();
             this.useMouseIcon = true;
             this.soundDragSustain = SoundDefOf.DesignateDragStandard;
             this.soundDragChanged = SoundDefOf.DesignateDragStandardChanged;
-            this.soundSucceeded = SoundDef.Named( "Click" );
+            this.soundSucceeded = Constants.ButtonClick;
             this.hotKey = Constants.KeyUndercoverCoverToggle;
         }
 

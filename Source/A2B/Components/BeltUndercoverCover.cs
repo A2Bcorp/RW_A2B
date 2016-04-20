@@ -42,14 +42,14 @@ namespace A2B
                 ParentBelt.CoverWasDestroyed = false;
         }
 
-        public override void PostDestroy( DestroyMode mode = DestroyMode.Vanish)
+        public override void PostDestroy( DestroyMode mode, bool wasSpawned )
         {
             // If we were destroyed, tell our parent undercover belt
             if( ( mode == DestroyMode.Kill )&&
                 ( ParentBelt != null ) ){
                 ParentBelt.CoverWasDestroyed = true;
             }
-            base.PostDestroy( mode );
+            base.PostDestroy( mode, wasSpawned );
         }
 
     }

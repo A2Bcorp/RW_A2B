@@ -9,7 +9,7 @@ namespace A2B
 {
     public class BeltUnloaderComponent : BeltComponent
     {
-        public override bool CanOutputToNonBelt()
+        public override bool CanOutputToNonBelt( IntVec3 beltDest, Thing thing )
         {
             return true;
         }

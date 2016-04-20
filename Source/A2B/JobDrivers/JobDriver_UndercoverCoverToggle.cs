@@ -19,7 +19,7 @@ namespace A2B
             // Destroyed,
             // On fire
             // Designator removed
-            this.FailOnDestroyed( TargetIndex.A );
+            this.FailOnDespawnedNullOrForbidden( TargetIndex.A );
             this.FailOnBurningImmobile( TargetIndex.A );
             this.FailOnThingMissingDesignation( TargetIndex.A, Constants.DesignationUndercoverCoverToggle );
             // Reserve the target

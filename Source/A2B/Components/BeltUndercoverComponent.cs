@@ -51,6 +51,12 @@ namespace A2B
             get { return ( Cover != null ); }
         }
 
+        public override bool        AllowLowPowerMode()
+        {
+            // Powered lifts will handle this for us
+            return false;
+        }
+
 		public override IntVec3     GetDestinationForThing( Thing thing )
 		{
             // Prefer straight
@@ -60,8 +66,12 @@ namespace A2B
 		public override bool        CanAcceptFrom( BeltComponent belt, bool onlyCheckConnection = false )
 		{
 			// If I can't accept from anyone, I certainly can't accept from you.
-			if( !onlyCheckConnection && !CanAcceptSomething() )
-				return false;
+            /*
+            if( !onlyCheckConnection )
+                foreach( var thing in belt.ItemContainer.ThingsToMove )
+                    if( !CanAcceptThing( thing ) )
+                        return false;
+            */
 
             // This belt isn't on the other belts output level
             if( belt.OutputLevel != this.InputLevel )
@@ -90,15 +100,21 @@ namespace A2B
             var belts = beltDest.GetBeltUndergroundComponents();
             var lift = belts.Find( b => b.IsLift() && b.outputDirection == this.outputDirection );
             var under = belts.Find( u => u.IsUndercover() );
-            if( ( lift != null )&&
-                ( ( lift.BeltPhase == Phase.Active )||
-                    ( under == null ) ) )
+            if(
+                ( lift != null )&&
+                (
+                    ( lift.BeltPhase == Phase.Active )||
+                    ( under == null )
+                )
+            )
+            {
                 belt = lift;
+            }
             else
                 belt = under;
 
-            //  Check if there is a belt, if it is empty, and also check if it is active !
-            if (belt == null || !belt.ItemContainer.Empty || belt.BeltPhase != Phase.Active)
+            //  Check if there is a belt, if it can accept this thing
+            if( belt == null || !belt.CanAcceptThing( thing ) )
             {
                 return;
             }
@@ -160,7 +176,7 @@ namespace A2B
 
                     Graphics.DrawMesh( MeshPool.plane10, thingMatrix, thingMat, 0 );
 
-                    DrawGUIOverlay( status, overlayPos );
+                    //DrawGUIOverlay( status, overlayPos );
                 }
 
                 // Draw frame

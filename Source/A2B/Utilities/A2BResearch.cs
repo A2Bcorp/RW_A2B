@@ -47,7 +47,8 @@ namespace A2B
         public static A2B_Reliability       Reliability;
 
         // Power for underground powered belts
-        public static float                 powerPerUndercover = 1000f;
+        public static float                 LowPowerFactor;
+        public static float                 PowerPerUndercover;
 
 		public static A2BDataDef def
 		{
@@ -82,7 +83,9 @@ namespace A2B
 			Reliability.StartThreshold = def.ReliabilityStartThresholdBase;
             Reliability.FlatRateThreshold = def.ReliabilityFlatRateThresholdBase;
 
-            A2BMonitor.RegisterTickAction( "A2BResearch.UndercoverPowerInit", A2BResearch.UndercoverPowerInit );
+            LowPowerFactor = def.LowPowerFactor;
+            PowerPerUndercover = def.PowerPerUndercover;
+
             A2BMonitor.RegisterTickAction( "A2BResearch.BeltSpeedInit", A2BResearch.BeltSpeedInit );
 		    
             A2BMonitor.RegisterOccasionalAction( "A2BResearch.BeltSpeed", A2BResearch.BeltSpeed );
@@ -119,25 +122,14 @@ namespace A2B
     public static class A2BResearch
     {
 
-        public static bool UndercoverPowerInit()
-        {
-            var baseBelt = DefDatabase<ThingDef>.GetNamed( "A2BBelt" );
-            if( baseBelt != null ){
-                var beltComps = baseBelt.CompDefFor<CompPowerTrader>();
-                if( beltComps != null )
-                    A2BData.powerPerUndercover = beltComps.basePowerConsumption;
-            }
-            return true;
-        }
-
-        public static bool BeltSpeedInit()
+        public static bool BeltSpeedInit( object target )
         {
             A2BData.BeltSpeed.TicksToMove = A2BData.def.BeltSpeedBase;
             AnimatedGraphic.animationRate = ( (float)A2BData.BeltSpeed.TicksToMove / 90.0f);
             return true;
         }
 
-        public static bool BeltSpeed()
+        public static bool BeltSpeed( object target )
         {
 			if (A2BResearch.ResearchGroupComplete(A2BData.def.BeltSpeedResearch)) {
 				A2BData.BeltSpeed.TicksToMove += A2BData.def.BeltSpeedOffset;
@@ -148,7 +140,7 @@ namespace A2B
 			return false;
 		}
 
-		public static bool Climatization()
+        public static bool Climatization( object target )
 		{
 			if (A2BResearch.ResearchGroupComplete(A2BData.def.ClimatizationResearch)) {
 				A2BData.Climatization.FreezeTemperature += A2BData.def.ClimatizationMinTemperatureOffset;
@@ -158,7 +150,7 @@ namespace A2B
 			return false;
 		}
 
-		public static bool Durability()
+        public static bool Durability( object target )
 		{
             if (A2BResearch.ResearchGroupComplete(A2BData.def.DurabilityResearch)) {
                 A2BData.Durability.DeteriorateChance += A2BData.def.DurabilityOffset;
@@ -168,7 +160,7 @@ namespace A2B
 			return false;
 		}
 
-		public static bool Reliability()
+        public static bool Reliability( object target )
 		{
             if (A2BResearch.ResearchGroupComplete(A2BData.def.ReliabilityResearch)) {
                 A2BData.Reliability.FlatRateThreshold += A2BData.def.ReliabilityFlatRateThresholdOffset;

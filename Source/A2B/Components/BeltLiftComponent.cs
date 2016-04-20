@@ -42,6 +42,37 @@ namespace A2B
             }
         }
 
+        public override float GetBasePowerConsumption()
+        {
+            if( PowerComponent == null )
+            {
+                return 0f;
+            }
+            // Powered lifts use additional power based
+            // on how many components it's driving
+            return PowerComponent.Props.basePowerConsumption + poweredCount * A2BData.PowerPerUndercover;
+        }
+
+        public override bool MovingThings()
+        {
+            // Is the lift itself moving an item?
+            if( ItemContainer.MovingThings() )
+            {
+                return true;
+            }
+            if( poweredBelts.NullOrEmpty() )
+                return false;
+            
+            // Check all the undercovers the lift is pulling, don't include slides in the scan
+            foreach( var undercover in poweredBelts.FindAll( b => b is BeltUndercoverComponent ) )
+            {
+                if( undercover.MovingThings() )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
 		public override void OnItemTransfer(Thing item, BeltComponent other)
 		{
@@ -65,10 +96,10 @@ namespace A2B
             OnBeginMove(thing, beltDest);
 
             // Lifts only output to surface
-            var belt = beltDest.GetBeltComponent();
+            var belt = beltDest.GetBeltSurfaceComponent();
 
-            //  Check if there is a belt, if it is empty, and also check if it is active !
-            if (belt == null || !belt.ItemContainer.Empty || belt.BeltPhase != Phase.Active)
+            //  Check if there is a belt, if it can accept this thing
+            if( belt == null || !belt.CanAcceptThing( thing ) )
             {
                 return;
             }

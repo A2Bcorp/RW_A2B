@@ -11,6 +11,7 @@ using Verse.Sound;
 
 namespace A2B
 {
+    
 	public class A2BDataDef : Def
 	{
 		// Core mod versioning
@@ -40,6 +41,10 @@ namespace A2B
 		public float			ReliabilityStartThresholdBase;
 		public float			ReliabilityStartThresholdOffset;
 		public List< string >	ReliabilityResearch;
+
+        // Power data
+        public float            LowPowerFactor = 0.1f;
+        public float            PowerPerUndercover = 10f;
 
 	}
 
