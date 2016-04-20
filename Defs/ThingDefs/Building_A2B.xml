@@ -26,13 +26,27 @@
         <fillPercent>1</fillPercent>
         <staticSunShadowHeight>0.34</staticSunShadowHeight>
 
+        <comps>
+            <li Class="CompProperties_Flickable" />
+            <li Class="CompProperties_Breakdownable" />
+        </comps>
+
         <tickerType>Normal</tickerType>
 
         <designationCategory>ConveyorBelts</designationCategory>
-        <researchPrerequisite>A2B</researchPrerequisite>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef Name="A2BBase" ParentName="BuildingBase" Abstract="True">
+        <researchPrerequisites>
+            <li>A2B</li>
+        </researchPrerequisites>
+    </ThingDef>
+
+    <ThingDef Name="A2BMinified" ParentName="A2BBase" Abstract="True">
+        <minifiedDef>MinifiedFurniture</minifiedDef>
+    </ThingDef>
+
+    <ThingDef ParentName="A2BMinified">
         <defName>A2BBelt</defName>
         <label>conveyor belt</label>
         <thingClass>A2B.Building_ConveyorBelt</thingClass>
@@ -48,7 +62,7 @@
         </statBases>
         <description>The basic unit of a conveyor belt.</description>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>10</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
@@ -56,7 +70,7 @@
                 <transmitsPower>true</transmitsPower>
                 <startElectricalFires>true</startElectricalFires> 
             </li>
-            <li>
+            <li Class="CompProperties_Glower">
                 <compClass>CompGlower</compClass>
                 <glowRadius>1</glowRadius>
                 <glowColor>(255,200,0,0)</glowColor>
@@ -67,13 +81,14 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>15</Steel>
+            <Steel>10</Steel>
+            <Components>1</Components>
         </costList>
         <designationHotkey>B</designationHotkey>
         <placingDraggableDimensions>1</placingDraggableDimensions>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2BMinified">
         <defName>A2BCurve</defName>
         <label>curved belt</label>
         <thingClass>Building</thingClass>
@@ -89,7 +104,7 @@
         </statBases>
         <description>The basic unit of a conveyor belt, only curved.</description>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>10</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
@@ -97,7 +112,7 @@
                 <transmitsPower>true</transmitsPower>
                 <startElectricalFires>true</startElectricalFires> 
             </li>
-            <li>
+            <li Class="CompProperties_Glower">
                 <compClass>CompGlower</compClass>
                 <glowRadius>1</glowRadius>
                 <glowColor>(255,200,0,0)</glowColor>
@@ -108,12 +123,13 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>15</Steel>
+            <Steel>10</Steel>
+            <Components>1</Components>
         </costList>
         <designationHotkey>V</designationHotkey>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2BMinified">
         <defName>A2BLoader</defName>
         <label>loader</label>
         <thingClass>Building_Storage</thingClass>
@@ -150,7 +166,7 @@
         </statBases>
         <description>Loads any item you want onto a belt.</description>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>10</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
@@ -158,7 +174,7 @@
                 <transmitsPower>true</transmitsPower>
                 <startElectricalFires>true</startElectricalFires> 
             </li>
-            <li>
+            <li Class="CompProperties_Glower">
                 <compClass>CompGlower</compClass>
                 <glowRadius>1</glowRadius>
                 <glowColor>(255,200,0,0)</glowColor>
@@ -168,14 +184,15 @@
             </li>
         </comps>
         <costList>
-            <Steel>15</Steel>
+            <Steel>10</Steel>
+            <Components>1</Components>
         </costList>
         <neverMultiSelect>true</neverMultiSelect> 
         <designationHotkey>L</designationHotkey>
         <surfaceType>Item</surfaceType>
     </ThingDef>  
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2BMinified">
         <defName>A2BUnloader</defName>
         <label>unloader</label>
         <thingClass>Building</thingClass>
@@ -191,7 +208,7 @@
         </statBases>
         <description>Unload the content of a conveyor belt into a pile or onto a hopper.</description>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>10</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
@@ -199,7 +216,7 @@
                 <transmitsPower>true</transmitsPower>
                 <startElectricalFires>true</startElectricalFires> 
             </li>
-            <li>
+            <li Class="CompProperties_Glower">
                 <compClass>CompGlower</compClass>
                 <glowRadius>1</glowRadius>
                 <glowColor>(255,200,0,0)</glowColor>
@@ -210,12 +227,13 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>15</Steel>
+            <Steel>10</Steel>
+            <Components>1</Components>
         </costList>
         <designationHotkey>U</designationHotkey>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2BMinified">
         <defName>A2BSplitter</defName>
         <label>splitter</label>
         <thingClass>Building</thingClass>
@@ -231,7 +249,7 @@
         </statBases>
         <description>Sends items left, forward, and right in sequence.</description>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>15</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
@@ -239,7 +257,7 @@
                 <transmitsPower>true</transmitsPower>
                 <startElectricalFires>true</startElectricalFires> 
             </li>
-            <li>
+            <li Class="CompProperties_Glower">
                 <compClass>CompGlower</compClass>
                 <glowRadius>1</glowRadius>
                 <glowColor>(255,200,0,0)</glowColor>
@@ -250,12 +268,13 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>20</Steel>
+            <Steel>10</Steel>
+            <Components>2</Components>
         </costList>
         <designationHotkey>P</designationHotkey>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2BMinified">
         <defName>A2BMerger</defName>
         <label>merger</label>
         <thingClass>Building</thingClass>
@@ -271,7 +290,7 @@
         </statBases>
         <description>Merges up to three belts into one.</description>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>15</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
@@ -279,7 +298,7 @@
                 <transmitsPower>true</transmitsPower>
                 <startElectricalFires>true</startElectricalFires> 
             </li>
-            <li>
+            <li Class="CompProperties_Glower">
                 <compClass>CompGlower</compClass>
                 <glowRadius>1</glowRadius>
                 <glowColor>(255,200,0,0)</glowColor>
@@ -290,7 +309,8 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>20</Steel>
+            <Steel>10</Steel>
+            <Components>1</Components>
         </costList>
         <designationHotkey>M</designationHotkey>
     </ThingDef>

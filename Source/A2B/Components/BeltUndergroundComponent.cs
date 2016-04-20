@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using A2B.Annotations;
 using RimWorld;
 using UnityEngine;
@@ -71,13 +72,18 @@ namespace A2B
             get { return true; }
         }
 
+        private bool                gameJustLoaded = false;
+
         // Belt component of actual power source
+        private string                  _headParentString = string.Empty;
         private Thing                   _headParent = null;
         private BeltUndergroundComponent _powerHead = null;
         public BeltUndergroundComponent PowerHead {
             get { return _powerHead; }
             set { // Only allow set if this belt doesn't have CompPowerTrader
                 if( value == null ){
+                    _headParentString = string.Empty;
+                    _beltPhase = Phase.Offline;
                     _headParent = null;
                     _powerHead = null;
                     PowerComponent = null;
@@ -87,6 +93,7 @@ namespace A2B
                     _powerHead = value;
                     _headParent = _powerHead.parent;
                     PowerComponent = _headParent.TryGetComp<CompPowerTrader>();
+                    _beltPhase = PowerComponent.PowerOn ? Phase.Active : Phase.Offline;
                 }
             }
         }
@@ -98,8 +105,8 @@ namespace A2B
         protected List< BeltUndergroundComponent > poweredBelts = null;
         protected int               poweredCount
         {   // Make sure we only return undercover count, slides require a powered lift but do not draw power
-            get { return poweredBelts == null ? 0 : 
-                poweredBelts.FindAll( b => ( ( b as BeltUndercoverComponent ) != null ) ).Count; }
+            get { return poweredBelts.NullOrEmpty() ? 0 : 
+                poweredBelts.FindAll( b => b is BeltUndercoverComponent ).Count; }
         }
 
 
@@ -110,16 +117,7 @@ namespace A2B
             _outputLevel = Level.Underground;
         }
 
-        #region Infered Power Stuff
-
-        public void                 RecomputerPower()
-        {
-            if( this.IsLift() ){
-                // Powered lifts use additional power based
-                // on how many components it's driving
-                PowerComponent.PowerOutput = -( PowerComponent.props.basePowerConsumption + poweredCount * A2BData.powerPerUndercover );
-            }
-        }
+        #region Power Stuff
 
         public bool                 RegisterInferedPowerComponent( BeltUndergroundComponent belt, Rot4 dir )
         {
@@ -137,15 +135,17 @@ namespace A2B
             if( belt.MultiVector == true )
                 belt.outputDirection = dir;
 
-            RecomputerPower();
             return true;
         }
 
         public bool                 UnregisterInferedPowerComponent( BeltUndergroundComponent belt )
         {
 
-            if( ( poweredBelts == null )||
-                ( !poweredBelts.Contains( belt ) ) ){
+            if(
+                ( poweredBelts.NullOrEmpty() )||
+                ( !poweredBelts.Contains( belt ) )
+            )
+            {
                 return false;
             }
 
@@ -157,7 +157,6 @@ namespace A2B
                 belt.outputDirection = Rot4.Invalid;
 
             // Unregistered
-            RecomputerPower();
             return true;
         }
 
@@ -290,6 +289,42 @@ namespace A2B
             }
         }
 
+        public override void CompTick ()
+        {
+            if( gameJustLoaded )
+            {
+                if( _headParentString != string.Empty )
+                {
+                    if( PowerDirection == Rot4.Invalid )
+                    {
+                        Log.Error( parent.ThingID + " :: PowerDirection is invalid!" );
+                    }
+                    else
+                    {
+                        var headThing = Find.ListerThings.AllThings.FirstOrDefault( thing => thing.ThingID == _headParentString );
+                        if( headThing == null )
+                        {
+                            Log.Error( parent.ThingID + " :: Unable to get Thing from ThingID " + _headParentString );
+                        }
+                        else
+                        {
+                            var parentBelt = headThing.TryGetComp<BeltUndergroundComponent>();
+                            if( parentBelt == null )
+                            {
+                                Log.Error( parent.ThingID + " :: " + _headParentString + " is not a valid underground belt component!" );
+                            }
+                            else
+                            {
+                                parentBelt.RegisterInferedPowerComponent( this, PowerDirection );
+                            }
+                        }
+                    }
+                }
+                gameJustLoaded = false;
+            }
+            base.CompTick();
+        }
+
         public override void        OnItemTransfer(Thing item, BeltComponent other)
         {
             // Tell the undercover which direction the item came from
@@ -322,37 +357,33 @@ namespace A2B
             if( this.IsLift() == false ){
                 Scribe_Values.LookValue( ref PowerDirection, "powerDirection", Rot4.Invalid, true );
 
-                Scribe_References.LookReference<Thing>( ref _headParent, "powerHead" );
+                if( Scribe.mode == LoadSaveMode.Saving )
+                    _headParentString = _headParent.ThingID;
 
-                if( Scribe.mode == LoadSaveMode.PostLoadInit ){
-                    if( ( _headParent != null )&&
-                        ( PowerDirection != Rot4.Invalid ) ){
-                        var p = _headParent.TryGetComp<BeltUndergroundComponent>();
-                        if( p != null ){
-                            p.RegisterInferedPowerComponent( this, PowerDirection );
-                        }
-                    } else {
-                        PowerHead = null;
-                    }
+                Scribe_Values.LookValue<string>( ref _headParentString, "powerHead", string.Empty, true );
+
+                if( Scribe.mode == LoadSaveMode.ResolvingCrossRefs )
+                {
+                    gameJustLoaded = true;
                 }
             }
         }
 
-        public override void        PostDestroy(DestroyMode mode = DestroyMode.Vanish)
+        public override void        PostDeSpawn()
         {
             ItemContainer.Destroy();
 
             // Disconnect all infered power users
-            if( poweredBelts != null )
-                foreach( var b in poweredBelts )
-                    UnregisterInferedPowerComponent( b );
+            if( !poweredBelts.NullOrEmpty() )
+                for( int index = poweredBelts.Count - 1; index >= 0; index-- )
+                    UnregisterInferedPowerComponent( poweredBelts[ index ] );
 
             // Disconnect from power head
             if( ( PowerHead != null )&&
                 ( PowerHead != this ) )
                 PowerHead.UnregisterInferedPowerComponent( this );
 
-            base.PostDestroy(mode);
+            base.PostDeSpawn();
         }
 
         public override string      CompInspectStringExtra()

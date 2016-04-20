@@ -1,38 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-    <ThingDef Name="BuildingBase" Abstract="True">
-        <category>Building</category>
-
-        <soundImpactDefault>BulletImpactSteel</soundImpactDefault>
-
-        <selectable>true</selectable>
-        <rotatable>true</rotatable>
-
-        <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-        <constructEffect>ConstructMetal</constructEffect>
-        <repairEffect>Repair</repairEffect>
-        <holdsRoof>false</holdsRoof>
-        <blockLight>false</blockLight>
-        <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-        <filthLeaving>BuildingRubble</filthLeaving>
-
-        <altitudeLayer>Waist</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <pathCost>1000</pathCost>
-
-        <drawerType>MapMeshAndRealTime</drawerType>
-        <castEdgeShadows>true</castEdgeShadows>
-        <fillPercent>1</fillPercent>
-        <staticSunShadowHeight>0.34</staticSunShadowHeight>
-
-        <tickerType>Normal</tickerType>
-
-        <designationCategory>ConveyorBelts</designationCategory>
-        <researchPrerequisite>A2B2</researchPrerequisite>
+    <ThingDef Name="A2B2Base" ParentName="BuildingBase" Abstract="True">
+        <researchPrerequisites>
+            <li>A2B2</li>
+        </researchPrerequisites>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef Name="A2B2Minified" ParentName="A2B2Base" Abstract="True">
+        <minifiedDef>MinifiedFurniture</minifiedDef>
+    </ThingDef>
+
+    <ThingDef ParentName="A2B2Minified">
         <defName>A2BSelector</defName>
         <label>selector</label>
         <thingClass>Building_Storage</thingClass>
@@ -51,7 +30,7 @@
         </statBases>
         <description>Sort and redirect items.</description>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>25</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
@@ -59,7 +38,7 @@
                 <transmitsPower>true</transmitsPower>
                 <startElectricalFires>true</startElectricalFires> 
             </li>
-            <li>
+            <li Class="CompProperties_Glower">
                 <compClass>CompGlower</compClass>
                 <glowRadius>1</glowRadius>
                 <glowColor>(255,200,0,0)</glowColor>
@@ -70,12 +49,13 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>25</Steel>
+            <Steel>10</Steel>
+            <Components>2</Components>
         </costList>
         <designationHotkey>H</designationHotkey>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2B2Base">
         <defName>A2BUndercover</defName>
         <label>underground belt</label>
         <thingClass>Building</thingClass>
@@ -114,13 +94,14 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>25</Steel>
+            <Steel>20</Steel>
+            <Components>1</Components>
         </costList>
         <placingDraggableDimensions>1</placingDraggableDimensions>
         <designationHotkey>G</designationHotkey>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2B2Base">
         <defName>A2BUndercoverCover</defName>
         <label>underground belt cover</label>
         <thingClass>Building</thingClass>
@@ -161,7 +142,7 @@
         <designationCategory>None</designationCategory>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2B2Base">
         <defName>A2BUndertaker</defName>
         <label>undertaker</label>
         <thingClass>Building</thingClass>
@@ -185,12 +166,13 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>50</Steel>
+            <Steel>20</Steel>
+            <Components>1</Components>
         </costList>
         <designationHotkey>R</designationHotkey>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2B2Base">
         <defName>A2BLift</defName>
         <label>undertaker</label>
         <thingClass>Building</thingClass>
@@ -208,7 +190,7 @@
         </statBases>
         <description>Connects surface and underground belts.</description>
         <comps>
-            <li>
+            <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
                 <basePowerConsumption>50</basePowerConsumption>
                 <soundPowerOn>PowerOnSmall</soundPowerOn>
@@ -216,7 +198,7 @@
                 <transmitsPower>true</transmitsPower>
                 <startElectricalFires>true</startElectricalFires> 
             </li>
-            <li>
+            <li Class="CompProperties_Glower">
                 <compClass>CompGlower</compClass>
                 <glowRadius>3</glowRadius>
                 <glowColor>(255,58,0,0)</glowColor>
@@ -227,12 +209,13 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>50</Steel>
+            <Steel>20</Steel>
+            <Components>1</Components>
         </costList>
         <designationCategory>None</designationCategory>
     </ThingDef>
 
-    <ThingDef ParentName="BuildingBase">
+    <ThingDef ParentName="A2B2Base">
         <defName>A2BSlide</defName>
         <label>undertaker</label>
         <thingClass>Building</thingClass>
@@ -256,7 +239,8 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>50</Steel>
+            <Steel>20</Steel>
+            <Components>1</Components>
         </costList>
         <designationCategory>None</designationCategory>
     </ThingDef>

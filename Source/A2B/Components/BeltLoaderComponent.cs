@@ -55,7 +55,7 @@ namespace A2B
         /**
          * Belt loaders never accept items from other belt components.
          **/
-        public override bool CanAcceptSomething()
+        public override bool CanAcceptThing( Thing thing )
         {
             return false;
         }
@@ -65,25 +65,46 @@ namespace A2B
             // Check the things that are on the ground at our position
             // If the thing can be moved and the destination is empty it can be added to our container
             // This should fix the "pawn carry items to the loader all the time"-bug
-            foreach (var thing in Find.ThingGrid.ThingsAt(parent.Position))
+            var thingsAt = Find.ThingGrid.ThingsAt( parent.Position ).ToList();
+            for( var index = thingsAt.Count - 1; index >= 0; index-- )
             {
-                if ((thing.def.category == ThingCategory.Item) && (thing != parent))
+                var thing = thingsAt[ index ];
+                if(
+                    ( thing.def.category == ThingCategory.Item )&&
+                    ( thing != parent )
+                )
                 {
-                    var destination = GetDestinationForThing(thing);
-					var destBelt = destination.GetBeltComponent();
+                    var destination = GetDestinationForThing( thing );
+					var destBelt = destination.GetBeltSurfaceComponent();
 
-                    if (destBelt == null)
+                    if( destBelt == null )
                     {
                         continue;
                     }
 
                     // Do not load items unless the next element can accept it
-                    if (!destBelt.CanAcceptFrom(this))
+                    if( !destBelt.CanAcceptFrom( this ) )
                     {
                         continue;
                     }
 
-					ItemContainer.AddItem(thing, BeltSpeed / 2);
+                    // Try to merge with existing stacks
+                    bool fullyMerged = false;
+                    foreach( var thingStatus in ItemContainer.ThingStatus.Where( status => status.IsWaiting ) )
+                    {
+                        if( thingStatus.Thing.def == thing.def )
+                        {
+                            if( thingStatus.Thing.TryAbsorbStack( thing, true ) )
+                            {
+                                fullyMerged = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // If not fully merged, add the remaining stack
+                    if( !fullyMerged )
+					    ItemContainer.AddItem( thing, BeltSpeed / 2 );
                 }
             }
         }

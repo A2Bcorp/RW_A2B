@@ -80,7 +80,7 @@ namespace A2B
 
 		private bool IsFreeBelt(IntVec3 position, bool onlyCheckConnection = false)
         {
-            BeltComponent destBelt = position.GetBeltComponent();
+            BeltComponent destBelt = position.GetBeltSurfaceComponent();
 			return (destBelt != null && destBelt.CanAcceptFrom(this, onlyCheckConnection));
         }
 

@@ -4,6 +4,7 @@
 	{
 		Undefined = 0,
 		PoweredLift,
-		UnpoweredSlide
+		UnpoweredSlide,
+        AutoDetect
 	}
 }

@@ -34,4 +34,7 @@
     <A2B_Direction_South>South</A2B_Direction_South>
     <A2B_Direction_West>West</A2B_Direction_West>
 
+    <A2B_Selector_To_Ground_Toggle>Output {0}\nto ground</A2B_Selector_To_Ground_Toggle>
+    <A2B_Selector_To_Ground_Toggle_Desc>Allow selector output\n{0} to ground</A2B_Selector_To_Ground_Toggle_Desc>
+    
 </LanguageData>

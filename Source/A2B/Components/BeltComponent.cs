@@ -121,8 +121,12 @@ namespace A2B
 		public virtual bool CanAcceptFrom( BeltComponent belt, bool onlyCheckConnection = false )
         {
             // If I can't accept from anyone, I certainly can't accept from you.
-			if( !onlyCheckConnection && !CanAcceptSomething() )
-                return false;
+            /*
+            if( !onlyCheckConnection )
+                foreach( var thing in belt.ItemContainer.ThingsToMove )
+                    if( !CanAcceptThing( thing ) )
+                        return false;
+            */
 
             // This belt isn't on the other belts output level
             if( belt.OutputLevel != this.InputLevel )
@@ -152,16 +156,39 @@ namespace A2B
          *  Returns whether the component can accept items at all. Useful for locking/disabling components without
          *  messing with directional routing code.
          **/
-        public virtual bool CanAcceptSomething()
+        public virtual bool CanAcceptThing( Thing thing )
         {
-            return (Empty && BeltPhase == Phase.Active);
+            if( BeltPhase != Phase.Active )
+                return false;
+            if( Empty )
+                return true;
+            foreach( var item in ItemContainer.ThingStatus )
+            {
+                if(
+                    ( item.Status == MovementStatus.WaitClear )&&
+                    ( item.Thing.def == thing.def )&&
+                    ( item.Thing.stackCount < item.Thing.def.stackLimit )
+                )
+                {
+                    item.Status = MovementStatus.WaitMerge;
+                    return true;
+                }
+                if(
+                    ( item.Status == MovementStatus.WaitMerge )&&
+                    ( item.Merge == thing )
+                )
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /**
          *  Returns whether the component is allowed to output to anything other than a belt. Most can not - the unloader
          *  is an example of one that can, however.
          **/
-        public virtual bool CanOutputToNonBelt()
+        public virtual bool CanOutputToNonBelt( IntVec3 beltDest, Thing thing )
         {
             return false;
         }
@@ -171,17 +198,17 @@ namespace A2B
         {
             OnBeginMove(thing, beltDest);
 
-            if( CanOutputToNonBelt() && beltDest.NoStorageBlockersIn( thing ) )
+            if( CanOutputToNonBelt( beltDest, thing ) && beltDest.NoStorageBlockersIn( thing ) )
             {
                 ItemContainer.DropItem(thing, beltDest);
             }
             else if ( OutputLevel == Level.Surface )
             {
 				// Find a belt component at our output level
-                var belt = beltDest.GetBeltComponent();
+                var belt = beltDest.GetBeltSurfaceComponent();
 
-                //  Check if there is a belt, if it is empty, and also check if it is active !
-                if (belt == null || !belt.ItemContainer.Empty || belt.BeltPhase != Phase.Active)
+                //  Check if there is a belt, if it can accept this thing
+                if( belt == null || !belt.CanAcceptThing( thing ) )
                 {
                     return;
                 }
@@ -197,6 +224,7 @@ namespace A2B
 
         #region Drawing Stuff
 
+        /*
         protected static void DrawGUIOverlay([NotNull] ThingStatus status, Vector3 drawPos )
         {
             if( Find.CameraMap.CurrentZoom != CameraZoomRange.Closest )
@@ -227,7 +255,7 @@ namespace A2B
                 labelText,
                 Color.white );
 
-        }
+        }*/
 
         protected virtual Vector3 GetOffset([NotNull] ThingStatus status)
         {
@@ -279,11 +307,11 @@ namespace A2B
 
         #region Callbacks (Core)
 
-        public override void PostDestroy(DestroyMode mode = DestroyMode.Vanish)
+        public override void PostDeSpawn ()
         {
             ItemContainer.Destroy();
 
-            base.PostDestroy(mode);
+            base.PostDeSpawn();
         }
 
         public override void PostSpawnSetup()
@@ -321,7 +349,7 @@ namespace A2B
 
                 status.Thing.DrawAt(drawPos);
 
-                DrawGUIOverlay(status, drawPos);
+                //DrawGUIOverlay(status, drawPos);
             }
         }
 
@@ -329,10 +357,10 @@ namespace A2B
         {
             base.CompTick();
 
-            if ((Find.TickManager.TicksGame + GetHashCode()) % 250 == 0)
+            if( parent.IsHashIntervalTick( 250 ) )
                 ItemContainer.TickRare();
 
-			if ((Find.TickManager.TicksGame + GetHashCode()) % A2BData.OccasionalTicks == 0)
+            if( parent.IsHashIntervalTick( A2BData.OccasionalTicks ) )
                 OnOccasionalTick();
 
             if (BeltPhase == Phase.Frozen && Rand.Range(0.0f, 1.0f) < 0.05)
@@ -417,7 +445,7 @@ namespace A2B
                     // Turn on, incl. 'system online' glow
                     _beltPhase = Phase.Active;
 					if( GlowerComponent != null )
-                    	GlowerComponent.Lit = true;
+                        GlowerComponent.UpdateLit();
 
 					// If it's an underground belt, don't auto-pickup
 					// as it has lost it's targeting vector
@@ -448,9 +476,9 @@ namespace A2B
 
                 // Active 'yellow' color
 				if( GlowerComponent != null )
-                	GlowerComponent.Lit = true; // in principle not required (should be already ON ...)
+                    GlowerComponent.UpdateLit(); // in principle not required (should be already ON ...)
 
-                ItemContainer.Tick();
+                ItemContainer.MoveTick();
 
                 PostItemContainerTick();
 
@@ -480,7 +508,7 @@ namespace A2B
 
                 // Turn glower off
 				if( GlowerComponent != null )
-                	GlowerComponent.Lit = false;
+                    GlowerComponent.UpdateLit();
 
                 // Phase, inactive
                 _beltPhase = Phase.Offline;
@@ -495,6 +523,29 @@ namespace A2B
                     ItemContainer.DropAll(parent.Position, true);
             }
         }
+
+        public virtual bool MovingThings()
+        {
+            return ItemContainer.MovingThings();
+        }
+
+        #region Power Stuff
+
+        public virtual bool AllowLowPowerMode()
+        {
+            return true;
+        }
+
+        public virtual float GetBasePowerConsumption()
+        {
+            if( PowerComponent == null )
+            {
+                return 0f;
+            }
+            return PowerComponent.Props.basePowerConsumption;
+        }
+
+        #endregion
 
 		#region Reliability Stuff
 
@@ -557,7 +608,7 @@ namespace A2B
             return statusText
 				+ "\n"
 				+ Constants.TxtContents.Translate()
-				+ " " + ((IThingContainerOwner) ItemContainer).GetContainer().ContentsString;
+				+ " " + ItemContainer.ContentsString;
         }
     }
 }

@@ -28,6 +28,12 @@ namespace A2B
             _outputLevel = Level.Underground;
         }
 
+        public override bool        AllowLowPowerMode()
+        {
+            // Powered lifts will handle this for us
+            return false;
+        }
+
 		public override IntVec3 GetDestinationForThing( Thing thing )
 		{
 			return this.GetPositionFromRelativeRotation( Rot4.North );
@@ -47,16 +53,21 @@ namespace A2B
             var belts = beltDest.GetBeltUndergroundComponents();
             var lift = belts.Find( b => b.IsLift() && b.outputDirection == this.outputDirection );
             var under = belts.Find( tuc => tuc.IsUndercover() );
-            if( ( lift != null )&&
-                ( ( lift.BeltPhase == Phase.Active )||
-                    ( under == null ) ) )
-                // Use the lift unless it's unpowered and there is an undercover
+            if(
+                ( lift != null )&&
+                (
+                    ( lift.BeltPhase == Phase.Active )||
+                    ( under == null )
+                )
+            )
+            {   // Use the lift unless it's unpowered and there is an undercover
                 belt = lift;
+            }
             else
                 belt = under;
             
-            //  Check if there is a belt, if it is empty, and also check if it is active !
-            if (belt == null || !belt.ItemContainer.Empty || belt.BeltPhase != Phase.Active)
+            //  Check if there is a belt, if it can accept this thing
+            if( belt == null || !belt.CanAcceptThing( thing ) )
             {
                 return;
             }
