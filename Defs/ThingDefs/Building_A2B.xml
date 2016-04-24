@@ -82,7 +82,6 @@
         <size>(1,1)</size>
         <costList>
             <Steel>10</Steel>
-            <Components>1</Components>
         </costList>
         <designationHotkey>B</designationHotkey>
         <placingDraggableDimensions>1</placingDraggableDimensions>
@@ -124,7 +123,6 @@
         <size>(1,1)</size>
         <costList>
             <Steel>10</Steel>
-            <Components>1</Components>
         </costList>
         <designationHotkey>V</designationHotkey>
     </ThingDef>
@@ -185,7 +183,6 @@
         </comps>
         <costList>
             <Steel>10</Steel>
-            <Components>1</Components>
         </costList>
         <neverMultiSelect>true</neverMultiSelect> 
         <designationHotkey>L</designationHotkey>
@@ -228,7 +225,6 @@
         <size>(1,1)</size>
         <costList>
             <Steel>10</Steel>
-            <Components>1</Components>
         </costList>
         <designationHotkey>U</designationHotkey>
     </ThingDef>
@@ -268,8 +264,7 @@
         </comps>
         <size>(1,1)</size>
         <costList>
-            <Steel>10</Steel>
-            <Components>2</Components>
+            <Steel>15</Steel>
         </costList>
         <designationHotkey>P</designationHotkey>
     </ThingDef>
@@ -310,7 +305,6 @@
         <size>(1,1)</size>
         <costList>
             <Steel>10</Steel>
-            <Components>1</Components>
         </costList>
         <designationHotkey>M</designationHotkey>
     </ThingDef>
