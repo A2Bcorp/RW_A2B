@@ -50,7 +50,7 @@
         <size>(1,1)</size>
         <costList>
             <Steel>10</Steel>
-            <Components>2</Components>
+            <Components>1</Components>
         </costList>
         <designationHotkey>H</designationHotkey>
     </ThingDef>
@@ -95,7 +95,6 @@
         <size>(1,1)</size>
         <costList>
             <Steel>20</Steel>
-            <Components>1</Components>
         </costList>
         <placingDraggableDimensions>1</placingDraggableDimensions>
         <designationHotkey>G</designationHotkey>
@@ -142,8 +141,7 @@
         <designationCategory>None</designationCategory>
     </ThingDef>
 
-    <ThingDef ParentName="A2B2Base">
-        <defName>A2BUndertaker</defName>
+    <ThingDef Name="UndertakerBase" ParentName="A2B2Base" Abstract="True">
         <label>undertaker</label>
         <thingClass>Building</thingClass>
         <graphicData>
@@ -159,36 +157,25 @@
             <Beauty>0</Beauty>
         </statBases>
         <description>Connects surface and underground belts.</description>
+        <size>(1,1)</size>
+        <costList>
+            <Steel>20</Steel>
+            <Components>2</Components>
+        </costList>
+    </ThingDef>
+
+    <ThingDef ParentName="UndertakerBase">
+        <defName>A2BUndertaker</defName>
         <comps>
             <li>
                 <compClass>A2B.BeltUndertakerComponent</compClass>
             </li>
         </comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>20</Steel>
-            <Components>1</Components>
-        </costList>
         <designationHotkey>R</designationHotkey>
     </ThingDef>
 
-    <ThingDef ParentName="A2B2Base">
+    <ThingDef ParentName="UndertakerBase">
         <defName>A2BLift</defName>
-        <label>undertaker</label>
-        <thingClass>Building</thingClass>
-        <graphicData>
-            <texPath>Things/Building/Undertaker</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <drawSize>(3,3)</drawSize>
-        </graphicData>
-        <altitudeLayer>Projectile</altitudeLayer>
-        <statBases>
-            <WorkToMake>800</WorkToMake>
-            <MaxHitPoints>300</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-        <description>Connects surface and underground belts.</description>
         <comps>
             <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
@@ -207,41 +194,16 @@
                 <compClass>A2B.BeltLiftComponent</compClass>
             </li>
         </comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>20</Steel>
-            <Components>1</Components>
-        </costList>
         <designationCategory>None</designationCategory>
     </ThingDef>
 
-    <ThingDef ParentName="A2B2Base">
+    <ThingDef ParentName="UndertakerBase">
         <defName>A2BSlide</defName>
-        <label>undertaker</label>
-        <thingClass>Building</thingClass>
-        <graphicData>
-            <texPath>Things/Building/Undertaker</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <drawSize>(3,3)</drawSize>
-        </graphicData>
-        <altitudeLayer>Projectile</altitudeLayer>
-        <statBases>
-            <WorkToMake>800</WorkToMake>
-            <MaxHitPoints>300</MaxHitPoints>
-            <Flammability>1.0</Flammability>
-            <Beauty>0</Beauty>
-        </statBases>
-        <description>Connects surface and underground belts.</description>
         <comps>
             <li>
                 <compClass>A2B.BeltSlideComponent</compClass>
             </li>
         </comps>
-        <size>(1,1)</size>
-        <costList>
-            <Steel>20</Steel>
-            <Components>1</Components>
-        </costList>
         <designationCategory>None</designationCategory>
     </ThingDef>
 

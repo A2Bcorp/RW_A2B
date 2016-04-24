@@ -18,7 +18,7 @@
         <defName>A2BCore</defName>
 
         <!-- Core version -->
-        <Version>0.13.0</Version>
+        <Version>0.13.1</Version>
 
         <!-- Occasional - Ticks between occasional callbacks -->
         <OccasionalTicks>100</OccasionalTicks>
