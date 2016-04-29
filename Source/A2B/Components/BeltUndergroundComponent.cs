@@ -26,7 +26,24 @@ namespace A2B
             if( MultiVector == false ){
                 return;
             }
-            
+
+            // Did the flow somehow get corrupted?
+            if( input == Rot4.Invalid )
+            {
+                if( PowerDirection != Rot4.Invalid )
+                {
+                    // Set it to the opposite direction of the powered lift
+                    input = PowerDirection.OppositeOf();
+                }
+            }
+
+            if( input == Rot4.Invalid )
+            {
+                // What the derp?
+                Log.Message( string.Format( "A2B:  Belt {0} has invalid input direction!", this.parent.ThingID ) );
+                return;
+            }
+
             // Accept input from any flow and try to route it out
             inputDirection = input;
 
@@ -354,11 +371,17 @@ namespace A2B
             Scribe_Values.LookValue( ref inputDirection, "inputDirection", Rot4.Invalid, true );
             Scribe_Values.LookValue( ref outputDirection, "outputDirection", Rot4.Invalid, true );
 
-            if( this.IsLift() == false ){
+            if( this.IsLift() == false )
+            {
                 Scribe_Values.LookValue( ref PowerDirection, "powerDirection", Rot4.Invalid, true );
 
-                if( Scribe.mode == LoadSaveMode.Saving )
+                if(
+                    ( Scribe.mode == LoadSaveMode.Saving )&&
+                    ( _headParent != null )
+                )
+                {
                     _headParentString = _headParent.ThingID;
+                }
 
                 Scribe_Values.LookValue<string>( ref _headParentString, "powerHead", string.Empty, true );
 

@@ -4,19 +4,10 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Utilities\Constants.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Components\BeltUndergroundComponent.cs">
     <Files>
-      <File FileName="Utilities\Constants.cs" Line="94" Column="10" />
-      <File FileName="Components\BeltUndertakerComponent.cs" Line="308" Column="25" />
-      <File FileName="Utilities\A2BMonitor.cs" Line="134" Column="1" />
-      <File FileName="Components\UndertakerMode.cs" Line="8" Column="19" />
-      <File FileName="Components\BeltUndergroundComponent.cs" Line="377" Column="46" />
-      <File FileName="Components\BeltItemContainer.cs" Line="470" Column="29" />
-      <File FileName="Components\BeltComponent.cs" Line="481" Column="35" />
-      <File FileName="Components\BeltLoaderComponent.cs" Line="73" Column="67" />
-      <File FileName="Utilities\A2BResearch.cs" Line="98" Column="10" />
-      <File FileName="Utilities\A2BDataDef.cs" Line="18" Column="29" />
-      <File FileName="Components\BeltSelectorComponent.cs" Line="269" Column="70" />
+      <File FileName="Components\BeltUndergroundComponent.cs" Line="44" Column="24" />
+      <File FileName="Components\BeltComponent.cs" Line="177" Column="42" />
     </Files>
   </MonoDevelop.Ide.Workbench>
 </Properties>

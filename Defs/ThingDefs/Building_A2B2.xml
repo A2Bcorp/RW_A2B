@@ -46,6 +46,7 @@
             <li>
                 <compClass>A2B.BeltSelectorComponent</compClass>
             </li>
+            <li Class="CompProperties_Breakdownable" />
         </comps>
         <size>(1,1)</size>
         <costList>
@@ -193,6 +194,7 @@
             <li>
                 <compClass>A2B.BeltLiftComponent</compClass>
             </li>
+            <li Class="CompProperties_Breakdownable" />
         </comps>
         <designationCategory>None</designationCategory>
     </ThingDef>

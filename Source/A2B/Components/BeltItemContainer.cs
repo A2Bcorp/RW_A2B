@@ -450,8 +450,20 @@ namespace A2B
         {
             for( int index = _thingStatus.Count - 1; index >= 0; --index )
             {
-                if( _thingStatus[ index ].Thing.def.tickerType == TickerType.Rare )
-                    _thingStatus[ index ].Thing.TickRare();
+                var thingStatus = _thingStatus[ index ];
+                if( thingStatus.Thing.def.tickerType == TickerType.Rare )
+                {
+                    thingStatus.Thing.TickRare();
+                    if( thingStatus.Thing.Destroyed )
+                    {
+                        // Tick action destroyed item, remove it from the belt
+                        if( thingStatus.Merge != null )
+                        {
+                            ReleaseMergeTarget( thingStatus.Merge );
+                        }
+                        _thingStatus.RemoveAt( index );
+                    }
+                }
             }
         }
 
@@ -614,26 +626,31 @@ namespace A2B
             if( thingStatus.Merge != null )
             {
                 // Make sure any items which are merging release their lock on their target
-                var belt = thingStatus.Merge.PositionHeld.GetBeltComponent( this._parentComponent );
-                if( belt == null )
+                ReleaseMergeTarget( thingStatus.Merge );
+            }
+            return GenDrop.TryDropSpawn( thingStatus.Thing, dropLoc, mode, out lastResultingThing );
+        }
+
+        private void ReleaseMergeTarget( Thing target )
+        {
+            var belt = target.PositionHeld.GetBeltComponent( this._parentComponent );
+            if( belt == null )
+            {
+                Log.Error( string.Format( "Can not find belt for merge target {0}!", target ) );
+            }
+            else
+            {
+                var mergeStatus = belt.ItemContainer.GetStatusForThing( target );
+                if( mergeStatus == null )
                 {
-                    Log.Error( string.Format( "Can not find belt for merge target {0}!", thingStatus.Merge ) );
+                    Log.Error( string.Format( "Can not get ThingStatus for merge target {0} from belt {1}!", target, belt.parent ) );
                 }
                 else
                 {
-                    var mergeStatus = belt.ItemContainer.GetStatusForThing( thingStatus.Merge );
-                    if( mergeStatus == null )
-                    {
-                        Log.Error( string.Format( "Can not get ThingStatus for merge target {0} from belt {1}!", thingStatus.Merge, belt.parent ) );
-                    }
-                    else
-                    {
-                        mergeStatus.Merge = null;
-                        mergeStatus.Status = MovementStatus.WaitClear;
-                    }
+                    mergeStatus.Merge = null;
+                    mergeStatus.Status = MovementStatus.WaitClear;
                 }
             }
-            return GenDrop.TryDropSpawn( thingStatus.Thing, dropLoc, mode, out lastResultingThing );
         }
 
         public void DropItem([NotNull] Thing item, IntVec3 position, bool forced = false)
@@ -651,20 +668,25 @@ namespace A2B
                     return;
                 }
 
+                bool droppedAll = false;
                 Thing droppedItem;
                 if( !forced )
                 {
-                    if( !TryDrop( thingStatus, position, ThingPlaceMode.Direct, out droppedItem ) )
-                    {
-                        Log.Message( string.Format( "Unable to drop {0} at {1}!", thingStatus.Thing, position ) );
-                    }
+                    droppedAll = TryDrop( thingStatus, position, ThingPlaceMode.Direct, out droppedItem );
                 }
                 // Might prevent those "has null owner" errors...
-                else if( !TryDrop( thingStatus, position, ThingPlaceMode.Near, out droppedItem ) )
+                else
                 {
-                    Log.Message( string.Format( "Unable to drop {0} near {1}!", thingStatus.Thing, position ) );
+                    droppedAll = TryDrop( thingStatus, position, ThingPlaceMode.Near, out droppedItem );
+                    if( !droppedAll )
+                    {
+                        Log.Message( string.Format( "Unable to drop {0} near {1}!", thingStatus.Thing, position ) );
+                    }
                 }
-                _thingStatus.Remove( thingStatus );
+                if( droppedAll )
+                {
+                    _thingStatus.Remove( thingStatus );
+                }
 
                 if( droppedItem == null )
                 {
