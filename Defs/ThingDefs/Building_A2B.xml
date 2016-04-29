@@ -28,7 +28,6 @@
 
         <comps>
             <li Class="CompProperties_Flickable" />
-            <li Class="CompProperties_Breakdownable" />
         </comps>
 
         <tickerType>Normal</tickerType>
